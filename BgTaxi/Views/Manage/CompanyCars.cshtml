@@ -1,0 +1,218 @@
+﻿@model BgTaxi.Models.CarsCompanyViewModel
+@{
+    ViewBag.Title = "Профил";
+}
+
+
+<div class="container">
+
+    <h2 style="text-align:center">@ViewBag.Title.</h2>
+    <div class="col-md-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li>@Html.ActionLink("Обща информация", "Index")</li>
+            <li>@Html.ActionLink("Шофьори", "Drivers")</li>
+
+            <li class="active">@Html.ActionLink("Автомобили", "Cars")</li>
+        </ul>
+    </div>
+
+    <div class="col-md-9">
+
+        <h4>Основна информация за акаунта</h4>
+        <hr />
+        <button class="btn btn-success" data-toggle="modal" data-target="#newCar">+ Автомобил</button>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Марка</th>
+                    <th>Модел</th>
+                    <th>Година</th>
+                    <th>Регистрационен номер</th>
+                    <th>Вътрешен номер</th>
+                    <th>Шофльор</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (KeyValuePair<BgTaxi.Models.Models.Car, BgTaxi.Models.DriverBasicInfo> entry in Model.CarsAndDrivers)
+                {
+
+                    <tr>
+                        <td>@entry.Key.Brand</td><td>@entry.Key.Model</td><td>@entry.Key.Year</td><td>@entry.Key.RegisterNumber</td><td>@entry.Key.InternalNumber</td><td hidden>@entry.Key.Id</td><td hidden>@entry.Value.UserId</td><td>@entry.Value.Name</td>
+                        <td><button class="btn btn-default" data-toggle="modal" data-target="#changeCar" onclick="changeCarSettings(this)">Промени</button></td>
+
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+
+    @*New car info*@
+    <div class="modal fade" id="newCar" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Нов Автомобил</h4>
+                </div>
+                @using (Html.BeginForm("RegisterCar", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="modal-body">
+
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Brand, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Brand, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Model, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Model, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Year, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Year, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.RegisterNumber, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RegisterNumber, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.InternalNumber, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.InternalNumber, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Шофьор</label>
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(m => m.SelectedDriver, new SelectList(Model.Drivers.Items,
+         "Value", "Text", Model.Drivers.SelectedValue), new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <input type="submit" class="btn btn-success" value="Запиши" />
+                                </div>
+                            </div>*@
+
+
+                    </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-success" value="Запиши" />
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Затвори</button>
+                        </div>
+                }
+            </div>
+        </div>
+    </div>
+    @*Change car info*@
+    <div class="modal fade" id="changeCar" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeChangeModal()" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Нов Автомобил</h4>
+                </div>
+                @using (Html.BeginForm("ChangeCar", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="modal-body">
+
+                        @Html.AntiForgeryToken()
+
+                        @Html.HiddenFor(m => m.CarId, new { @id = "Tb6" })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Brand, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Brand, new { @class = "form-control", @id = "Tb1" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Model, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Model, new { @class = "form-control", @id = "Tb2" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Year, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.Year, new { @class = "form-control", @id = "Tb3" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.RegisterNumber, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RegisterNumber, new { @class = "form-control", @id = "Tb4" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.InternalNumber, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.InternalNumber, new { @class = "form-control", @id = "Tb5" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Шофьор</label>
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(m => m.SelectedDriver, new SelectList(Model.Drivers.Items,
+                             "Value", "Text", Model.Drivers.SelectedValue), new { @id = "Tb7", @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-success" value="Запиши" />
+                        <button type="button" onclick="closeChangeModal()" class="btn btn-default" data-dismiss="modal">Затвори</button>
+                    </div>
+                }
+            </div>
+
+        </div>
+        <script>
+            function change() {
+
+
+                document.getElementById("changeBtn").remove();
+                document.getElementById("submitBtn").style.visibility = "visible";
+
+                for (var i in document.getElementsByClassName("form-control")) {
+                    document.getElementsByClassName("form-control")[i].attributes.removeNamedItem("disabled");
+                }
+            }
+
+            function changeCarSettings(element) {
+
+                var row = element.parentNode.parentNode;
+                for (var i = 1; i < 7; i++) {
+                    console.log(row.childNodes[i].innerHTML);
+                    document.getElementById("Tb" + i).value = row.childNodes[i].innerHTML;
+                }
+                if (row.childNodes[7].innerHTML != "0") {
+                    var select = document.getElementById("Tb7"),
+                    opt = document.createElement("option");
+                    opt.value = row.childNodes[7].innerHTML
+                    opt.selected = true;
+                    opt.innerHTML = row.childNodes[8].innerHTML
+                    select.insertBefore(opt, select.firstChild);
+                }
+            }
+            function closeChangeModal() {
+                var select = document.getElementById("Tb7");
+                select.removeChild(select.firstChild);
+            }
+
+
+
+        </script>
+    </div>
+</div>

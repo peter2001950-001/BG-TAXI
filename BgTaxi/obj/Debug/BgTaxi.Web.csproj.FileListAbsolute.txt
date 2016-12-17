@@ -1,0 +1,211 @@
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\csc.exe
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\vbc.exe
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\VBCSCompiler.exe
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaxi.dll.config
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaxi.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaxi.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Antlr3.Runtime.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaksi.Models.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\EntityFramework.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\EntityFramework.SqlServer.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.Owin.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Cookies.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Facebook.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Google.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.OAuth.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Twitter.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Newtonsoft.Json.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Owin.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Net.Http.Formatting.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Helpers.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.Owin.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.WebHost.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Mvc.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Optimization.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Razor.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.WebPages.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.WebPages.Razor.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\WebGrease.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaksi.Models.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Antlr3.Runtime.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\EntityFramework.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\EntityFramework.SqlServer.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.Core.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.Owin.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Cookies.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Facebook.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Google.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.OAuth.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Twitter.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Newtonsoft.Json.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Net.Http.Formatting.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Helpers.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.Owin.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.WebHost.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Mvc.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Optimization.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Razor.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.WebPages.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.WebPages.Razor.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\obj\Debug\BgTaxi.Web.csprojResolveAssemblyReference.cache
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\obj\Debug\BgTaxi.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\obj\Debug\BgTaxi.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Cors.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Abstractions.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Extensions.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Options.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Primitives.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Net.Http.Headers.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Buffers.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Text.Encodings.Web.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Cors.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Abstractions.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Extensions.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Features.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Configuration.Abstractions.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.DependencyInjection.Abstractions.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.FileProviders.Abstractions.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Options.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Primitives.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Net.Http.Headers.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Text.Encodings.Web.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.Cors.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Cors.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.Cors.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\csc.exe
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\vbc.exe
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\VBCSCompiler.exe
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\BgTaxi.dll.config
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\BgTaxi.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\BgTaxi.pdb
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Antlr3.Runtime.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\BgTaksi.Models.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\EntityFramework.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\EntityFramework.SqlServer.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.Core.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.EntityFramework.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.Owin.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Cors.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Abstractions.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Extensions.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Options.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Primitives.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Net.Http.Headers.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Cookies.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Facebook.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Google.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.MicrosoftAccount.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.OAuth.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Twitter.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Newtonsoft.Json.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Owin.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Buffers.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Net.Http.Formatting.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Text.Encodings.Web.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Helpers.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Http.Cors.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Http.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Http.Owin.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Http.WebHost.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Mvc.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Optimization.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Razor.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.WebPages.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.WebPages.Razor.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\WebGrease.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Cors.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\BgTaksi.Models.pdb
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Antlr3.Runtime.pdb
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\EntityFramework.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\EntityFramework.SqlServer.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.Core.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.EntityFramework.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNet.Identity.Owin.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Cors.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Abstractions.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Extensions.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.AspNetCore.Http.Features.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Configuration.Abstractions.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.DependencyInjection.Abstractions.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.FileProviders.Abstractions.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Options.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Extensions.Primitives.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Net.Http.Headers.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Cookies.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Facebook.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Google.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.OAuth.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Microsoft.Owin.Security.Twitter.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Newtonsoft.Json.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Net.Http.Formatting.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Text.Encodings.Web.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Http.Cors.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Helpers.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Http.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Http.Owin.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Http.WebHost.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Mvc.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Optimization.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.Razor.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.WebPages.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\System.Web.WebPages.Razor.xml
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\obj\Debug\BgTaxi.Web.csprojResolveAssemblyReference.cache
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\obj\Debug\BgTaxi.dll
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\obj\Debug\BgTaxi.pdb
+C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Recaptcha.dll

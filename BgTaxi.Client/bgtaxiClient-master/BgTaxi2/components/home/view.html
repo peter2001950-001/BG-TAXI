@@ -1,0 +1,67 @@
+<div data-role="view" data-title="Вход" data-layout="main-nonav" data-model="app.home" data-show="app.home.onShow" id="homeScreen" class="screen">
+    <img src="images/logoText.png" style="width: 95%; margin: 2.5%;">
+    <div class="signin-view screen__content screen__content--signin">
+        <form>
+            <ul data-role="listview" data-style="inset">
+                <li>
+                    <label>Email
+                        <input type="email" data-bind="value: homeModel.email" required autofocus>
+                    </label>
+                </li>
+                <li>
+                    <label>Парола
+                        <input type="password" data-bind="value: homeModel.password" required>
+                    </label>
+                </li>
+            </ul>
+
+            <div class="button-group button-group-vertical">
+                <a data-role="button" class="primary" data-bind="events: { click: homeModel.signin }">Напред</a>
+
+                <a data-role="button" data-bind="events: { click: homeModel.toggleView }">Регистрация</a>
+
+            </div>
+
+            <span class="status" data-bind="text: homeModel.errorMessage"></span>
+        </form>
+    </div>
+    <div class="signup-view screen__content screen__content--signup" style="display:none;">
+        <form>
+            <ul data-role="listview" data-style="inset">
+                <li>
+                    <label>Email
+                        <input type="email" data-bind="value: homeModel.email" required>
+                    </label>
+                </li>
+                <li>
+                    <label>Парола
+                        <input type="password" data-bind="value: homeModel.password">
+                    </label>
+                </li>
+                <li>
+                    <label>Име
+                        <input type="text" data-bind="value: homeModel.displayName">
+                    </label>
+                </li>
+            </ul>
+            <div class="button-group button-group-vertical">
+                <a class="primary" data-role="button" data-bind="events: { click: homeModel.register }">Напред</a>
+                <a data-role="button" data-bind="events: { click: homeModel.toggleView }">Вход</a>
+            </div>
+
+            <span class="status" data-bind="text: homeModel.errorMessage"></span>
+        </form>
+    </div>
+    <div class="offline" align="center" style="display:none;">
+        You are currently offline. Before using this app in offline mode you must initialize it while you are online
+    </div>
+    <!-- START_CUSTOM_CODE_homeModel -->
+    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+
+    <!-- END_CUSTOM_CODE_homeModel -->
+
+    <!-- START_CUSTOM_CODE_home -->
+    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+
+    <!-- END_CUSTOM_CODE_home -->
+</div>

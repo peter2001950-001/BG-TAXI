@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{ 
+    
+    using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.ActionLink("Здравей " + User.Identity.Name + "!", "Index", "Manage", routeValues: new { area = "" }, htmlAttributes: new { title = "Manage" })
+        </li>
+        <li><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Изход</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">\
+        <li><a class="btn btn-default dropdown-toggle" style="background-color:transparent" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Регистрация <span class="caret"></span>
+</a>
+        <ul class="dropdown-menu">
+    <li >@Html.ActionLink("За клиенти", "RegisterClient", "Account", routeValues: new { area = "" }, htmlAttributes: new { id = "registerLink" })</li>
+    <li>@Html.ActionLink("За шофьори", "RegisterDriver", "Account", routeValues: new { area = "" }, htmlAttributes: new { id = "registerLink" })</li>
+    <li>@Html.ActionLink("За фирми", "RegisterCompany", "Account", routeValues: new { area = "" }, htmlAttributes: new { id = "registerLink" })</li>
+
+</ul>
+        </li>
+    
+        <li>@Html.ActionLink("Вход", "Login", "Account", routeValues: new { area = "" }, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+
+   
+}

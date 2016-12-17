@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "Companies";
+}
+
+
+<div class="jumbotron background-color-orange">
+    <div class="row">
+        <img class="jumbotron-image jumbotron-float-right fadeIn" src="~/Content/images/companyMonitor.png" />
+        <div style="text-align: center; ">
+            <h1>Управлявай своята таксиметрова компания с лекота и сигурност</h1><br />
+            <h4>Направи своята регистация сега и започни работа с приложението веднага</h4>
+            
+        </div>
+
+    </div>
+</div>
+
+<div id="panel-our-uses">
+    <div class="container body-content">
+        <div class="row">
+            <div class="col-md-4 box-spacing ">
+                <div class="white-box">
+                    <div style="width:40%; margin: 0 auto;">
+                        <img src="~/Content/images/1479075598_88.png" style="width:100%" />
+                    </div>
+                    <h4 style="text-align: center">Бърз начин<br /> да поръчаш такси</h4>
+                    <p style="text-align: justify" id="takerLbl">
+                        Изкючетелно лесен и бърз начин да повикаш такси само за няколко секунди свързвайки се с най-близката кола в района.
+                    </p>
+                    <p><a class="btn btn-default" onclick="takeRequest()">Виж още &raquo;</a></p>
+                </div>
+            </div>
+            <div class="col-md-4 box-spacing">
+                <div class="white-box">
+                    <div style="width:40%; margin: 0 auto;">
+                        <img src="~/Content/images/1478892620_8-1.png" style="width:100%" />
+                    </div>
+                    <h4 style="text-align: center">Автоматично определяне на местоположението</h4>
+                    <p style="text-align: justify" id="takerLbl">
+                        Вече не е необходимо да знаете точно къде се намирате, за да поръчате такси. Приложението се грежи за това вместо Вас.
+                    </p>
+                    <p><a class="btn btn-default" onclick="takeRequest()">Виж още &raquo;</a></p>
+                </div>
+            </div>
+            <div class="col-md-4 box-spacing">
+                <div class="white-box">
+                    <div style="width:40%; margin: 0 auto;">
+                        <img src="~/Content/images/1479073708_90.png" style="width:100%" />
+                    </div>
+                    <h4 style="text-align: center">Без ненужни обаждания </h4>
+                    <p style="text-align: justify" id="takerLbl">
+                        Приложението се свързва автоматично с всички коли отговарящи на вашите предпочитания и не е обаждането на определена таксиметрова компания е излишно.
+                    </p>
+                    <p><a class="btn btn-default" onclick="takeRequest()">Виж още &raquo;</a></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById("nav-companyApp").classList.add("nav-selected");
+</script>

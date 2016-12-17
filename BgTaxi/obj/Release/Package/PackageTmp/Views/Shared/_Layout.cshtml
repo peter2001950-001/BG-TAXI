@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>BG TAXI - Поръчай такси за секунди</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top navbar-custom">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                    @Html.ActionLink("BG TAXI", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+
+            <div class="navbar-collapse collapse">
+                @if (!User.Identity.IsAuthenticated)
+            {
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("За клиенти", "Index", "Home", new { area = "" }, new { @id = "nav-clientApp" })</li>
+                        <li>@Html.ActionLink("За шофьори", "Drivers", "Home", new { area = "" },  new { @id = "nav-driverApp" })</li>
+                        <li>@Html.ActionLink("За фирми", "Companies", "Home", new { area = "" }, new { @id = "nav-companyApp" })</li>
+                    </ul>
+
+                }
+                @Html.Partial("_LoginPartial")
+            </div>
+
+        </div>
+    </div>
+
+    @RenderBody()
+    @RenderSection("SPAViews", required: false)
+
+    <footer class="text-center">
+        <div class="footer-above">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col col-md-6">
+                        <h3>Автор</h3>
+                        <p>
+                            Петър Бечев
+                            <br>МГ "Акад. Кирил Попов" <br /> гр. Пловдив
+                        </p>
+                    </div>
+
+                    <div class="footer-col col-md-6">
+                        <h3>За BG TAXI</h3>
+                        <p>BG TAXI е интернет приложение, което позволява на потребителите изключително лесно и бързо да поръчат своето такси. Проектът включва и приложение за таксиметровите коли, които да приемат поръчките</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <p>Всички права са запазени BG TAXI &copy; @DateTime.Now.Year </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/app/main.js")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

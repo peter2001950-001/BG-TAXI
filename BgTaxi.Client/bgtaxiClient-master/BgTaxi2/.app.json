@@ -1,0 +1,95 @@
+{
+  "type": "kendo-ui-mobile",
+  "views": [
+    {
+      "type": "kendo-ui-mobile:view",
+      "name": "home",
+      "components": [
+        {
+          "type": "kendo-ui-mobile:authentication",
+          "name": "homeModel",
+          "dataProvider": "bgTaxi2",
+          "enableRegistration": true,
+          "gotoRegisterLabel": "Register",
+          "registerEmailLabel": "Email",
+          "registerPasswordLabel": "Password",
+          "registerNameLabel": "Name",
+          "registerLabel": "Register",
+          "registerRedirect": "callTaxi",
+          "gotoSigninLabel": "Sign In",
+          "enableLogout": true,
+          "logoutLabel": "Sign Out",
+          "enableRememberme": false,
+          "emailLabel": "Email",
+          "passwordLabel": "Password",
+          "signinLabel": "Sign In",
+          "signinRedirect": "callTaxi"
+        }
+      ],
+      "title": "Home View",
+      "addToNavigation": false
+    },
+    {
+      "type": "kendo-ui-mobile:view",
+      "name": "callTaxi",
+      "components": [],
+      "title": "CallTaxi View",
+      "addToNavigation": true,
+      "icon": "home"
+    },
+    {
+      "type": "kendo-ui-mobile:view",
+      "name": "mapView",
+      "components": [
+        {
+          "type": "kendo-ui-mobile:editableList",
+          "listExtraFields": [],
+          "detailExtraFields": [],
+          "addScreenExtraFields": [],
+          "editScreenExtraFields": [],
+          "components": [],
+          "name": "mapViewModel",
+          "dataProvider": "bgTaxi2",
+          "collection": "Users",
+          "headerField": "DisplayName",
+          "addItemForm": true,
+          "addScreenHeaderValue": "Create",
+          "editItemForm": true,
+          "editScreenHeaderSource": "static",
+          "editScreenHeaderValue": "Edit",
+          "deleteItemButton": false,
+          "pullToRefresh": false,
+          "endlessScroll": false,
+          "isMapView": true,
+          "mapApiKey": "your access token",
+          "geoPointField": "DisplayName",
+          "geoPointFieldAdditional": "DisplayName",
+          "serverSideSorting": false,
+          "serverSidePaging": false,
+          "detailHeaderFieldSource": "static",
+          "detailHeaderFieldValue": "Detail"
+        }
+      ],
+      "title": "Map",
+      "addToNavigation": true,
+      "icon": "organize"
+    }
+  ],
+  "dataProviders": [
+    {
+      "type": "kendo-ui-mobile:dataProvider",
+      "name": "bgTaxi2",
+      "title": "BgTaxi2 / BgTaxi2",
+      "source": "everlive",
+      "everliveKey": "7vf8m4trbsidtqjk",
+      "offlineStorage": true
+    }
+  ],
+  "name": "kendoUiMobileApp",
+  "navigation": "drawer",
+  "view": "home",
+  "skin": "nova",
+  "skinMainColor": "#32364c",
+  "skinTextColor": "#ffffff",
+  "skinAccentColor": "#ff4350"
+}

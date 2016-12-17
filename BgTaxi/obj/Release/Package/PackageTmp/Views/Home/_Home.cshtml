@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p><a class="btn btn-primary btn-lg" onclick="callTaxi()">Learn more &raquo;</a></p>
+    <p id="otg"></p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p id="takerLbl">
+            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
+            enables a clean separation of concerns and gives you full control over markup
+            for enjoyable, agile development.
+        </p>
+        <p><a class="btn btn-default" onclick="takeRequest()">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p id="approRequestLbl">NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" onclick="approRequest()">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    </div>
+</div>
+
+<script>
+    var requestId = 0;
+    function callTaxi() {
+        function geoSuccess(position) {
+            var positionCou = position.coords;
+            console.log(positionCou);
+            var data = { "lat": positionCou.latitude, "lon": positionCou.longitude, "username": "bc@gmai.com" };
+
+            $.ajax({
+                url: "request/create",
+                type: "POST",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (status) {
+                    $("#otg").html(status.message);
+                    requestId = status.requestId;
+                    var timer = setInterval(function () {
+                        var data = { "requestId": requestId };
+                        $.ajax({
+                            url: "request/requestStatus",
+                            type: "POST",
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (status) {
+                                $("#otg").html(status.status);
+                                if (status.status == "TAKEN") {
+                                    clearInterval(timer);
+                                }
+                            },
+                            error: function () {
+                                $("#otg").html(status.message);
+                            }
+
+                        })
+                    }, 5000);
+                },
+                error: function () {
+                    $("#otg").html("Not Send!");
+                }
+
+            })
+
+        }
+        function geoError() {
+            console.log(arguments);
+        }
+        navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
+    }
+
+    function takeRequest() {
+        var data = { "carId":1, "requestId":requestId };
+
+        $.ajax({
+            url: "request/takeRequest",
+            type: "POST",
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (status) {
+                if (status.result == "OK") {
+                    $("#takerLbl").html("Taken");
+                } else {
+                    $("#takerLbl").html("Error");
+                }
+            },
+            error: function () {
+                $("#takerLbl").html("Error");
+            }
+        });
+    }
+    function approRequest() {
+        navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
+
+        function geoSuccess(position){
+            var positionCou = position.coords;
+            var data = { "lon":positionCou.longitude , "lat": positionCou.latitude };
+
+            $.ajax({
+                url: "request/approRequest",
+                type: "POST",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (status) {
+                    if (status.result == "OK") {
+                        $("#approRequestLbl").html("Would you like to except a request in " + status.distance + " km");
+                    } else {
+                        $("#approRequestLbl").html("Error");
+                    }
+                },
+                error: function () {
+                    $("#approRequestLbl").html("Error");
+                }
+            });
+        }
+        function geoError() {
+
+            console.log(arguments);
+        }
+    }
+
+</script>

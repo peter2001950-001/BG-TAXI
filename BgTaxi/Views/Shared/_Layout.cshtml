@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>BG TAXI - Поръчай такси за секунди</title>
+
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Най-лесният начин да поръчаш такси без диспечер дирекно от своя смартфон или таблет" />
+    <meta name="keywords" content="bg taxi поръчай такси телефон без диспечер викай бързо таксиметров софтуер приложение за таксита заявки близки заявки моментни подходящи апликация app apk ios windows android България bgtaxi" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top navbar-custom">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("BG TAXI", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+
+            <div class="navbar-collapse collapse">
+                @if (!User.Identity.IsAuthenticated)
+            {
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("За клиенти", "Index", "Home", new { area = "" }, new { @id = "nav-clientApp" })</li>
+                        <li>@Html.ActionLink("За шофьори", "Drivers", "Home", new { area = "" }, new { @id = "nav-driverApp" })</li>
+                        <li>@Html.ActionLink("За фирми", "Companies", "Home", new { area = "" }, new { @id = "nav-companyApp" })</li>
+                    </ul>
+
+                }
+                @Html.Partial("_LoginPartial")
+            </div>
+
+        </div>
+    </div>
+
+    @RenderBody()
+    @RenderSection("SPAViews", required: false)
+
+    <footer class="text-center">
+        <div class="footer-above">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col col-md-6">
+                        <h3>Контакти</h3>
+                        <p>
+                            Светослав Бечев
+                            <br>тел. 0898604010 <br /> email: sv_bechev@abv.bg
+                        </p>
+                    </div>
+
+                    <div class="footer-col col-md-6">
+                        <h3>За BG TAXI</h3>
+                        <p>BG TAXI е интернет приложение, което позволява на потребителите изключително лесно и бързо да поръчат своето такси. Проектът включва и приложение за таксиметровите коли, които да приемат поръчките</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <p>Всички права са запазени BG TAXI &copy; @DateTime.Now.Year </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/app/main.js")
+    @Scripts.Render("~/bundles/bootstrap")
+    <!-- Histats.com  START  (aync)-->
+    <div hidden>
+        <script type="text/javascript">
+            var _Hasync = _Hasync || [];
+            _Hasync.push(['Histats.start', '1,3670586,4,0,0,0,00010000']);
+            _Hasync.push(['Histats.fasi', '1']);
+            _Hasync.push(['Histats.track_hits', '']);
+            (function () {
+                var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+                hs.src = ('//s10.histats.com/js15_as.js');
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+            })();</script>
+        <noscript><a href="/" target="_blank"><img src="//sstatic1.histats.com/0.gif?3670586&101" alt="" border="0"></a></noscript>
+        <!-- Histats.com  END  -->
+    </div>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

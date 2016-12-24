@@ -133,8 +133,8 @@ namespace BgTaxi.Controllers
             AccessToken accToken = new AccessToken()
             {
                 Device = device,
-                UniqueAccesToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
-                CreatedDateTime = DateTime.Now
+                UniqueAccesToken = Guid.NewGuid().ToString("D"),
+            CreatedDateTime = DateTime.Now
             };
 
             db.Devices.Add(device);

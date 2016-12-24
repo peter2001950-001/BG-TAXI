@@ -1,6 +1,7 @@
 ﻿using BgTaxi.Models.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,15 +13,16 @@ namespace BgTaxi.Models
      
         public static string GenerateAccessToken(string oldAccessToken)
         {
-            Database db = new Database();
-            var newAccessTokenString = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
-            var oldAccTok = db.AccessTokens.Where(x => x.UniqueAccesToken == oldAccessToken).FirstOrDefault();
+            Models.Database db = new Models.Database();
+            var newAccessTokenString = Guid.NewGuid().ToString("D");
+            var oldAccTok = db.AccessTokens.Where(x => x.UniqueAccesToken == oldAccessToken).Include(x=>x.Device).FirstOrDefault();
             if (oldAccTok == null)
             {
                 return null;
             }
             oldAccTok.UniqueAccesToken = newAccessTokenString;
             oldAccTok.CreatedDateTime = DateTime.Now;
+            oldAccTok.Device.LastRequestDateTime = DateTime.Now;
             db.SaveChanges();
             return newAccessTokenString;
         }

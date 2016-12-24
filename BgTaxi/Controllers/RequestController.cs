@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Web.Http.Cors;
@@ -19,7 +20,7 @@ namespace BgTaxi.Web.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class RequestController : Controller
     {
-        Database db = new Database();
+        Models.Models.Database db = new Models.Models.Database();
 
 
         // GET: Request
@@ -82,26 +83,32 @@ namespace BgTaxi.Web.Controllers
                 return Json(new { });
             }
         }
-        public JsonResult RequestStatus(int requestID, string basicAuth)
+        public JsonResult RequestStatus(int requestID, string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var usernamePass = ExtractUserNameAndPassword(basicAuth);
-                var user = UserGet(usernamePass.Item1, usernamePass.Item2);
+                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
+
+                if(newAccessToken == null)
+                {
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+                }
+                var user = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(y => y.Device).First().Device.UserId;
                 if (user == null)
                 {
-                    return Json(new { message = "There is not any user with this authString", status = "ERR" });
+                    return Json(new { message = "NO USER", accessToken = newAccessToken });
                 }
+
                 if (db.ActiveRequests.Any(x => x.Id == requestID))
                 {
-                    return Json(new { status = "NOT TAKEN" });
+                    return Json(new { status = "NOT TAKEN", accessToken = newAccessToken });
                 }
                 else
                 {
                     if (db.TakenRequests.Where(x => x.RequestId == requestID).FirstOrDefault().UserInformed)
                     {
                        
-                        return Json(new { status = "NO CHANGE" });
+                        return Json(new { status = "NO CHANGE", accessToken = newAccessToken });
                     }
                     else
                     {
@@ -115,18 +122,18 @@ namespace BgTaxi.Web.Controllers
                                 var car = db.Cars.Where(x => x.Id == requestData.CarId).FirstOrDefault();
                                 db.TakenRequests.Where(x => x.RequestId == requestID).FirstOrDefault().UserInformed = true;
                                 db.SaveChanges();
-                                return Json(new { status = "TAKEN", distance = duration.rows[0].elements[0].distance.text, duration = duration.rows[0].elements[0].duration.text, carRegNum = car.RegisterNumber, companyName = company.Name });
+                                return Json(new { status = "TAKEN", distance = duration.rows[0].elements[0].distance.text, duration = duration.rows[0].elements[0].duration.text, carRegNum = car.RegisterNumber, companyName = company.Name, accessToken = newAccessToken });
                             }
                             else
                             {
 
                                 db.TakenRequests.Where(x => x.RequestId == requestID).FirstOrDefault().UserInformed = true;
                                 db.SaveChanges();
-                                return Json(new { status = "ON ADDRESS" });
+                                return Json(new { status = "ON ADDRESS", accessToken = newAccessToken });
                             }
 
                         }
-                        return Json(new { status = "NO REQUEST" });
+                        return Json(new { status = "NO REQUEST", accessToken = newAccessToken });
                     }
                 }
             }
@@ -137,20 +144,25 @@ namespace BgTaxi.Web.Controllers
         }
 
         
-        public JsonResult TakeRequest(int requestID, string basicAuth, double lon, double lat)
+        public JsonResult TakeRequest(int requestID, string accessToken, double lon, double lat)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
+                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
+
+                    if (newAccessToken == null)
+                    {
+                        return Json(new { status = "INVALID ACCESSTOKEN" });
+                    }
                 if (db.ActiveRequests.Any(x => x.Id == requestID))
                 {
-                    var usernamePass = ExtractUserNameAndPassword(basicAuth);
-                    var user = UserGet(usernamePass.Item1, usernamePass.Item2);
+                    
+                    var user = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(y => y.Device).First().Device.UserId;
 
-                    var driver = db.Drivers.Where(y => y.UserId == user.Id).Select(x=> new  { CarId = x.Car.Id, }).FirstOrDefault();
+                    var driver = db.Drivers.Where(y => y.UserId == user).Select(x=> new  { CarId = x.Car.Id, }).FirstOrDefault();
                     if (driver != null)
                     {
-                        var car = db.Cars.Where(x => x.Id == driver.CarId).Select(x=> new {TheObject = x, companyId = x.Company.Id  }).FirstOrDefault();
-                        var company = db.Companies.Where(x=>x.Id == car.companyId).FirstOrDefault();
+                        var car = db.Cars.Where(x => x.Id == driver.CarId).Include(y=> y.Company).FirstOrDefault();
                         var request = db.ActiveRequests.Where(x => x.Id == requestID).FirstOrDefault();
                     db.TakenRequests.Add(new TakenRequests()
                     {
@@ -159,27 +171,27 @@ namespace BgTaxi.Web.Controllers
                         UserLocation = request.Location,
                         ClientUserId = request.UserId,
                         DateTimeTaken = DateTime.Now,
-                        Car = car.TheObject,
-                        Company = company,
+                        Car = car,
+                        Company = car.Company,
                         DriverLocation = new Models.Models.Location() {  Latitude = lat, Longitude = lon},
-                        DriverUserId = user.Id
+                        DriverUserId = user
                     });
                    
                     db.ActiveRequests.Remove(request);
                     db.SaveChanges();
 
                     // move the request to the RequestHistory
-                    return Json(new { status = "OK" });
+                    return Json(new { status = "OK", accessToken = newAccessToken });
 
                     }
                     else
                     {
-                        return Json(new { status = "ERR" });
+                        return Json(new { status = "ERR", accessToken = newAccessToken});
                     }
                 }
                 else
                 {
-                    return Json(new { status = "REMOVED" });
+                    return Json(new { status = "REMOVED", accessToken = newAccessToken });
                 }
             }
             else
@@ -188,17 +200,23 @@ namespace BgTaxi.Web.Controllers
             }
         }
 
-        public JsonResult UpdateStatus(double lat, double lon, string basicAuth, int requestId, bool onAddress = false)
+        public JsonResult UpdateStatus(double lat, double lon, string accessToken, int requestId, bool onAddress = false)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                if(db.TakenRequests.Any(x=> x.RequestId == requestId))
-                {
-                    var usernamePass = ExtractUserNameAndPassword(basicAuth);
-                    var user = UserGet(usernamePass.Item1, usernamePass.Item2);
+                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
 
+                if (newAccessToken == null)
+                {
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+                }
+               
+
+                if (db.TakenRequests.Any(x=> x.RequestId == requestId))
+                {
+                     var user = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(y => y.Device).First().Device.UserId;
                     var request = db.TakenRequests.Where(x => x.RequestId == requestId).FirstOrDefault();
-                    if(request.DriverUserId == user.Id)
+                    if(request.DriverUserId == user)
                     {
                         if (onAddress == false)
                         {
@@ -216,30 +234,37 @@ namespace BgTaxi.Web.Controllers
 
                         if (request.UserInformed)
                         {
-                            return Json(new { status = "OK", clientInformed = true });
+                            return Json(new { status = "OK", clientInformed = true, accessToken = newAccessToken });
                         }
                         else
                         {
-                            return Json(new { status = "OK", clientInformed = false });
+                            return Json(new { status = "OK", clientInformed = false, accessToken = newAccessToken });
                         }
                     }
                 }
-                return Json(new { status = "ERR" });
+                return Json(new { status = "ERR", accessToken = newAccessToken });
             }
             else
             {
                 return Json(new { });
             }
         }
-        public JsonResult FinishRequest(int requestId, string basicAuth)
+        public JsonResult FinishRequest(int requestId, string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var usernamePass = ExtractUserNameAndPassword(basicAuth);
-                var user = UserGet(usernamePass.Item1, usernamePass.Item2);
-                  var request = db.TakenRequests.Where(x => x.RequestId == requestId).FirstOrDefault();
+                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
+
+                if (newAccessToken == null)
+                {
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+                }
+                var user = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(y => y.Device).First().Device.UserId;
+
+
+                var request = db.TakenRequests.Where(x => x.RequestId == requestId).FirstOrDefault();
                 if (request != null) {
-                    if (user.Id == request.DriverUserId)
+                    if (user == request.DriverUserId)
                     {
                         db.RequestHistory.Add(new RequestHistory()
                         {
@@ -255,10 +280,10 @@ namespace BgTaxi.Web.Controllers
                         db.TakenRequests.Remove(request);
                         db.SaveChanges();
 
-                        return Json(new { status = "OK" });
+                        return Json(new { status = "OK", accessToken = newAccessToken });
                     }
                 }
-                return Json(new { status = "ERR" });
+                return Json(new { status = "ERR", accessToken = newAccessToken });
             }
             else
             {
@@ -266,17 +291,21 @@ namespace BgTaxi.Web.Controllers
             }
 
         }
-        public JsonResult GetAppropriateRequest(double lat, double lon, string basicAuth)
+        public JsonResult GetAppropriateRequest(double lat, double lon, string accessToken)
         {
             //TODO: basicAuth
             if (HttpContext.Request.RequestType == "POST")
             {
-                var usernamePass = ExtractUserNameAndPassword(basicAuth);
-                var user = UserGet(usernamePass.Item1, usernamePass.Item2);
-                if (user.Roles.Any(x => x.RoleId == "2"))
+                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
+
+                if (newAccessToken == null)
                 {
-                    bool haveCar = db.Drivers.Any(x => x.Car != null && x.UserId == user.Id);
-                    bool haveCompany = db.Drivers.Any(x => x.Company != null && x.UserId == user.Id);
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+                }
+                var user = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(y => y.Device).First().Device.UserId;
+                
+                    bool haveCar = db.Drivers.Any(x => x.Car != null && x.UserId == user);
+                    bool haveCompany = db.Drivers.Any(x => x.Company != null && x.UserId == user);
                     if (haveCar && haveCar)
                     {
                         var nearByRequests = db.ActiveRequests.Where(x => Math.Abs(x.Location.Latitude - lat) <= 0.0165 && Math.Abs(x.Location.Longitude - lon) <= 0.0165);
@@ -291,10 +320,10 @@ namespace BgTaxi.Web.Controllers
                                 requestList.Add(new { distance = distance, id = item.Id, address = address });
                             }
                         }
-                        return Json(new { requests = requestList, status = "OK" });
+                        return Json(new { requests = requestList, status = "OK", accessToken = newAccessToken });
                     }
-                }
-                return Json(new { stutus = "NO PERMISSION" });
+              
+                return Json(new { stutus = "NO PERMISSION", accessToken = newAccessToken });
             }
             else
             {

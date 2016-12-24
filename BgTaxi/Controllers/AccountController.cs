@@ -17,6 +17,8 @@ using BgTaxi.Models.Models;
 using System.Collections.Generic;
 using System.Text;
 using BgTaxi.Attributes;
+using System.Data.Entity;
+using System.Threading;
 
 namespace BgTaxi.Controllers
 {
@@ -26,11 +28,11 @@ namespace BgTaxi.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
-        private Database db;
+        private Models.Models.Database db;
 
         public AccountController()
         {
-            db = new Database();
+            db = new Models.Models.Database();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -124,10 +126,44 @@ namespace BgTaxi.Controllers
 
         [AllowAnonymous]
         [AllowCrossSiteJsonAttribute]
-        public JsonResult LoginExternal(string basicAuth, string requiredRoleId)
+        [ThrottleAttribute(Seconds=180)]
+        public JsonResult DeviceRegistration()
+        {
+            Device device = new Device() { LastRequestDateTime = DateTime.Now, UserId = null };
+            AccessToken accToken = new AccessToken()
+            {
+                Device = device,
+                UniqueAccesToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
+                CreatedDateTime = DateTime.Now
+            };
+
+            db.Devices.Add(device);
+            db.AccessTokens.Add(accToken);
+            db.SaveChanges();
+            return Json(new { accessToken = accToken.UniqueAccesToken });
+
+        }
+
+        [AllowAnonymous]
+        [AllowCrossSiteJsonAttribute]
+        public JsonResult LoginExternal(string basicAuth, string requiredRoleId, string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
+                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
+
+                var userIdObj = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Select(y => new { userId = y.Device.UserId }).FirstOrDefault();
+                if (userIdObj != null)
+                {
+                    if (userIdObj.userId != null)
+                    {
+                        return Json(new { status = "USER LOGGED IN", accessToken = newAccessToken });
+                    }
+                }
+                else
+                {
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+                }
                 // This doesn't count login failures towards account lockout
                 //// To enable password failures to trigger account lockout, change to shouldLockout: true
                 //var result = await SignInManager.PasswordSignInAsync(email, password, false, shouldLockout: false);
@@ -142,45 +178,53 @@ namespace BgTaxi.Controllers
                         switch (requiredRoleId)
                         {
                             case "1":
-                                return Json(new { status = "NO PERMISSION" });
+                                return Json(new { status = "NO PERMISSION", accessToken = newAccessToken });
 
                             case "2":
                                 bool haveCar = db.Drivers.Any(x => x.Car != null && x.UserId == findAcync.Result.Id);
                                 bool haveCompany = db.Drivers.Any(x => x.Company != null && x.UserId == findAcync.Result.Id);
-                                if (haveCar & haveCompany)
+                                bool alreadyLoggedIn = db.Devices.Any(x => x.UserId == findAcync.Result.Id);
+                                if (haveCar && haveCompany && !alreadyLoggedIn)
                                 {
-                                    return Json(new { status = "OK" });
+                                    var accTok = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(x => x.Device).First();
+                                    accTok.Device.UserId = findAcync.Result.Id;
+                                    accTok.Device.LastRequestDateTime = DateTime.Now;
+                                    db.SaveChanges();
+                                        return Json(new { status = "OK", accessToken = newAccessToken });
 
+                                } else if (alreadyLoggedIn)
+                                {
+                                    return Json(new { status = "ALREADY LOGGED IN", accessToken = newAccessToken });
                                 }
                                 else if (!haveCompany)
                                 {
-                                    return Json(new { status = "NO COMPANY" });
+                                    return Json(new { status = "NO COMPANY", accessToken = newAccessToken });
                                 }
                                 else if (!haveCar)
                                 {
-                                    return Json(new { status = "NO CAR" });
+                                    return Json(new { status = "NO CAR", accessToken = newAccessToken });
                                 }
                                 
                                 break;
                             case "3":
 
-                                return Json(new { status = "OK" });
+                                return Json(new { status = "OK", accessToken = newAccessToken });
                             default:
-                                return Json(new { status = "ERR" });
+                                return Json(new { status = "ERR", accessToken = newAccessToken });
                         }
 
                     }else if (!roleRequired)
                     {
-                        return Json(new { status = "ROLE NOT MATCH" });
+                        return Json(new { status = "ROLE NOT MATCH", accessToken = newAccessToken });
                     }
                     else
                     {
-                        return Json(new { status = "NO EMAIL" });
+                        return Json(new { status = "NO EMAIL", accessToken = newAccessToken });
                     }
                     
                 }
 
-                return Json(new { status = "ERR" });
+                return Json(new { status = "ERR", accessToken = newAccessToken });
 
             }
             else
@@ -188,6 +232,39 @@ namespace BgTaxi.Controllers
                 return Json(new { status = "CT" });
             }
         }
+        [AllowAnonymous]
+        [AllowCrossSiteJsonAttribute]
+        public JsonResult LogoutExternal(string accessToken)
+        {
+            if (HttpContext.Request.RequestType == "POST")
+            {
+                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
+                if(newAccessToken == null)
+                {
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+                }
+
+               var accTok =  db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(x => x.Device).First();
+                if(accTok.Device.UserId != null)
+                {
+                    accTok.Device.UserId = null;
+                    accTok.Device.LastRequestDateTime = DateTime.Now;
+                    db.SaveChanges();
+                    return Json(new { status = "OK", accessToken = newAccessToken });
+                }
+                else
+                {
+                    return Json(new { status = "NO USER", accessToken = newAccessToken });
+                }
+            
+            }
+            else
+            {
+                return Json(new { status = "CT" });
+            }
+        }
+
+
 
         public async Task<bool> AccountValidation(string password, string username)
         {
@@ -660,7 +737,7 @@ namespace BgTaxi.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if (disposing)
             {
                 if (_userManager != null)
                 {

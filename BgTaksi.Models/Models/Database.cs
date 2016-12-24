@@ -1,5 +1,4 @@
-﻿using BgTaxi.Models.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -27,7 +26,9 @@ namespace BgTaxi.Models.Models
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<Driver> Drivers { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<AccessToken> AccessTokens { get; set; }
 
-     
+
     }
 }

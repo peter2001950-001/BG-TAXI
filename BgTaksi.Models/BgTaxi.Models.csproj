@@ -85,11 +85,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessTokenStaticClass.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AccessToken.cs" />
     <Compile Include="Models\ActiveRequests.cs" />
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\Database.cs" />
+    <Compile Include="Models\Device.cs" />
     <Compile Include="Models\Driver.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\RequestHistory.cs" />

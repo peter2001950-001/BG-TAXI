@@ -18,6 +18,6 @@ namespace BgTaxi.Models.Models
        public Car Car { get; set; }
 
         public Company Company { get; set; }
-
+        
     }
 }

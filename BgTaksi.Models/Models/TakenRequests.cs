@@ -11,15 +11,16 @@ namespace BgTaxi.Models.Models
     {
         [Key]
         public int Id { get; set; }
-        public int RequestId { get; set; }
-        public string ClientUserId { get; set; }
-        public Location UserLocation { get; set; }
-        public DateTime DateTimeCreated { get; set; }
+        public RequestInfo Request { get; set; }
         public DateTime DateTimeTaken { get; set; }
         public Car Car { get; set; }
         public string DriverUserId { get; set; }
+        public Location DriverLocation{ get; set; }
+        public string DuractionText { get; set; }
+        public int DuractionValue { get; set; }
+        public string DistanceText { get; set; }
+        public int DistanceValue { get; set; }
         public Company Company { get; set; }
-        public Location DriverLocation { get; set; }
         public bool UserInformed { get; set; }
         public bool OnAddress { get; set; }
     }

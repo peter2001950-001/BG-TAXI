@@ -9,6 +9,8 @@ using Microsoft.Owin.Security;
 using BgTaxi.Models;
 using BgTaxi.Models.Models;
 using System.Collections.Generic;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity;
 
 namespace BgTaxi.Controllers
 {
@@ -18,7 +20,7 @@ namespace BgTaxi.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
-      private  Database db = new Database();
+      private Models.Models.Database db = new Models.Models.Database();
 
         public ManageController()
         {
@@ -90,6 +92,19 @@ namespace BgTaxi.Controllers
             else if(User.IsInRole("Driver"))
             {
                 return View("IndexDriver", model);
+
+            }else if (User.IsInRole("Dispatcher"))
+            {
+                UserManager<Models.ApplicationUser> userManager = new UserManager<Models.ApplicationUser>(new UserStore<Models.ApplicationUser>(new Models.ApplicationDbContext()));
+                var user = userManager.FindById(User.Identity.GetUserId());
+                var viewModel = new IndexDispatcherViewModel();
+                viewModel.FirstName = user.FirstName;
+                viewModel.LastName = user.LastName;
+                viewModel.Telephone = user.PhoneNumber;
+                var dispatcher = db.Dispatchers.Where(x => x.UserId == user.Id).Include(x=>x.Company).First();
+                viewModel.CompanyName = dispatcher.Company.Name;
+
+                return View("IndexDispatcher", viewModel);
             }
             else
             {
@@ -115,10 +130,31 @@ namespace BgTaxi.Controllers
 
             return RedirectToAction("Index", new { message = ManageMessageId.ProfileInfoUpdateSucess });
         }
+        [HttpPost]
+        [Authorize(Roles = "Dispatcher")]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateDispatcherInfo(IndexDispatcherViewModel viewModel)
+        {
+            var store = new UserStore<Models.ApplicationUser>(new Models.ApplicationDbContext());
+            UserManager<Models.ApplicationUser> userManager = new UserManager<Models.ApplicationUser>(store);
+            var user = userManager.FindById(User.Identity.GetUserId());
+            user.PhoneNumber = viewModel.Telephone;
+            user.FirstName = viewModel.FirstName;
+            user.LastName = viewModel.LastName;
+            userManager.Update(user);
+            var context = store.Context;
+            context.SaveChanges();
 
 
-       
+            var newViewModel = new IndexDispatcherViewModel() {  FirstName = user.FirstName, Telephone = user.Telephone, LastName = user.LastName, CompanyName = viewModel.CompanyName};
 
+
+            return RedirectToAction("Index", new { message = ManageMessageId.ProfileInfoUpdateSucess });
+        }
+
+
+
+        [HttpGet]
         [Authorize(Roles ="Company, Driver")]
         public ActionResult Cars()
         {
@@ -178,7 +214,7 @@ namespace BgTaxi.Controllers
         {
             var userId = User.Identity.GetUserId();
             var company = db.Companies.Where(x => x.UserId == userId).First();
-            var newcar = (new Car() { Brand = viewModel.Brand, InternalNumber = viewModel.Brand, Model = viewModel.Model, RegisterNumber = viewModel.RegisterNumber, Year = viewModel.Year, Company = company });
+            var newcar = (new Car() { Brand = viewModel.Brand, InternalNumber = viewModel.InternalNumber, Model = viewModel.Model, RegisterNumber = viewModel.RegisterNumber, Year = viewModel.Year, Company = company, Location = new Location() { Latitude = 0, Longitude = 0 }, CarStatus = CarStatus.OffDuty });
             db.Cars.Add(newcar);
             db.SaveChanges();
             if (viewModel.SelectedDriver != "0")

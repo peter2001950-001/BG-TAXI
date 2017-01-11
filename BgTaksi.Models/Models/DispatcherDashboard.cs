@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace BgTaxi.Models.Models
 {
-    public class ActiveRequests
+    public class DispatcherDashboard
     {
         [Key]
         public int Id { get; set; }
+        public string DispatcherUserId { get; set; }
         public RequestInfo Request { get; set; }
-        public Car AppropriateCar { get; set; }
-
-        public DateTime DateTimeChosenCar { get; set; }
+        public DateTime LastSeen { get; set; }
+        public RequestStatusEnum LastSeenStatus { get; set; }
     }
 }

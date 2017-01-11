@@ -37,5 +37,30 @@ namespace BgTaxi.Web.GoogleRequests
             DurationFormat flight = Newtonsoft.Json.JsonConvert.DeserializeObject<DurationFormat>(responseFromServer);
             return flight;
         }
+        public static Models.Models.Location GetLocation(string address)
+        {
+          address = address.Replace(" ", "+");
+            WebRequest request = WebRequest.Create("https://maps.googleapis.com/maps/api/geocode/json?address=" +address + "&language=bg&key=AIzaSyCqFT1vjwghgVYc9Y_jbuD-ux10qQD9H0s");
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            // Open the stream using a StreamReader for easy access.
+            StreamReader reader = new StreamReader(dataStream);
+            // Read the content.
+            string responseFromServer = reader.ReadToEnd();
+            // Display the content.
+            RequestFormat flight = Newtonsoft.Json.JsonConvert.DeserializeObject<RequestFormat>(responseFromServer);
+            if(flight.results.Count == 0)
+            {
+                return null;
+            }
+            var location = new Models.Models.Location()
+            {
+                Latitude = flight.results[0].geometry.location.lat,
+                Longitude = flight.results[0].geometry.location.lng
+            };
+
+            return location;
+        }
+
     }
 }

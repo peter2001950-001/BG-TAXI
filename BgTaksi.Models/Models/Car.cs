@@ -16,7 +16,19 @@ namespace BgTaxi.Models.Models
         public string Model { get; set; }
         public int Year { get; set; }
         public string InternalNumber { get; set; }
+        public Location Location { get; set; }
+        public CarStatus CarStatus { get; set; }
 
         public Company Company { get; set; }
+    }
+
+    public enum CarStatus
+    {
+        Free,
+        Busy,
+        Absent,
+        OffDuty,
+        Offline
+        
     }
 }

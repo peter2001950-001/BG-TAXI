@@ -39,6 +39,24 @@ namespace BgTaxi.Models
         public string UniqueNumber { get; set; }
 
     }
+    public class IndexDispatcherViewModel
+    {
+        [DataType(DataType.Text)]
+        [Display(Name = "Име")]
+        public string FirstName { get; set; }
+        [DataType(DataType.Text)]
+        [Display(Name = "Фамилия")]
+        public string LastName  { get; set; }
+        [DataType(DataType.Text)]
+        [Display(Name = "Телефон")]
+        public string Telephone { get; set; }
+        [DataType(DataType.Text)]
+        [Display(Name = "Компания")]
+        public string CompanyName { get; set; }
+       
+
+    }
+
 
     public class DriversCompanyViewModel
     {

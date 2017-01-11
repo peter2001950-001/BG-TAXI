@@ -1,4 +1,4 @@
-﻿@model BgTaxi.Models.RegisterDriverViewModel
+﻿@model BgTaxi.Models.RegisterEmployeeViewModel
 
 @{
     ViewBag.Title = "RegisterDriver";
@@ -7,7 +7,7 @@
 <div style="background:white" class="container">
 
     <h2 style="text-align:center">Шофьори</h2>
-    @using (Html.BeginForm("RegisterDriver", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    @using (Html.BeginForm("RegisterEmployee", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary("", new { @class = "text-danger" })
@@ -45,6 +45,13 @@
                         @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 control-label" })
                         <div class="col-md-10">
                             @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">Служител</label>
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(m => m.SelectedEmployee, new SelectList(Model.Employee.Items,
+                             "Value", "Text", Model.Employee.SelectedValue), new {@class = "form-control" })
                         </div>
                     </div>
                     <div class="form-group">

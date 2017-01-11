@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace BgTaxi.Models
 {
@@ -98,7 +99,7 @@ namespace BgTaxi.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Повтори паролата")]
-        [Compare("Password", ErrorMessage = "Паролите не съвпада!")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Паролите не съвпада!")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -132,7 +133,7 @@ namespace BgTaxi.Models
 
 
     }
-    public class RegisterDriverViewModel
+    public class RegisterEmployeeViewModel
     {
         [Required]
         [DataType(DataType.Text)]
@@ -158,7 +159,7 @@ namespace BgTaxi.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Потвърди парола")]
-        [Compare("Password", ErrorMessage = "Паролите не съвпада!")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Паролите не съвпада!")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -166,11 +167,17 @@ namespace BgTaxi.Models
         [Display(Name = "Мобилен Телефон")]
         public string PhoneNumber { get; set; }
 
+        public SelectList Employee { get; set; }
+
+        public string SelectedEmployee { get; set; }
+
         [Required]
         [Display(Name = "Уникален номер на фирмата")]
         public string UniqueNumber { get; set; }
 
     }
+   
+
     public class RegisterClientViewModel
     {
         [Required]
@@ -196,7 +203,7 @@ namespace BgTaxi.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Потвърди парола")]
-        [Compare("Password", ErrorMessage = "Паролите не съвпада!")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Паролите не съвпада!")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -221,7 +228,7 @@ namespace BgTaxi.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

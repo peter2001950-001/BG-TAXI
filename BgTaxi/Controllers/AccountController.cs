@@ -126,7 +126,7 @@ namespace BgTaxi.Controllers
 
         [AllowAnonymous]
         [AllowCrossSiteJsonAttribute]
-        [ThrottleAttribute(Seconds=180)]
+        //[ThrottleAttribute(Seconds=180)]
         public JsonResult DeviceRegistration()
         {
             Device device = new Device() { LastRequestDateTime = DateTime.Now, UserId = null };
@@ -194,6 +194,7 @@ namespace BgTaxi.Controllers
 
                                 } else if (alreadyLoggedIn)
                                 {
+                                    var pesho = db.Devices.Where(x => x.UserId == findAcync.Result.Id).First();
                                     return Json(new { status = "ALREADY LOGGED IN", accessToken = newAccessToken });
                                 }
                                 else if (!haveCompany)
@@ -336,10 +337,17 @@ namespace BgTaxi.Controllers
             return View();
         }
         [AllowAnonymous]
-        public ActionResult RegisterDriver()
+        public ActionResult RegisterEmployee()
         {
-            return View();
+            var viewModel = new RegisterEmployeeViewModel();
+            var listSelectedItems = new List<SelectListItem>();
+            listSelectedItems.Add(new SelectListItem { Selected = true, Text = string.Format("Избери"), Value = "0" });
+            listSelectedItems.Add(new SelectListItem { Selected = true, Text = string.Format("Шофьор"), Value = "1" });
+            listSelectedItems.Add(new SelectListItem { Selected = true, Text = string.Format("Диспечер"), Value = "2" });
+            viewModel.Employee = new SelectList(listSelectedItems);
+            return View(viewModel);
         }
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -377,7 +385,7 @@ namespace BgTaxi.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterDriver(RegisterDriverViewModel model)
+        public async Task<ActionResult> RegisterEmployee(RegisterEmployeeViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -391,8 +399,19 @@ namespace BgTaxi.Controllers
                     if (result.Succeeded)
                     {
                         var company = db.Companies.Where(x => x.UniqueNumber == model.UniqueNumber).First();
-                        UserManager.AddToRole(user.Id, "Driver");
-                        db.Drivers.Add(new BgTaxi.Models.Models.Driver { UserId = user.Id, Company = company });
+                        if (model.SelectedEmployee == "1")
+                        {
+                            UserManager.AddToRole(user.Id, "Driver");
+                            db.Drivers.Add(new BgTaxi.Models.Models.Driver { UserId = user.Id, Company = company });
+                        }
+                        else if( model.SelectedEmployee == "2")
+                        {
+                            UserManager.AddToRole(user.Id, "Dispatcher");
+                            db.Dispatchers.Add(new BgTaxi.Models.Models.Dispatcher { UserId = user.Id, Company = company });
+
+                        }
+
+                       
                         db.SaveChanges();
                         //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 

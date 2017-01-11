@@ -90,12 +90,16 @@
     <Compile Include="Models\AccessToken.cs" />
     <Compile Include="Models\ActiveRequests.cs" />
     <Compile Include="Models\Car.cs" />
+    <Compile Include="Models\CarDismissedRequest.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\Database.cs" />
     <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\Dispatcher.cs" />
+    <Compile Include="Models\DispatcherDashboard.cs" />
     <Compile Include="Models\Driver.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\RequestHistory.cs" />
+    <Compile Include="Models\RequestInfo.cs" />
     <Compile Include="Models\TakenRequests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

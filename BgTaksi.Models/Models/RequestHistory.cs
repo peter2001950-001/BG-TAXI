@@ -12,10 +12,9 @@ namespace BgTaxi.Models.Models
     {
         [Key]
         public int Id { get; set; }
-        public int RequestId { get; set; }
-        public string ClientUserId { get; set; }
-        public DateTime DateTimeCreated { get; set; }
+        public RequestInfo Request { get; set; }
         public DateTime DateTimeTaken { get; set; }
+        public DateTime DateTimeFinished { get; set; }
         public Car Car { get; set; }
         public string DriverUserId { get; set; }
         public Company Company { get; set; }

@@ -1,0 +1,99 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>BG TAXI - Работен плот</title>
+
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Най-лесният начин да поръчаш такси без диспечер дирекно от своя смартфон или таблет" />
+    <meta name="keywords" content="bg taxi поръчай такси телефон без диспечер викай бързо таксиметров софтуер приложение за таксита заявки близки заявки моментни подходящи апликация app apk ios windows android България bgtaxi" />
+        @Styles.Render("~/Content/css")
+       
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top navbar-custom">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("BG TAXI", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Обратно към профила", "Index", "Home", new { area = "" }, new { @id = "nav-clientApp" })</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container body-content">
+        <div class="form-group">
+            <label class="control-label">Начален Адрес</label>
+            <input class="form-control" type="text" data-bind="value: startingAddress" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Краен Адрес</label>
+            <input class="form-control" type="text" data-bind="value: finishAddress" />
+        </div>
+        <div class="form-group">
+            <input class="btn btn-default" value="Изпрати" type="button" data-bind="click: $root.createRequest" />
+        </div>
+
+        </div>
+    <table class="table table-striped" data-bind="with: requestsData">
+        <thead><tr><th>№</th><th>Начален Адрес</th><th>Краен Адрес</th><th>Статус</th><th>Кола</th></tr></thead>
+        <tbody data-bind="foreach: requests">
+            <tr>
+                <td data-bind="text: id"></td>
+                <td data-bind="text: startingAddress"></td>
+                <td data-bind="text: finishAddress"></td>
+                <td><span class="label" style="font-size: 15px" data-bind="text: message, css: className"></span></td>
+                <td data-bind="text: info"></td>
+            </tr>
+        </tbody>
+    </table>
+
+        <footer class="text-center">
+            <div class="footer-below">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <p>Всички права са запазени BG TAXI &copy; @DateTime.Now.Year </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/app")
+    @Scripts.Render("~/bundles/modernizr")
+   
+        <!-- Histats.com  START  (aync)-->
+        <div hidden>
+            <script type="text/javascript">
+                var _Hasync = _Hasync || [];
+                _Hasync.push(['Histats.start', '1,3670586,4,0,0,0,00010000']);
+                _Hasync.push(['Histats.fasi', '1']);
+                _Hasync.push(['Histats.track_hits', '']);
+                (function () {
+                    var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+                    hs.src = ('//s10.histats.com/js15_as.js');
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+                })();</script>
+            <noscript><a href="/" target="_blank"><img src="//sstatic1.histats.com/0.gif?3670586&101" alt="" border="0"></a></noscript>
+            <!-- Histats.com  END  -->
+        </div>
+</body>
+</html>

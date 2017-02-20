@@ -22,6 +22,6 @@ namespace BgTaxi.Models.Models
         public int DistanceValue { get; set; }
         public Company Company { get; set; }
         public bool UserInformed { get; set; }
-        public bool OnAddress { get; set; }
+        public DateTime OnAddressDateTime { get; set; }
     }
 }

@@ -214,7 +214,7 @@ namespace BgTaxi.Controllers
         {
             var userId = User.Identity.GetUserId();
             var company = db.Companies.Where(x => x.UserId == userId).First();
-            var newcar = (new Car() { Brand = viewModel.Brand, InternalNumber = viewModel.InternalNumber, Model = viewModel.Model, RegisterNumber = viewModel.RegisterNumber, Year = viewModel.Year, Company = company, Location = new Location() { Latitude = 0, Longitude = 0 }, CarStatus = CarStatus.OffDuty });
+            var newcar = (new Car() { Brand = viewModel.Brand, InternalNumber = viewModel.InternalNumber, Model = viewModel.Model, RegisterNumber = viewModel.RegisterNumber, Year = viewModel.Year, Company = company, Location = new Location() { Latitude = 0, Longitude = 0 }, CarStatus = CarStatus.OffDuty, LastActiveDateTime = new DateTime() });
             db.Cars.Add(newcar);
             db.SaveChanges();
             if (viewModel.SelectedDriver != "0")

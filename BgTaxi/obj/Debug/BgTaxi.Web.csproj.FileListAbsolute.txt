@@ -209,3 +209,4 @@ C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\obj\Debug\BgTaxi.Web.csprojRes
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\obj\Debug\BgTaxi.dll
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\obj\Debug\BgTaxi.pdb
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Recaptcha.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Recaptcha.dll

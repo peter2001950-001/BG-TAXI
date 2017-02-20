@@ -12,6 +12,7 @@ namespace BgTaxi.Models.Models
         [Key]
         public int Id { get; set; }
         public string UniqueAccesToken { get; set; }
+        public string PreviousUniqueAccessToken { get; set; }
         public Device Device { get; set; }
         public DateTime CreatedDateTime { get; set; }
     }

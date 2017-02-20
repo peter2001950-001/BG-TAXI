@@ -20,6 +20,7 @@ namespace BgTaxi.Models.Models
         public string CreatorUserId { get; set; }
         public RequestStatusEnum RequestStatus { get; set; }
         public DateTime LastModificationDateTime { get; set; }
+        public Company Company { get; set; }
     }
 
     public enum RequestStatusEnum

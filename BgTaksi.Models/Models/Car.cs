@@ -20,6 +20,7 @@ namespace BgTaxi.Models.Models
         public CarStatus CarStatus { get; set; }
 
         public Company Company { get; set; }
+        public DateTime LastActiveDateTime { get; set; }
     }
 
     public enum CarStatus

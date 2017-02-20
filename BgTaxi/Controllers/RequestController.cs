@@ -83,67 +83,67 @@ namespace BgTaxi.Web.Controllers
                 return Json(new { });
             }
         }
-        public JsonResult RequestStatus(int requestID, string accessToken)
-        {
-            if (HttpContext.Request.RequestType == "POST")
-            {
-                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
+        //public JsonResult RequestStatus(int requestID, string accessToken)
+        //{
+        //    if (HttpContext.Request.RequestType == "POST")
+        //    {
+        //        var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
 
-                if(newAccessToken == null)
-                {
-                    return Json(new { status = "INVALID ACCESSTOKEN" });
-                }
-                var user = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(y => y.Device).First().Device.UserId;
-                if (user == null)
-                {
-                    return Json(new { message = "NO USER", accessToken = newAccessToken });
-                }
+        //        if(newAccessToken == null)
+        //        {
+        //            return Json(new { status = "INVALID ACCESSTOKEN" });
+        //        }
+        //        var user = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(y => y.Device).First().Device.UserId;
+        //        if (user == null)
+        //        {
+        //            return Json(new { message = "NO USER", accessToken = newAccessToken });
+        //        }
 
-                if (db.ActiveRequests.Any(x => x.Id == requestID))
-                {
-                    return Json(new { status = "NOT TAKEN", accessToken = newAccessToken });
-                }
-                else
-                {
-                    if (db.TakenRequests.Where(x => x.Request.Id == requestID).FirstOrDefault().UserInformed)
-                    {
+        //        if (db.ActiveRequests.Any(x => x.Id == requestID))
+        //        {
+        //            return Json(new { status = "NOT TAKEN", accessToken = newAccessToken });
+        //        }
+        //        else
+        //        {
+        //            if (db.TakenRequests.Where(x => x.Request.Id == requestID).FirstOrDefault().UserInformed)
+        //            {
                        
-                        return Json(new { status = "NO CHANGE", accessToken = newAccessToken });
-                    }
-                    else
-                    {
-                        var requestData = db.TakenRequests.Where(x => x.Request.Id == requestID).Include(x=>x.Car).Include(x=>x.Company).Include(x=>x.Request).FirstOrDefault();
-                        if (requestData != null)
-                        {
-                            if (requestData.OnAddress == false)
-                            {
-                                var driverLocation = db.Cars.Where(x => x.Id == requestData.Car.Id).First().Location;
-                                var duration = GoogleAPIRequest.GetDistance(driverLocation, requestData.Request.StartingLocation);
+        //                return Json(new { status = "NO CHANGE", accessToken = newAccessToken });
+        //            }
+        //            else
+        //            {
+        //                var requestData = db.TakenRequests.Where(x => x.Request.Id == requestID).Include(x=>x.Car).Include(x=>x.Company).Include(x=>x.Request).FirstOrDefault();
+        //                if (requestData != null)
+        //                {
+        //                    if (requestData.OnAddress == false)
+        //                    {
+        //                        var driverLocation = db.Cars.Where(x => x.Id == requestData.Car.Id).First().Location;
+        //                        var duration = GoogleAPIRequest.GetDistance(driverLocation, requestData.Request.StartingLocation);
                               
-                                db.TakenRequests.Where(x => x.Request.Id == requestID).FirstOrDefault().UserInformed = true;
-                                db.SaveChanges();
-                                return Json(new { status = "TAKEN", distance = duration.rows[0].elements[0].distance.text, duration = duration.rows[0].elements[0].duration.text, carRegNum = requestData.Car.RegisterNumber, companyName = requestData.Company.Name, accessToken = newAccessToken });
-                            }
-                            else
-                            {
+        //                        db.TakenRequests.Where(x => x.Request.Id == requestID).FirstOrDefault().UserInformed = true;
+        //                        db.SaveChanges();
+        //                        return Json(new { status = "TAKEN", distance = duration.rows[0].elements[0].distance.text, duration = duration.rows[0].elements[0].duration.text, carRegNum = requestData.Car.RegisterNumber, companyName = requestData.Company.Name, accessToken = newAccessToken });
+        //                    }
+        //                    else
+        //                    {
 
-                                db.TakenRequests.Where(x => x.Request.Id == requestID).FirstOrDefault().UserInformed = true;
-                                db.SaveChanges();
-                                return Json(new { status = "ON ADDRESS", accessToken = newAccessToken });
-                            }
+        //                        db.TakenRequests.Where(x => x.Request.Id == requestID).FirstOrDefault().UserInformed = true;
+        //                        db.SaveChanges();
+        //                        return Json(new { status = "ON ADDRESS", accessToken = newAccessToken });
+        //                    }
 
-                        }
-                        return Json(new { status = "NO REQUEST", accessToken = newAccessToken });
-                    }
-                }
-            }
-            else
-            {
-                return Json(new { });
-            }
-        }
+        //                }
+        //                return Json(new { status = "NO REQUEST", accessToken = newAccessToken });
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return Json(new { });
+        //    }
+        //}
 
-        public JsonResult Pull(double lon, double lat, string accessToken, bool absent = false, bool free = false)
+        public JsonResult Pull(double lon, double lat, string accessToken, bool absent = false, bool free = false, bool onAddress = false)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
@@ -159,7 +159,18 @@ namespace BgTaxi.Web.Controllers
                 var driver = db.Drivers.Where(x => x.UserId == userId).Include(x => x.Car).First();
                 driver.Car.Location.Latitude = lat;
                 driver.Car.Location.Longitude = lon;
-
+                driver.Car.LastActiveDateTime = DateTime.Now;
+                if(driver.Car.CarStatus == CarStatus.Offline)
+                {
+                    if (db.TakenRequests.Any(x => x.Car.Id == driver.Car.Id))
+                    {
+                        driver.Car.CarStatus = CarStatus.Busy;
+                    }
+                    else
+                    {
+                        driver.Car.CarStatus = CarStatus.Free;
+                    }
+                }
                 
                 if (absent)
                 {
@@ -169,13 +180,52 @@ namespace BgTaxi.Web.Controllers
                 {
                     driver.Car.CarStatus = CarStatus.Free;
                 }
+                if (onAddress)
+                {    var takenRequest = db.TakenRequests.Where(x => x.Car.Id == driver.Car.Id).Include(x => x.Request).FirstOrDefault();
+                    if (takenRequest == null)
+                    {
+                        driver.Car.CarStatus = CarStatus.Free;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        takenRequest.Request.RequestStatus = RequestStatusEnum.OnAddress;
+                        takenRequest.OnAddressDateTime = DateTime.Now;
+                        db.SaveChanges();
+                        return Json(new { status = "OK", onAddress = true, accessToken = newAccessToken });
+                    }
+                }
+
 
                 db.SaveChanges();
+                if(driver.Car.CarStatus == CarStatus.Busy)
+                {
+                    var takenRequest = db.TakenRequests.Where(x => x.Car.Id == driver.Car.Id).Include(x=>x.Request).FirstOrDefault();
+                    if(takenRequest == null)
+                    {
+                        driver.Car.CarStatus = CarStatus.Free;
+                        db.SaveChanges();
+                    }else
+                    {   if (takenRequest.Request.RequestStatus == RequestStatusEnum.Taken)
+                        {
+                            var distance = DistanceBetweenTwoPoints.GetDistance(takenRequest.Request.StartingLocation, driver.Car.Location);
+                            if (distance < 0.020)
+                            {
+                                takenRequest.Request.RequestStatus = RequestStatusEnum.OnAddress;
+                                takenRequest.OnAddressDateTime = DateTime.Now;
+                                db.SaveChanges();
+                                return Json(new { status = "OK", onAddress = true, accessToken = newAccessToken });
+                            }
+                        }
+                    }
+                }
+
                 if (db.ActiveRequests.Any(x => x.AppropriateCar.Id == driver.Car.Id))
                 {
                     var request = db.ActiveRequests.Where(x => x.AppropriateCar.Id == driver.Car.Id).Include(x=>x.Request).First();
+                    TimeSpan diff = DateTime.Now - request.DateTimeChosenCar;
                     var distance = Math.Round(DistanceBetweenTwoPoints.GetDistance(request.Request.StartingLocation, new Models.Models.Location() { Latitude = lat, Longitude = lon }), 3);
-                    object requestObj = new {distance = distance, address= request.Request.StartingAddress, id = request.Request.Id };
+                    object requestObj = new {distance = distance, startAddress= request.Request.StartingAddress, finishAddress = request.Request.FinishAddress, id = request.Request.Id, time = 15-Math.Round(diff.TotalSeconds,0) };
                     return Json(new { status = "OK", accessToken = newAccessToken, request = requestObj });
                 }
 
@@ -208,6 +258,8 @@ namespace BgTaxi.Web.Controllers
                     {
                         var requestSelected = db.RequestsInfo.Where(x => x.Id == requestID).First();
                         requestSelected.RequestStatus = RequestStatusEnum.NoCarChosen;
+                        var request = db.ActiveRequests.Where(x => x.Request.Id == requestID).FirstOrDefault();
+                        request.AppropriateCar = null;
                         db.CarsDismissedRequests.Add(new CarDismissedRequest() { Car = driver.Car, Request = requestSelected });
                         db.SaveChanges();
                         return Json(new { status = "OK", accessToken = newAccessToken });
@@ -215,6 +267,11 @@ namespace BgTaxi.Web.Controllers
                     if (driver != null)
                     {
                         var request = db.ActiveRequests.Where(x => x.Request.Id == requestID).Include(x=>x.Request).Include(x=>x.AppropriateCar).FirstOrDefault();
+
+                        if(request.AppropriateCar == null)
+                        {
+                            return Json(new { status = "ERR", accessToken = newAccessToken });
+                        }
                         if (request.AppropriateCar.Id == driver.Car.Id)
                         {
                             var distanceObject = GoogleAPIRequest.GetDistance(request.Request.StartingLocation, driver.Car.Location);
@@ -230,7 +287,8 @@ namespace BgTaxi.Web.Controllers
                                 DuractionText = distanceObject.rows[0].elements[0].duration.text,
                                 DuractionValue = distanceObject.rows[0].elements[0].duration.value,
                                 DistanceText = distanceObject.rows[0].elements[0].distance.text,
-                                DistanceValue = distanceObject.rows[0].elements[0].distance.value
+                                DistanceValue = distanceObject.rows[0].elements[0].distance.value,
+                                OnAddressDateTime = DateTime.Now
                             });
 
                             request.Request.RequestStatus = RequestStatusEnum.Taken;
@@ -260,55 +318,7 @@ namespace BgTaxi.Web.Controllers
             }
         }
 
-        public JsonResult UpdateStatus(double lat, double lon, string accessToken, int requestId, bool onAddress = false)
-        {
-            if (HttpContext.Request.RequestType == "POST")
-            {
-                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
-
-                if (newAccessToken == null)
-                {
-                    return Json(new { status = "INVALID ACCESSTOKEN" });
-                }
-               
-
-                if (db.TakenRequests.Any(x=> x.Request.Id == requestId))
-                {
-                     var user = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(y => y.Device).First().Device.UserId;
-                    var request = db.TakenRequests.Where(x => x.Request.Id == requestId).FirstOrDefault();
-                    if(request.DriverUserId == user)
-                    {
-                        if (onAddress == false)
-                        {
-                            request.DriverLocation = new Models.Models.Location() { Latitude = lat, Longitude = lon };
-                        }
-                        else
-                        {
-                            if (!request.OnAddress)
-                            {
-                                request.OnAddress = true;
-                                request.UserInformed = false;
-                            }
-                        }
-                        db.SaveChanges();
-
-                        if (request.UserInformed)
-                        {
-                            return Json(new { status = "OK", clientInformed = true, accessToken = newAccessToken });
-                        }
-                        else
-                        {
-                            return Json(new { status = "OK", clientInformed = false, accessToken = newAccessToken });
-                        }
-                    }
-                }
-                return Json(new { status = "ERR", accessToken = newAccessToken });
-            }
-            else
-            {
-                return Json(new { });
-            }
-        }
+   
         public JsonResult FinishRequest(int requestId, string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")
@@ -325,7 +335,7 @@ namespace BgTaxi.Web.Controllers
                 var request = db.TakenRequests.Where(x => x.Request.Id == requestId).Include(x=>x.Request).Include(x=>x.Car).FirstOrDefault();
                 if (request != null) {
                     if (user == request.DriverUserId)
-                    {
+                    {   
                         db.RequestHistory.Add(new RequestHistory()
                         {
                             Request = request.Request,

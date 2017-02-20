@@ -186,11 +186,16 @@ namespace BgTaxi.Controllers
                                 bool alreadyLoggedIn = db.Devices.Any(x => x.UserId == findAcync.Result.Id);
                                 if (haveCar && haveCompany && !alreadyLoggedIn)
                                 {
+                                   
                                     var accTok = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(x => x.Device).First();
                                     accTok.Device.UserId = findAcync.Result.Id;
                                     accTok.Device.LastRequestDateTime = DateTime.Now;
+                                    
+                                  var driver = db.Drivers.Where(x => x.UserId == findAcync.Result.Id).Include(x => x.Car).FirstOrDefault();
+                                    driver.Car.CarStatus = CarStatus.Free;
+  
                                     db.SaveChanges();
-                                        return Json(new { status = "OK", accessToken = newAccessToken });
+                                        return Json(new { status = "OK", accessToken = newAccessToken, user = new {firstName = findAcync.Result.FirstName, lastName = findAcync.Result.LastName, carIN = driver.Car.InternalNumber } });
 
                                 } else if (alreadyLoggedIn)
                                 {
@@ -230,7 +235,7 @@ namespace BgTaxi.Controllers
             }
             else
             {
-                return Json(new { status = "CT" });
+                return Json(new { status = "" });
             }
         }
         [AllowAnonymous]
@@ -248,6 +253,9 @@ namespace BgTaxi.Controllers
                var accTok =  db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(x => x.Device).First();
                 if(accTok.Device.UserId != null)
                 {
+                    var driver = db.Drivers.Where(x => x.UserId == accTok.Device.UserId).Include(x=>x.Car).First();
+                    driver.Car.CarStatus = CarStatus.OffDuty;
+                    db.SaveChanges();
                     accTok.Device.UserId = null;
                     accTok.Device.LastRequestDateTime = DateTime.Now;
                     db.SaveChanges();
@@ -261,7 +269,7 @@ namespace BgTaxi.Controllers
             }
             else
             {
-                return Json(new { status = "CT" });
+                return Json(new { status = "" });
             }
         }
 

@@ -23,12 +23,13 @@ namespace BgTaxi.Controllers
         public JsonResult Pull()
         {
             var userId = User.Identity.GetUserId();
+            var dispatcher = db.Dispatchers.Where(x => x.UserId == userId).Include(x=>x.Company).First();
             var dashboard = db.DispatchersDashboard.Where(x => x.DispatcherUserId == userId).Include(x=>x.Request);
             var dashboardlist = dashboard.ToList();
 
             foreach (var item in dashboardlist)
             {
-                if (item.LastSeenStatus == RequestStatusEnum.Taken)
+                if (item.LastSeenStatus != RequestStatusEnum.Dismissed)
                 {
                     TimeSpan diff = DateTime.Now - item.LastSeen;
                     if (diff.TotalSeconds > 60)
@@ -73,7 +74,7 @@ namespace BgTaxi.Controllers
                                 Request = activeRequest.Request
                             });
                             db.SaveChanges();
-                                var newCar = AppropriateCar(activeRequest.Request.StartingLocation, activeRequest.Request);
+                                var newCar = AppropriateCar(activeRequest.Request.StartingLocation, activeRequest.Request, activeRequest.Request.Company);
                             if (newCar == null)
                             {
                                 activeRequest.Request.RequestStatus = RequestStatusEnum.NoCarChosen;
@@ -104,7 +105,7 @@ namespace BgTaxi.Controllers
                         }
                         else
                         {
-                            var newCar = AppropriateCar(actReque.Request.StartingLocation, actReque.Request);
+                            var newCar = AppropriateCar(actReque.Request.StartingLocation, actReque.Request, actReque.Request.Company );
                             if (newCar != null)
                             {
                                 actReque.AppropriateCar = newCar;
@@ -142,10 +143,47 @@ namespace BgTaxi.Controllers
             }
 
             db.SaveChanges();
-           
-           
+            var dispatcherCompanyId = dispatcher.Company.Id;
+            var cars = db.Cars.Where(x => x.Company.Id == dispatcher.Company.Id).ToList();
 
-            return Json(new { requests = requests });
+            object[] carObjs = new object[cars.Count];
+            int freeStatusCount = 0;
+            int busyStatusCount = 0;
+            int absentStatusCount = 0;
+            int offlineStatusCount = 0;
+            int offdutyStatusCount = 0;
+            for (int i = 0; i < cars.Count; i++)
+            {
+                TimeSpan diff = DateTime.Now - cars[i].LastActiveDateTime;
+                if (diff.TotalMinutes >2  && cars[i].CarStatus != CarStatus.OffDuty)
+                {
+                    cars[i].CarStatus = CarStatus.Offline;
+                }
+                switch (cars[i].CarStatus)  
+                {
+                    case CarStatus.Free:
+                        freeStatusCount++;
+                        break;
+                    case CarStatus.Busy:
+                        busyStatusCount++;
+                        break;
+                    case CarStatus.Absent:
+                        absentStatusCount++;
+                        break;
+                    case CarStatus.OffDuty:
+                        offdutyStatusCount++;
+                        break;
+                    case CarStatus.Offline:
+                        offlineStatusCount++;
+                        break;
+                    default:
+                        break;
+                }
+                
+                carObjs[i] = new { lng = cars[i].Location.Longitude, lat = cars[i].Location.Latitude, id = cars[i].InternalNumber, carStatus = cars[i].CarStatus };
+            }
+            db.SaveChanges();
+            return Json(new { requests = requests, cars = carObjs, freeStatusCount = freeStatusCount, busyStatusCount = busyStatusCount, absentStatusCount = absentStatusCount, offlineStatusCount = offlineStatusCount, offdutyStatusCount = offdutyStatusCount });
         }
 
         public JsonResult CreateRequest(string startingAddress, string finishAddress)
@@ -168,7 +206,8 @@ namespace BgTaxi.Controllers
            
 
             var userId = User.Identity.GetUserId();
-            var car = AppropriateCar(startingLocation);
+            var dispatcher = db.Dispatchers.Where(x => x.UserId == userId).Include(x=>x.Company).First();
+            var car = AppropriateCar(startingLocation,  dispatcher.Company);
             var request = new RequestInfo()
             {
                 CreatedBy = CreatedBy.Dispatcher,
@@ -179,7 +218,8 @@ namespace BgTaxi.Controllers
                 FinishAddress = finishAddress,
                 FinishLocation = finishLocation,
                 CreatedDateTime = DateTime.Now,
-                LastModificationDateTime = DateTime.Now
+                LastModificationDateTime = DateTime.Now, 
+                Company = dispatcher.Company
             };
             db.RequestsInfo.Add(request);
             db.SaveChanges();
@@ -212,9 +252,9 @@ namespace BgTaxi.Controllers
             return Json(new { status = "OK" });
         }
 
-        private Car AppropriateCar(Models.Models.Location startingLocaion)
+        private Car AppropriateCar(Models.Models.Location startingLocaion, Company company)
         {
-           var nearBycars =  db.Cars.Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0300 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0300).ToList();
+           var nearBycars =  db.Cars.Where(x=>x.Company.Id == company.Id).Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0300 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0300).ToList();
             List<double> distances = new List<double>();
             Dictionary<double, Car> dictionary = new Dictionary<double, Car>();
             Car appropriateCar = null;
@@ -243,9 +283,9 @@ namespace BgTaxi.Controllers
 
             return appropriateCar;
         }
-        private Car AppropriateCar(Models.Models.Location startingLocaion, RequestInfo request)
+        private Car AppropriateCar(Models.Models.Location startingLocaion, RequestInfo request, Company company)
         {
-            var nearBycars = db.Cars.Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0300 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0300).ToList();
+            var nearBycars = db.Cars.Where(x=>x.Company.Id == company.Id).Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0300 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0300).ToList();
             List<double> distances = new List<double>();
             Dictionary<double, Car> dictionary = new Dictionary<double, Car>();
             Car chosenCar = null;

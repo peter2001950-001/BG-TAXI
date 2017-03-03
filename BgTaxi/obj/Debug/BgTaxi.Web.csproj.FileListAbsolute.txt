@@ -210,3 +210,14 @@ C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\obj\Debug\BgTaxi.dll
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\obj\Debug\BgTaxi.pdb
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\Recaptcha.dll
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Recaptcha.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaxi.Services.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Ninject.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Ninject.Web.Common.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Ninject.Web.Mvc.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\WebActivatorEx.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaxi.Services.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Ninject.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Ninject.Web.Common.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Ninject.Web.Mvc.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaxi.PlacesAPI.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaxi.PlacesAPI.pdb

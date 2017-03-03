@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BgTaxi.Web", "BgTaxi\BgTaxi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BgTaxi.Models", "BgTaksi.Models\BgTaxi.Models.csproj", "{68A3B102-7C40-4B33-B229-5B579A742D85}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BgTaxi.Services", "BgTaxi.Services\BgTaxi.Services.csproj", "{F286A747-C1DE-429F-8E97-245AC5C6706A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BgTaxi.PlacesAPI", "BgTaxi.PlacesAPI\BgTaxi.PlacesAPI.csproj", "{C2EB38CE-5041-4F32-865E-96CA3DA7EE76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{68A3B102-7C40-4B33-B229-5B579A742D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68A3B102-7C40-4B33-B229-5B579A742D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68A3B102-7C40-4B33-B229-5B579A742D85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F286A747-C1DE-429F-8E97-245AC5C6706A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F286A747-C1DE-429F-8E97-245AC5C6706A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F286A747-C1DE-429F-8E97-245AC5C6706A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F286A747-C1DE-429F-8E97-245AC5C6706A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2EB38CE-5041-4F32-865E-96CA3DA7EE76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2EB38CE-5041-4F32-865E-96CA3DA7EE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2EB38CE-5041-4F32-865E-96CA3DA7EE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2EB38CE-5041-4F32-865E-96CA3DA7EE76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

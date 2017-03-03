@@ -144,6 +144,18 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.0.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.2.3.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.MVC5.3.2.1.0\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -230,6 +242,10 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -238,6 +254,7 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -250,7 +267,9 @@
     <Compile Include="Attributes\Results\AddChallengeOnUnauthorizedResult.cs" />
     <Compile Include="Attributes\Results\AuthenticationFailureResult.cs" />
     <Compile Include="Attributes\ThrottleAttribute.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountController.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DownloadController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -261,10 +280,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="GoogleRequests\DistanceBetweenTwoPoints.cs" />
-    <Compile Include="GoogleRequests\DurationFormat.cs" />
-    <Compile Include="GoogleRequests\GoogleAPIRequest.cs" />
-    <Compile Include="GoogleRequests\AddressFormat.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -398,6 +413,14 @@
     <ProjectReference Include="..\BgTaksi.Models\BgTaxi.Models.csproj">
       <Project>{68A3B102-7C40-4B33-B229-5B579A742D85}</Project>
       <Name>BgTaxi.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BgTaxi.PlacesAPI\BgTaxi.PlacesAPI.csproj">
+      <Project>{C2EB38CE-5041-4F32-865E-96CA3DA7EE76}</Project>
+      <Name>BgTaxi.PlacesAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BgTaxi.Services\BgTaxi.Services.csproj">
+      <Project>{F286A747-C1DE-429F-8E97-245AC5C6706A}</Project>
+      <Name>BgTaxi.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

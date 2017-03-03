@@ -1,5 +1,5 @@
 ﻿using BgTaxi.Models.Models;
-using BgTaxi.Web.GoogleRequests;
+using BgTaxi.PlacesAPI.GoogleRequests;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -238,7 +238,7 @@ namespace BgTaxi.Controllers
                 request.RequestStatus = RequestStatusEnum.NoCarChosen;
             }
 
-            var activeRequest = new ActiveRequests()
+            var activeRequest = new ActiveRequest()
             {
                 AppropriateCar = car,
                 DateTimeChosenCar = DateTime.Now,

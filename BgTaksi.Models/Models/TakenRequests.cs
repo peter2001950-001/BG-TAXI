@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BgTaxi.Models.Models
 {
-    public class TakenRequests
+    public class TakenRequest
     {
         [Key]
         public int Id { get; set; }

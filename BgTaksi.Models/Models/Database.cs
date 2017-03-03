@@ -7,16 +7,20 @@ using System.Threading.Tasks;
 
 namespace BgTaxi.Models.Models
 {
-    public class Database:DbContext
+    public class Database:DbContext, IDatabase
     {
         public Database()
             :base("DefaultConnection")
         {
 
         }
-        public DbSet<ActiveRequests> ActiveRequests { get; set; }
+        public override int SaveChanges()
+        {
+            return base.SaveChanges();
+        }
+        public DbSet<ActiveRequest> ActiveRequests { get; set; }
         public DbSet<Car> Cars { get; set; }
-        public DbSet<TakenRequests> TakenRequests { get; set; }
+        public DbSet<TakenRequest> TakenRequests { get; set; }
         public DbSet<RequestHistory> RequestHistory { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Driver> Drivers { get; set; }

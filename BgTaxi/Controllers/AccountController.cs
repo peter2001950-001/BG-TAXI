@@ -1,5 +1,6 @@
-﻿using System;
-using System.Globalization;
+﻿namespace BgTaxi.Controllers
+{
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -9,30 +10,32 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using BgTaxi.Models;
-using System.Web.Http.Cors;
 using BgTaxi.Web.ActionFilter;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System.Web.Security;
 using BgTaxi.Models.Models;
 using System.Collections.Generic;
 using System.Text;
 using BgTaxi.Attributes;
-using System.Data.Entity;
-using System.Threading;
-
-namespace BgTaxi.Controllers
-{
+using BgTaxi.Services.Contracts;
     [Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IDeviceService deviceService;
+        private IAccessTokenService accessTokenService;
+        private readonly IDriverService driverService;
+        private readonly ICarService carService;
+        private readonly ICompanyService companyService;
+        private readonly IDispatcherService dispatcherService;
 
-        private Models.Models.Database db;
-
-        public AccountController()
+        public AccountController(IDeviceService deviceService, IAccessTokenService accessTokenService, IDriverService driverService, ICarService carService, ICompanyService companyService, IDispatcherService dispatcherService)
         {
-            db = new Models.Models.Database();
+            this.deviceService = deviceService;
+            this.accessTokenService = accessTokenService;
+            this.driverService = driverService;
+            this.carService = carService;
+            this.companyService = companyService;
+            this.dispatcherService = dispatcherService;
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -64,10 +67,7 @@ namespace BgTaxi.Controllers
                 _userManager = value;
             }
         }
-
-        // The Authorize Action is the end point which gets called when you access any
-        // protected Web API. If the user is not logged in then they will be redirected to 
-        // the Login page. After a successful login you can call a Web API.
+        
         [HttpGet]
         public ActionResult Authorize()
         {
@@ -126,7 +126,6 @@ namespace BgTaxi.Controllers
 
         [AllowAnonymous]
         [AllowCrossSiteJsonAttribute]
-        //[ThrottleAttribute(Seconds=180)]
         public JsonResult DeviceRegistration()
         {
             Device device = new Device() { LastRequestDateTime = DateTime.Now, UserId = null };
@@ -137,9 +136,8 @@ namespace BgTaxi.Controllers
             CreatedDateTime = DateTime.Now
             };
 
-            db.Devices.Add(device);
-            db.AccessTokens.Add(accToken);
-            db.SaveChanges();
+            deviceService.AddDrvice(device);
+            accessTokenService.AddAccessToken(accToken);
             return Json(new { accessToken = accToken.UniqueAccesToken });
 
         }
@@ -150,23 +148,18 @@ namespace BgTaxi.Controllers
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
+                var newAccessToken = accessTokenService.GenerateAccessToken(accessToken);
 
-                var userIdObj = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Select(y => new { userId = y.Device.UserId }).FirstOrDefault();
-                if (userIdObj != null)
-                {
-                    if (userIdObj.userId != null)
-                    {
-                        return Json(new { status = "USER LOGGED IN", accessToken = newAccessToken });
-                    }
-                }
-                else
+                var accTok = accessTokenService.GetAll().Where(x => x.UniqueAccesToken == newAccessToken).FirstOrDefault();
+                if (accTok == null)
                 {
                     return Json(new { status = "INVALID ACCESSTOKEN" });
                 }
-                // This doesn't count login failures towards account lockout
-                //// To enable password failures to trigger account lockout, change to shouldLockout: true
-                //var result = await SignInManager.PasswordSignInAsync(email, password, false, shouldLockout: false);
+                    if (accessTokenService.IsUserLoggedIn(newAccessToken))
+                {
+                    return Json(new { status = "USER LOGGED IN", accessToken = newAccessToken });
+                }
+                    
                  var usernamePass = ExtractUserNameAndPassword(basicAuth);
                 var findAcync = UserManager.FindAsync(usernamePass.Item1, usernamePass.Item2);
 
@@ -181,25 +174,21 @@ namespace BgTaxi.Controllers
                                 return Json(new { status = "NO PERMISSION", accessToken = newAccessToken });
 
                             case "2":
-                                bool haveCar = db.Drivers.Any(x => x.Car != null && x.UserId == findAcync.Result.Id);
-                                bool haveCompany = db.Drivers.Any(x => x.Company != null && x.UserId == findAcync.Result.Id);
-                                bool alreadyLoggedIn = db.Devices.Any(x => x.UserId == findAcync.Result.Id);
+                                bool haveCar = driverService.GetAll().Any(x => x.Car != null && x.UserId == findAcync.Result.Id);
+                                bool haveCompany = driverService.GetAll().Any(x => x.Company != null && x.UserId == findAcync.Result.Id);
+                                bool alreadyLoggedIn = deviceService.GetAll().Any(x => x.UserId == findAcync.Result.Id);
                                 if (haveCar && haveCompany && !alreadyLoggedIn)
                                 {
-                                   
-                                    var accTok = db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(x => x.Device).First();
-                                    accTok.Device.UserId = findAcync.Result.Id;
-                                    accTok.Device.LastRequestDateTime = DateTime.Now;
-                                    
-                                  var driver = db.Drivers.Where(x => x.UserId == findAcync.Result.Id).Include(x => x.Car).FirstOrDefault();
-                                    driver.Car.CarStatus = CarStatus.Free;
-  
-                                    db.SaveChanges();
-                                        return Json(new { status = "OK", accessToken = newAccessToken, user = new {firstName = findAcync.Result.FirstName, lastName = findAcync.Result.LastName, carIN = driver.Car.InternalNumber } });
+                                    accessTokenService.AddDeviceUserId(newAccessToken, findAcync.Result.Id);
+                                    driverService.ChangeCarStatus(findAcync.Result.Id, CarStatus.Free);
+
+                                    var driver = driverService.GetAll().Where(x => x.UserId == findAcync.Result.Id).First();
+                                    var car = carService.GetCarByDriver(driver);
+
+                                        return Json(new { status = "OK", accessToken = newAccessToken, user = new {firstName = findAcync.Result.FirstName, lastName = findAcync.Result.LastName, carIN = car.InternalNumber } });
 
                                 } else if (alreadyLoggedIn)
                                 {
-                                    var pesho = db.Devices.Where(x => x.UserId == findAcync.Result.Id).First();
                                     return Json(new { status = "ALREADY LOGGED IN", accessToken = newAccessToken });
                                 }
                                 else if (!haveCompany)
@@ -244,21 +233,19 @@ namespace BgTaxi.Controllers
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var newAccessToken = AccessTokenStaticClass.GenerateAccessToken(accessToken);
-                if(newAccessToken == null)
+                var newAccessToken = accessTokenService.GenerateAccessToken(accessToken);
+                if (newAccessToken == null)
                 {
                     return Json(new { status = "INVALID ACCESSTOKEN" });
                 }
 
-               var accTok =  db.AccessTokens.Where(x => x.UniqueAccesToken == newAccessToken).Include(x => x.Device).First();
-                if(accTok.Device.UserId != null)
+                var device = deviceService.GetDeviceByAccessToken(newAccessToken);
+                if (device.UserId != null)
                 {
-                    var driver = db.Drivers.Where(x => x.UserId == accTok.Device.UserId).Include(x=>x.Car).First();
-                    driver.Car.CarStatus = CarStatus.OffDuty;
-                    db.SaveChanges();
-                    accTok.Device.UserId = null;
-                    accTok.Device.LastRequestDateTime = DateTime.Now;
-                    db.SaveChanges();
+                    driverService.ChangeCarStatus(device.UserId, CarStatus.Offline);
+                    device.UserId = null;
+                    device.LastRequestDateTime = DateTime.Now;
+                    deviceService.SaveChanges();
                     return Json(new { status = "OK", accessToken = newAccessToken });
                 }
                 else
@@ -371,10 +358,6 @@ namespace BgTaxi.Controllers
                     if (result.Succeeded)
                     {
                         UserManager.AddToRole(user.Id, "User");
-                        //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-                        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                        // Send an email with this link
                         string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                         var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                         await UserManager.SendEmailAsync(user.Id, "Потвърдете вашата регистрация", string.Format("<p><span style='font-family:times new roman,times,serif;'>Здравейте {0},<br/>Вие успешно регистрирахте в сайта bgtaxi.com.</span></p><p>Моля, активирайте вашия акаунт, като натиснете върху линка по-долу:</p><h2><a href='{1}'>Активирай сега</a></h2>", user.FirstName, callbackUrl));
@@ -384,8 +367,6 @@ namespace BgTaxi.Controllers
                     AddErrors(result);
                 }
             
-
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
         //
@@ -397,30 +378,29 @@ namespace BgTaxi.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (db.Companies.Any(x => x.UniqueNumber == model.UniqueNumber))
+                if (companyService.GetAll().Any(x => x.UniqueNumber == model.UniqueNumber))
                 {
                    
                     
-                    var user = new Models.ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber, FirstName= model.FirstName, LastName = model.LastName };
+                    var user = new Models.ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     
                     if (result.Succeeded)
                     {
-                        var company = db.Companies.Where(x => x.UniqueNumber == model.UniqueNumber).First();
+                        var company = companyService.GetAll().Where(x => x.UniqueNumber == model.UniqueNumber).First();
                         if (model.SelectedEmployee == "1")
                         {
                             UserManager.AddToRole(user.Id, "Driver");
-                            db.Drivers.Add(new BgTaxi.Models.Models.Driver { UserId = user.Id, Company = company });
+                            driverService.AddDriver(new BgTaxi.Models.Models.Driver { UserId = user.Id, Company = company });
                         }
-                        else if( model.SelectedEmployee == "2")
+                        else if ( model.SelectedEmployee == "2")
                         {
                             UserManager.AddToRole(user.Id, "Dispatcher");
-                            db.Dispatchers.Add(new BgTaxi.Models.Models.Dispatcher { UserId = user.Id, Company = company });
+                            dispatcherService.AddDispatcher(new BgTaxi.Models.Models.Dispatcher { UserId = user.Id, Company = company });
 
                         }
 
                        
-                        db.SaveChanges();
                         //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -449,19 +429,18 @@ namespace BgTaxi.Controllers
                 const string AllowedChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 Random rng = new Random();
                 var uniqueString = RandomString(AllowedChars, 6, rng);
-                while((db.Companies.Any(x => x.UniqueNumber == uniqueString))){
+                while ((companyService.GetAll().Any(x => x.UniqueNumber == uniqueString))){
                     uniqueString = RandomString(AllowedChars, 6, rng);
                 }                
 
-                var user = new Models.ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber, FirstName= model.FirstName, LastName = model.LastName };
+                var user = new Models.ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
 
                 var result = await UserManager.CreateAsync(user, model.Password);
               
                 if (result.Succeeded)
                 {
                     var company = new Company { Name = model.CompanyName, Address = model.Address, DDS = model.DDS, EIK = model.EIK, MOL = model.MOL, UserId = user.Id, UniqueNumber = uniqueString };
-                    db.Companies.Add(company);
-                    db.SaveChanges();
+                    companyService.AddCompany(company);
                     UserManager.AddToRole(user.Id, "Company");
 
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -481,7 +460,7 @@ namespace BgTaxi.Controllers
             return View(model);
         }
 
-        private static string RandomString(string allowedChars, int stringLength , Random rd)
+        private static string RandomString(string allowedChars, int stringLength, Random rd)
         {
             char[] chars = new char[stringLength];
 
@@ -493,46 +472,7 @@ namespace BgTaxi.Controllers
             return new string(chars);
         }
 
-        //[AllowAnonymous]
-        //public JsonResult CreateRole(string roleName)
-        //{
-
-        //    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
-        //    var roleresult = RoleManager.Create(new IdentityRole(roleName));
-
-        //    return Json("OK");
-        //}
-
-        //TODO: Some security
-        [AllowAnonymous]
-        [AllowCrossSiteJson]
-        public async Task<JsonResult> RegisterExternal(string email, string password, string dataRole)
-        {
-            if (HttpContext.Request.RequestType == "POST")
-            {
-                if (ModelState.IsValid)
-                {
-                    var user = new Models.ApplicationUser { UserName = email, Email = email };
-                    var result = await UserManager.CreateAsync(user, password);
-                    UserManager.AddToRole(user.Id, dataRole);
-                    if (result.Succeeded)
-                    {
-                        return Json(new { status = "OK" });
-                    }
-                    AddErrors(result);
-                }
-
-                // If we got this far, something failed, redisplay form
-                return Json(new { status = "ERR" });
-            }
-            else
-            {
-                return Json(new { status = "CT" });
-            }
-        }
-
-        //
-        // GET: /Account/ConfirmEmail
+        
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {

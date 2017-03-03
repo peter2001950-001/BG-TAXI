@@ -85,7 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessTokenStaticClass.cs" />
+    <Compile Include="IDatabase.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccessToken.cs" />
     <Compile Include="Models\ActiveRequests.cs" />

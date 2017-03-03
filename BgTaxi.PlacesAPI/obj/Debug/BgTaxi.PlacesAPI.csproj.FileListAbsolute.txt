@@ -1,0 +1,11 @@
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\BgTaxi.PlacesAPI.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\BgTaxi.PlacesAPI.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\BgTaksi.Models.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\EntityFramework.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\BgTaksi.Models.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\EntityFramework.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\obj\Debug\BgTaxi.PlacesAPI.csprojResolveAssemblyReference.cache
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\obj\Debug\BgTaxi.PlacesAPI.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\obj\Debug\BgTaxi.PlacesAPI.pdb

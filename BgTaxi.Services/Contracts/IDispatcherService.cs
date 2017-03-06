@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace BgTaxi.Services.Contracts
 {
-    public interface IDispatcherService: IService
+    public interface IDispatcherService : IService
     {
         IEnumerable<Dispatcher> GetAll();
         void AddDispatcher(Dispatcher dispatcher);
+        IEnumerable<DispatcherDashboard> GetAllDashboards();
+
     }
 }

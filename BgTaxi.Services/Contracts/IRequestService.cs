@@ -19,6 +19,8 @@ namespace BgTaxi.Services.Contracts
         TakenRequest GetTakenRequest(int id);
         RequestHistory GetRequestHistory(int id);
         RequestInfo GetRequestInfo(int id);
+        void AddRequestInfo(RequestInfo request);
+        void AddActiveRequest(ActiveRequest request);
         object AppropriateRequest(Car car);
         bool UpdateAnswer(bool answer, int requestId, Driver driver);
         bool FinishRequest(int requestId, string userId);

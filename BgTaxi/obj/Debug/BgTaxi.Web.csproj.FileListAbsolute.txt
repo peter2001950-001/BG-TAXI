@@ -101,7 +101,6 @@ C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.Net.Http.Headers.xml
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Text.Encodings.Web.xml
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.Cors.dll
-C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Cors.dll
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\System.Web.Http.Cors.xml
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\csc.exe
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaxi\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll

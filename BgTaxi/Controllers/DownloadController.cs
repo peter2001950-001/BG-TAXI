@@ -19,7 +19,7 @@ namespace BgTaxi.Controllers
                 string fileName = "BgTaxiClient.apk";
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
             }
-            else if (fileType == "hap")
+            else if (fileType == "xap")
             {
                 byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/appFiles/BgTaxiClient.xap"));
                 string fileName = "BgTaxiClient.xap";
@@ -47,7 +47,7 @@ namespace BgTaxi.Controllers
                 string fileName = "BgTaxiDriver.apk";
                 return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
             }
-            else if (fileType == "hap")
+            else if (fileType == "xap")
             {
                 byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/appFiles/BgTaxiDriver.xap"));
                 string fileName = "BgTaxiDriver.xap";

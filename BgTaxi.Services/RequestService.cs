@@ -148,6 +148,18 @@ namespace BgTaxi.Services
         {
             data.SaveChanges();
         }
+
+        public void AddRequestInfo(RequestInfo request)
+        {
+            data.RequestsInfo.Add(request);
+            data.SaveChanges();
+        }
+
+        public void AddActiveRequest(ActiveRequest request)
+        {
+            data.ActiveRequests.Add(request);
+            data.SaveChanges();
+        }
     }
 }
 

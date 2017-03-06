@@ -56,10 +56,12 @@
     <Compile Include="Contracts\IAccessTokenService.cs" />
     <Compile Include="Contracts\ICarService.cs" />
     <Compile Include="Contracts\ICompanyService.cs" />
+    <Compile Include="Contracts\IDashboardService.cs" />
     <Compile Include="Contracts\IDeviceService.cs" />
     <Compile Include="Contracts\IDispatcherService.cs" />
     <Compile Include="Contracts\IDriverService.cs" />
     <Compile Include="Contracts\IService.cs" />
+    <Compile Include="DashboardService.cs" />
     <Compile Include="DeviceService.cs" />
     <Compile Include="DispatcherService.cs" />
     <Compile Include="DriverService.cs" />

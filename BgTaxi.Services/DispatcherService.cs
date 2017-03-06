@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace BgTaxi.Services
 {
@@ -25,7 +26,11 @@ namespace BgTaxi.Services
 
         public IEnumerable<Dispatcher> GetAll()
         {
-            return data.Dispatchers.AsEnumerable();
+            return data.Dispatchers.Include(x=>x.Company).AsEnumerable();
+        }
+        public IEnumerable<DispatcherDashboard> GetAllDashboards()
+        {
+            return data.DispatchersDashboard.AsEnumerable();
         }
 
         public void SaveChanges()

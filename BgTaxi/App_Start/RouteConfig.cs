@@ -14,11 +14,6 @@ namespace BgTaxi.Web
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapRoute(
-               name: "Dashboard",
-               url: "Dashboard/{action}",
-               defaults: new { controller = "Dashboard", action = "Index" }
-               );
-            routes.MapRoute(
                 name: "Download",
                 url: "download/{action}/{fileType}",
                 defaults: new { controller = "Download", action = "Client", filetype = UrlParameter.Optional }

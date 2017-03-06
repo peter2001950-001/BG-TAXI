@@ -99,6 +99,10 @@ namespace BgTaxi.App_Start
               .Bind<IDeviceService>()
               .To<DeviceService>()
               .InRequestScope();
+            kernel
+             .Bind<IDashboardService>()
+             .To<DashboardService>()
+             .InRequestScope();
         }        
     }
 }

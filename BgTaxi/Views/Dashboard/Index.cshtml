@@ -6,16 +6,24 @@
 <head>
     <meta charset="utf-8" />
     <title>BG TAXI - Работен плот</title>
-    
+
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Най-лесният начин да поръчаш такси без диспечер дирекно от своя смартфон или таблет" />
     <meta name="keywords" content="bg taxi поръчай такси телефон без диспечер викай бързо таксиметров софтуер приложение за таксита заявки близки заявки моментни подходящи апликация app apk ios windows android България bgtaxi" />
-        @Styles.Render("~/Content/css")
-       
+    <style>
+        </style>
+    @Scripts.Render("~/bundles/jquery")
+     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/dashboard-1.0.css")
+
+    <script>$(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+});</script>
+
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top navbar-custom">
+    <div id="dashboard-navbar" class="navbar navbar-inverse navbar-fixed-top navbar-custom">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -34,61 +42,181 @@
 
         </div>
     </div>
+    <div>
+        <div id="left-section">
 
-    <div class="container body-content">
-        <div class="form-group">
-            <label class="control-label">Начален Адрес</label>
-            <input class="form-control" type="text" data-bind="value: startingAddress" />
-            <datalist id="browsers">
-                <option value="Internet Explorer">
-                <option value="Firefox">
-                <option value="Chrome">
-                <option value="Opera">
-                <option value="Safari">
-            </datalist>
-        </div>
-        <div class="form-group">
-            <label class="control-label">Краен Адрес</label>
-            <input class="form-control" type="text" data-bind="value: finishAddress" />
-        </div>
-        <div class="form-group">
-            <input class="btn btn-default" value="Изпрати" type="button" data-bind="click: $root.createRequest" />
-        </div>
+            <div class="container body-content">
 
-        </div>
-    <table class="table table-striped" data-bind="with: requestsData">
-        <thead><tr><th>№</th><th>Начален Адрес</th><th>Краен Адрес</th><th>Статус</th><th>Кола</th></tr></thead>
-        <tbody data-bind="foreach: requests">
-            <tr>
-                <td data-bind="text: id"></td>
-                <td data-bind="text: startingAddress"></td>
-                <td data-bind="text: finishAddress"></td>
-                <td><span class="label" style="font-size: 15px" data-bind="text: message, css: className"></span></td>
-                <td data-bind="text: info"></td>
-            </tr>
-        </tbody>
-    </table>
-    <div style ="height: 500px"id="map"></div>
-        <footer class="text-center">
-            <div class="footer-below">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12">
+                <div id="requests-page" style="display:block" class="pages">
+                    <div class="nav-group">
+                        <button id="nav-request-search" class="btn btn-warning" onclick="$('.pages').hide(); $('#request-search-page').show();">ТЪРСЕНЕ НА ЗАЯВКА</button>
+                        <button id="nav-car-search" class="btn btn-warning " onclick="$('.pages').hide(); $('#car-search-page').show();">ТЪРСЕНЕ НА КОЛА</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Начален Адрес</label>
+                        <input class="form-control" type="text" data-bind="value: startingAddress, valueUpdate: 'input', executeOnEnter: autoSuggest" />
+                        <table class="table table-striped" data-bind="with: suggectionsData">
+                            <thead><tr><th>Предположение</th><th>Още</th><th>.</th></thead>
+                            <tbody data-bind="foreach: suggestions">
+                                <tr data-bind="click: $root.select">
+                                    <td data-bind="text: main_text"></td>
+                                    <td data-bind="text:secondary_text"></td>
+                                    <td hidden data-bind="text:placeId"></td>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Краен Адрес</label>
+                        <input class="form-control" type="text" data-bind="value: finishAddress" />
+                    </div>
+                    <div class="form-group">
+                        <input class="btn btn-default" value="Изпрати" type="button" data-bind="click: $root.createRequest" />
+                    </div>
 
-                            <p>Всички права са запазени BG TAXI &copy; @DateTime.Now.Year </p>
+
+
+                    <table class="table table-striped" data-bind="with: requestsData">
+                        <thead><tr><th>№</th><th>Начален Адрес</th><th>Краен Адрес</th><th>Статус</th><th>Кола</th></tr></thead>
+                        <tbody data-bind="foreach: requests">
+                            <tr>
+                                <td data-bind="text: id"></td>
+                                <td data-bind="text: startingAddress"></td>
+                                <td data-bind="text: finishAddress"></td>
+                                <td><span class="label" data-bind="text: message, css: className"></span></td>
+                                <td data-bind="text: info"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+                <div id="request-search-page" style="display:none" class="pages">
+                    <div class="nav-group">
+                        <button class="btn btn-warning nav-back" onclick="$('.pages').hide(); $('#requests-page').show();">НАЗАД</button>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group input-number">
+                            <div class="input-group-addon">№</div>
+                            <input class="form-control" type="text" placeholder="Номер на заявката" data-bind="value: requestId" />
                         </div>
+                        <input class="form-control" type="text" placeholder="Начален адрес" style="width: 69%;" data-bind="value: requestSearchedStartingAddress" />
+                        <select class="form-control search-select" data-bind="options: timeRanges,
+                       optionsText: function(item) {
+                       if(item =='1'){return item+ ' час';}else{return item + ' часа';}},
+                       value: selectedTimeRange,
+                       optionsCaption: 'Изберете период...'"></select>
+                        <button class="btn search-btn" data-bind="click: $root.searchRequests">Търси</button>
+                    </div>
+                    <table class="table table-striped" data-bind="with: foundRequetsData">
+                        <thead><tr><th>№</th><th>Начален Адрес</th><th>Краен Адрес</th><th>Статус</th><th>Действия</th></tr></thead>
+                        <tbody data-bind="foreach: requests">
+                            <tr>
+                                <td data-bind="text: id"></td>
+                                <td data-bind="text: startingAddress"></td>
+                                <td data-bind="text: finishAddress"></td>
+                                <td><span class="label" style="font-size: 15px" data-bind="text: message, css: className"></span></td>
+                                <td>
+                                    <button class="btn" style="width: 33px;padding: 0;margin:2px" data-bind="click: function() { $root.localization($data) }"><img style="width:100%" src="~/Content/images/1491878503_94.png" /></button>
+                                    <button class="btn" style="width: 33px;padding: 0;margin:2px" data-bind="click: function() { $root.showInformation($data)} "><img style="width:100%" src="~/Content/images/1491878530_info-alt.png" /></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="car-search-page" style="display:none" class="pages">
+                    <div class="nav-group">
+                        <button class="btn btn-warning nav-back" onclick="$('.pages').hide(); $('#requests-page').show();">НАЗАД</button>
                     </div>
                 </div>
+
             </div>
-        </footer>
+            <footer id="dashboard-footer" class="text-center">
+                <div class="footer-below">
+                    <p>Всички права са запазени BG TAXI &copy; @DateTime.Now.Year </p>
+                </div>
+            </footer>
+        </div>
+
+        <div id="right-section">
+            <div>
+                <div class="choice-div">
+                <ul class="choice-list">
+                    <li class="choice-item free" data-toggle="tooltip" data-placement="bottom" title="СВОБОДЕН" data-bind="click: freeItemChecked "></li>
+                    <li class="choice-item busy " data-toggle="tooltip" data-placement="bottom" title="ЗАЕТ" data-bind="click: busyItemChecked"></li>
+                    <li class="choice-item absent" data-toggle="tooltip" data-placement="bottom" title="ОТСЪСТВАЩ"data-bind="click: absentItemChecked"></li>
+                    <li class="choice-item offline" data-toggle="tooltip" data-placement="bottom" title="ИЗВЪН ЛИНИЯ" data-bind="click: offlineItemChecked"></li>
+                    <li class="choice-item offduty" data-toggle="tooltip" data-placement="bottom" title="НЕ НА РАБОТА" data-bind="click: offdutyItemChecked"></li>
+                </ul>
+                    </div>
+                <div class="clear"></div>
+            <div id="map" style="height: 800px; overflow: hidden;"></div>
+                </div>
+            <div  id="requestInfo" data-bind="with: requestInfoData">
+                <h4 style="text-align:center">ЗАЯВКА №<span data-bind="text: id"></span></h4>
+                <table class="table table-striped" >
+                    <thead><tr><th> </th><th> </th></thead>
+                    <tbody>
+                        <tr>
+                            <td>Начален адрес</td>
+                            <td data-bind="text: startingAddress"></td>
+                        </tr>
+                        <tr>
+                            <td>Краен адрес</td>
+                            <td data-bind="text: finishAddress"></td>
+                        </tr>
+                        <tr>
+                            <td>Статус</td>
+                            <td><span class="label" style="font-size: 15px" data-bind="text: message, css: className"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Създадена от</td>
+                            <td data-bind="text: createdBy"></td>
+                        </tr>
+                        <tr>
+                            <td>Дата на създаване</td>
+                            <td data-bind="text: createdDateTime"></td>
+                        </tr>
+                        <tr>
+                            <td>Приета от</td>
+                            <td data-bind="text: takenBy"></td>
+                        </tr>
+                        <tr>
+                            <td>Разстояние на шофьора до заявката</td>
+                            <td data-bind="text: distance"></td>
+                        </tr>
+                        <tr>
+                            <td>Време до пристигане</td>
+                            <td data-bind="text: duration"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="text-align:center">
+                <button class="btn btn-default" onclick="requestInfoClose()">Затвори</button>
+                    </div>
+            </div>
+
+        </div>
+        </div>
 
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJ1lJPmsUd0xhzn97x8kZXQtJEwh0dgGQ"></script>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/knockout")
-    @Scripts.Render("~/bundles/app")
-    @Scripts.Render("~/bundles/modernizr")
-   
+
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJ1lJPmsUd0xhzn97x8kZXQtJEwh0dgGQ"></script>
+        <script>
+            
+            window.onresize = function () {
+                document.getElementById("request-search-page").style.height = (document.body.offsetHeight - 134) + "px"
+                document.getElementById("requests-page").style.height = (document.body.offsetHeight - 134) + "px"
+                document.getElementById("car-search-page").style.height = (document.body.offsetHeight - 134) + "px"
+                document.getElementById("map").style.height = (document.body.offsetHeight - 120) + "px"
+            };
+            window.onresize();
+        </script>
+        @Scripts.Render("~/bundles/knockout")
+        @Scripts.Render("~/bundles/app")
+        @Scripts.Render("~/bundles/modernizr")
+
         <!-- Histats.com  START  (aync)-->
         <div hidden>
             <script type="text/javascript">
@@ -105,8 +233,8 @@
             <!-- Histats.com  END  -->
         </div>
 
-    <script>
-        
-    </script>
+        <script>
+
+        </script>
 </body>
 </html>

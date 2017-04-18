@@ -12,7 +12,7 @@ namespace BgTaxi.Models.Models
         [Key]
         public int Id { get; set; }
         public string DispatcherUserId { get; set; }
-        public RequestInfo Request { get; set; }
+        public virtual RequestInfo Request { get; set; }
         public DateTime LastSeen { get; set; }
         public RequestStatusEnum LastSeenStatus { get; set; }
     }

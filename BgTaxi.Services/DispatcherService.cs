@@ -12,30 +12,30 @@ namespace BgTaxi.Services
 {
     public class DispatcherService: IDispatcherService
     {
-        private readonly IDatabase data;
+        private readonly IDatabase _data;
         public  DispatcherService(IDatabase database)
         {
-            this.data = database; 
+            this._data = database; 
         }
 
         public void AddDispatcher(Dispatcher dispatcher)
         {
-            data.Dispatchers.Add(dispatcher);
-            data.SaveChanges();
+            _data.Dispatchers.Add(dispatcher);
+            _data.SaveChanges();
         }
 
         public IEnumerable<Dispatcher> GetAll()
         {
-            return data.Dispatchers.Include(x=>x.Company).AsEnumerable();
+            return _data.Dispatchers.Include(x=>x.Company).AsEnumerable();
         }
         public IEnumerable<DispatcherDashboard> GetAllDashboards()
         {
-            return data.DispatchersDashboard.AsEnumerable();
+            return _data.DispatchersDashboard.AsEnumerable();
         }
 
         public void SaveChanges()
         {
-            data.SaveChanges();
+            _data.SaveChanges();
         }
     }
 }

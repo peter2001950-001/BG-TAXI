@@ -12,7 +12,7 @@ namespace BgTaxi.Models.Models
         [Key]
         public int Id { get; set; }
         public RequestInfo Request { get; set; }
-        public Car AppropriateCar { get; set; }
+        public virtual Car AppropriateCar { get; set; }
 
         public DateTime DateTimeChosenCar { get; set; }
     }

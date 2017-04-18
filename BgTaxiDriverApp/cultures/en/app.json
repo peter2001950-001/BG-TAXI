@@ -1,0 +1,36 @@
+{
+  "_app": {
+    "navigationMore": "More",
+    "showMoreTitle": "Show More",
+    "qrCodeScan": "Scan"
+  },
+  "home": {
+    "title": "Вход",
+    "homeModel": {
+      "emailLabel": "Имейл",
+      "passwordLabel": "Парола",
+      "signinLabel": "Напред"
+    }
+  },
+  "mainView": {
+    "title": "Main View"
+  },
+  "requestsView": {
+    "title": "Requests View"
+  },
+  "currentRequestView": {
+    "title": "CurrentRequest View"
+  },
+  "companyCodeView": {
+    "title": "Фирма",
+    "companyCodeViewModel": {
+      "submitButton": "Запази",
+      "cancelButton": "Откажи",
+      "editableListForm": {
+        "companyCode": {
+          "title": "Уникален код на фирмата"
+        }
+      }
+    }
+  }
+}

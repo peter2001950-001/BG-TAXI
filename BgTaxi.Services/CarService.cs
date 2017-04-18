@@ -22,13 +22,13 @@ namespace BgTaxi.Services
 
         public IEnumerable<Car> GetCars()
         {
-            return data.Cars.AsEnumerable();
+            return data.Cars.Include(x=>x.Company).AsEnumerable();
 
         }
         public Car GetCarByDriver(Driver driver)
         {
-           Driver foundDriver = data.Drivers.Where(x => x.Id == driver.Id).Include(x => x.Car).FirstOrDefault();
-            return foundDriver.Car;
+            Driver foundDriver = data.Drivers.Where(x => x.Id == driver.Id).Include(x => x.Car).FirstOrDefault();
+            return foundDriver?.Car;
         }
         public void UpdateCarInfo(Car car, Models.Models.Location location, bool absent, bool free)
         {
@@ -115,14 +115,11 @@ namespace BgTaxi.Services
 
         public bool ModifyCar(int carId, Car modification)
         {
-            var car = data.Cars.Where(x => x.Id == carId).FirstOrDefault();
-            if(car != null)
-            {
-                car = modification;
-                data.SaveChanges();
-                return true;
-            }
-            return false;
+            var car = data.Cars.FirstOrDefault(x => x.Id == carId);
+            if (car == null) return false;
+            car = modification;
+            data.SaveChanges();
+            return true;
         }
         
     }

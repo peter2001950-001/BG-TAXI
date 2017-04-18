@@ -15,9 +15,9 @@ namespace BgTaxi.Models.Models
 
         public string UserId { get; set; }
 
-       public Car Car { get; set; }
+       public virtual Car Car { get; set; }
 
-        public Company Company { get; set; }
+        public virtual Company Company { get; set; }
         
     }
 }

@@ -12,10 +12,11 @@ namespace BgTaxi.Models.Models
         public string Name { get; set; }
         public string EIK { get; set; }
         public string DDS { get; set; }
-        public string Address { get; set; }
+        public string City { get; set; }
         public string MOL { get; set; }
         public string UserId { get; set; }
         public string UniqueNumber { get; set; }
+        public  Location CityLocation { get; set; }
 
 
     }

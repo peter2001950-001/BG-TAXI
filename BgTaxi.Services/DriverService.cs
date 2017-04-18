@@ -12,31 +12,31 @@ namespace BgTaxi.Services
 {
    public class DriverService: IDriverService
     {
-        readonly IDatabase data;
+        readonly IDatabase _data;
         public DriverService(IDatabase data)
         {
-            this.data = data;
+            this._data = data;
         }
 
         public IEnumerable<Driver> GetAll()
         {
-            return data.Drivers.AsEnumerable();
+            return _data.Drivers.AsEnumerable();
 
         }
 
         public Driver GetDriverByUserId(string userId)
         {
-           return data.Drivers.Where(x => x.UserId == userId).FirstOrDefault();
+           return _data.Drivers.FirstOrDefault(x => x.UserId == userId);
 
         }
 
         public bool DriverModify(int Id, Driver modification)
         {
-            var driver = data.Drivers.Where(x => x.Id == Id).FirstOrDefault();
+            var driver = _data.Drivers.FirstOrDefault(x => x.Id == Id);
             if(driver != null)
             {
                 driver = modification;
-                data.SaveChanges();
+                _data.SaveChanges();
                 return true;
             }
             return false;
@@ -44,26 +44,26 @@ namespace BgTaxi.Services
 
         public bool RemoveDriver(Driver driver)
         {
-            data.Drivers.Remove(driver);
-            data.SaveChanges();
+            _data.Drivers.Remove(driver);
+            _data.SaveChanges();
             return true;
         }
 
         public void ChangeCarStatus(string driverId, CarStatus carStatus)
         {
-            var driver = data.Drivers.Where(x => x.UserId == driverId).Include(x => x.Car).FirstOrDefault();
+            var driver = _data.Drivers.Where(x => x.UserId == driverId).Include(x => x.Car).FirstOrDefault();
             driver.Car.CarStatus = carStatus;
-            data.SaveChanges();
+            _data.SaveChanges();
         }
         public void AddDriver(Driver driver)
         {
-            data.Drivers.Add(driver);
-            data.SaveChanges();
+            _data.Drivers.Add(driver);
+            _data.SaveChanges();
         }
 
         public void SaveChanges()
         {
-            data.SaveChanges();
+            _data.SaveChanges();
         }
     }
 }

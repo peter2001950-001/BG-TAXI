@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BgTaxi.Services.Contracts
 {
-   public interface IDashboardService
+    public interface IDashboardService
     {
 
         IEnumerable<DispatcherDashboard> GetAll();

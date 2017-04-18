@@ -13,6 +13,6 @@ namespace BgTaxi.Models.Models
         [Key]
         public int Id { get; set; }
         public string  UserId { get; set; }
-        public Company  Company { get; set; }
+        public virtual Company  Company { get; set; }
     }
 }

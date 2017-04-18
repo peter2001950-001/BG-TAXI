@@ -92,7 +92,7 @@
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\CarDismissedRequest.cs" />
     <Compile Include="Models\Company.cs" />
-    <Compile Include="Models\Database.cs" />
+    <Compile Include="Database.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\Dispatcher.cs" />
     <Compile Include="Models\DispatcherDashboard.cs" />

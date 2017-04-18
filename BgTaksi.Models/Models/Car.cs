@@ -19,7 +19,7 @@ namespace BgTaxi.Models.Models
         public Location Location { get; set; }
         public CarStatus CarStatus { get; set; }
 
-        public Company Company { get; set; }
+        public virtual Company Company { get; set; }
         public DateTime LastActiveDateTime { get; set; }
     }
 

@@ -1,153 +1,131 @@
-﻿using BgTaxi.Models;
+﻿using System.Linq;
+using System.Web.Http.Cors;
+using System.Web.Mvc;
 using BgTaxi.Models.Models;
 using BgTaxi.Services.Contracts;
 using BgTaxi.Web.ActionFilter;
-using System.Linq;
-using System.Web.Http.Cors;
-using System.Web.Mvc;
 
 namespace BgTaxi.Web.Controllers
 {
-    [AllowCrossSiteJsonAttribute]
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [AllowCrossSiteJson]
+    [EnableCors("*", "*", "*")]
     public class RequestController : Controller
     {
+        private readonly IAccessTokenService _accessTokenService;
+        private readonly ICarService _carService;
+        private readonly IDriverService _driverService;
 
-        private readonly IRequestService requestService;
-        private readonly ICarService carService;
-        private readonly IDriverService driverService;
-        private readonly IAccessTokenService accessTokenService;
+        private readonly IRequestService _requestService;
 
-        public RequestController(IRequestService requestService, ICarService carService, IDriverService driverService, IAccessTokenService accessTokenService)
+        public RequestController(IRequestService requestService, ICarService carService, IDriverService driverService,
+            IAccessTokenService accessTokenService)
         {
-            this.requestService = requestService;
-            this.carService = carService;
-            this.driverService = driverService;
-            this.accessTokenService = accessTokenService;
+            this._requestService = requestService;
+            this._carService = carService;
+            this._driverService = driverService;
+            this._accessTokenService = accessTokenService;
         }
-        
-        public JsonResult Pull(double lon, double lat, string accessToken, bool absent = false, bool free = false, bool onAddress = false)
+
+        public JsonResult Pull(double lon, double lat, string accessToken, bool absent = false, bool free = false,
+            bool onAddress = false)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var newAccessToken = accessTokenService.GenerateAccessToken(accessToken);
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
 
                 if (newAccessToken == null)
-                {
-                    return Json(new { status = "INVALID ACCESSTOKEN" });
-                }
+                    return Json(new {status = "INVALID ACCESSTOKEN"});
 
-                var userId = accessTokenService.GetUserId(newAccessToken);
-                
-                var driver = driverService.GetDriverByUserId(userId);
-                Car car = carService.GetCarByDriver(driver);
-                carService.UpdateCarInfo(car, new Models.Models.Location() { Latitude = lat, Longitude = lon }, absent, free);
+                var userId = _accessTokenService.GetUserId(newAccessToken);
+
+                var driver = _driverService.GetDriverByUserId(userId);
+                var car = _carService.GetCarByDriver(driver);
+                _carService.UpdateCarInfo(car, new Location {Latitude = lat, Longitude = lon}, absent, free);
 
                 if (onAddress)
-                {
-                    if (carService.CarOnAddress(car))
-                    {
-                        return Json(new { status = "OK", onAddress = true, accessToken = newAccessToken });
-                    }
-                   
-                }
+                    if (_carService.CarOnAddress(car))
+                        return
+                            Json(
+                                new
+                                {
+                                    status = "OK",
+                                    onAddress = true,
+                                    carStatus = car.CarStatus,
+                                    accessToken = newAccessToken
+                                });
 
-                if (carService.CarOnAddressCheck(car))
-                {
-                    return Json(new { status = "OK", onAddress = true, accessToken = newAccessToken });
-                }
+                if (_carService.CarOnAddressCheck(car))
+                    return
+                        Json(
+                            new
+                            {
+                                status = "OK",
+                                onAddress = true,
+                                carStatus = car.CarStatus,
+                                accessToken = newAccessToken
+                            });
 
-                var requestObj = requestService.AppropriateRequest(car);
-                if(requestObj!=null)
-                {
-                    return Json(new { status = "OK", accessToken = newAccessToken, request = requestObj });
-                }
+                var requestObj = _requestService.AppropriateRequest(car);
+                if (requestObj != null)
+                    return
+                        Json(
+                            new
+                            {
+                                status = "OK",
+                                accessToken = newAccessToken,
+                                carStatus = car.CarStatus,
+                                request = requestObj
+                            });
 
-                return Json(new { status = "OK", accessToken = newAccessToken });
+                return Json(new {status = "OK", carStatus = car.CarStatus, accessToken = newAccessToken});
             }
-            else
-            {
-                return Json(new { });
-            }
-
+            return Json(new {});
         }
 
-        
+
         public JsonResult RequestAnswer(int requestID, string accessToken, bool answer)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var newAccessToken = accessTokenService.GenerateAccessToken(accessToken);
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
 
-                    if (newAccessToken == null)
-                    {
-                        return Json(new { status = "INVALID ACCESSTOKEN" });
-                    }
-                if (requestService.GetActiveRequests().Any(x => x.Request.Id == requestID))
+                if (newAccessToken == null)
+                    return Json(new {status = "INVALID ACCESSTOKEN"});
+                if (_requestService.GetActiveRequests().ToList().Any(x => x.Request.Id == requestID))
                 {
-                    
-                    var userId = accessTokenService.GetUserId(newAccessToken);
-                    var driver = driverService.GetDriverByUserId(userId);
+                    var userId = _accessTokenService.GetUserId(newAccessToken);
+                    var driver = _driverService.GetDriverByUserId(userId);
                     if (!answer)
                     {
-                        requestService.UpdateAnswer(answer, requestID, driver);
-                        return Json(new { status = "OK", accessToken = newAccessToken });
+                        _requestService.UpdateAnswer(false, requestID, driver);
+                        return Json(new {status = "OK", accessToken = newAccessToken});
                     }
 
                     if (driver != null)
-                    {
-                       if(requestService.UpdateAnswer(answer, requestID, driver))
-                        {
-                            return Json(new { status = "OK", accessToken = newAccessToken });
-                          
-                        }else
-                        {
-                            return Json(new { status = "ERR", accessToken = newAccessToken });
-                        }
-                    }
-                    else
-                    {
-                        return Json(new { status = "ERR", accessToken = newAccessToken});
-                    }
+                        if (_requestService.UpdateAnswer(true, requestID, driver))
+                            return Json(new {status = "OK", accessToken = newAccessToken});
+                        else
+                            return Json(new {status = "ERR", accessToken = newAccessToken});
+                    return Json(new {status = "ERR", accessToken = newAccessToken});
                 }
-                else
-                {
-                    return Json(new { status = "REMOVED", accessToken = newAccessToken });
-                }
+                return Json(new {status = "REMOVED", accessToken = newAccessToken});
             }
-            else
-            {
-                return Json(new { });
-            }
+            return Json(new {});
         }
 
-   
+
         public JsonResult FinishRequest(int requestId, string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var newAccessToken = accessTokenService.GenerateAccessToken(accessToken);
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
 
                 if (newAccessToken == null)
-                {
-                    return Json(new { status = "INVALID ACCESSTOKEN" });
-                }
-                var userId = accessTokenService.GetUserId(newAccessToken);
-                if(requestService.FinishRequest(requestId, userId)) { 
-
-                        return Json(new { status = "OK", accessToken = newAccessToken });
-                }else {
-                    return Json(new { status = "ERR", accessToken = newAccessToken });
-                }
+                    return Json(new {status = "INVALID ACCESSTOKEN"});
+                var userId = _accessTokenService.GetUserId(newAccessToken);
+                return Json(_requestService.FinishRequest(requestId, userId) ? new {status = "OK", accessToken = newAccessToken} : new {status = "ERR", accessToken = newAccessToken});
             }
-            else
-            {
-                return Json(new { });
-            }
-
+            return Json(new {});
         }
-     
-        
-
     }
 }

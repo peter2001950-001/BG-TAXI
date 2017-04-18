@@ -6,7 +6,7 @@
 
 <div style="background:white" class="container">
 
-    <h2 style="text-align:center">Шофьори</h2>
+    <h2 style="text-align:center">СЛУЖИТЕЛИ</h2>
     @using (Html.BeginForm("RegisterEmployee", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
@@ -67,11 +67,16 @@
                         </div>
                     </div>
 
+                    <div class="form-group col-md-10">
+                        <div class="g-recaptcha" data-sitekey="6LcjhQ4UAAAAAFYSK8r7CNYhi64d1MQQy6ciA5Dh"></div>
+                    </div>
+
 
     }
 
 
 </div>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

@@ -14,3 +14,19 @@ C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.Services\bin\
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.Services\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.Services\bin\Debug\BgTaxi.PlacesAPI.pdb
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.Services\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\BgTaxi.Services.dll.config
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\BgTaxi.Services.dll
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\BgTaxi.Services.pdb
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\BgTaksi.Models.dll
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\BgTaxi.PlacesAPI.dll
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\EntityFramework.dll
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\BgTaksi.Models.pdb
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\BgTaxi.PlacesAPI.pdb
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\EntityFramework.xml
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Peter\Desktop\160\BgTaxi.Services\obj\Debug\BgTaxi.Services.csprojResolveAssemblyReference.cache
+C:\Users\Peter\Desktop\160\BgTaxi.Services\obj\Debug\BgTaxi.Services.dll
+C:\Users\Peter\Desktop\160\BgTaxi.Services\obj\Debug\BgTaxi.Services.pdb

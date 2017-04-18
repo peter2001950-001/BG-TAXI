@@ -297,6 +297,13 @@
     <Content Include="Content\appFiles\BgTaxiDriver.xap" />
     <Content Include="Content\bootstrap-1.0.css" />
     <Content Include="Attributes\bootstrap.min.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\dashboard-1.0.css" />
+    <Content Include="Content\fontAwesome\fontawesome-webfont.svg" />
+    <Content Include="Content\fontello\fontello.svg" />
     <Content Include="Content\images\1478892620_8-1.png" />
     <Content Include="Content\images\1478892620_8.png" />
     <Content Include="Content\images\1479073708_90.png" />
@@ -307,6 +314,8 @@
     <Content Include="Content\images\1481638181_92.png" />
     <Content Include="Content\images\1481638208_1.png" />
     <Content Include="Content\images\1481638215_85.png" />
+    <Content Include="Content\images\1491878503_94.png" />
+    <Content Include="Content\images\1491878530_info-alt.png" />
     <Content Include="Content\images\Android-logo-wordmark-2014-1024x768.png" />
     <Content Include="Content\images\androidQRCode.jpg" />
     <Content Include="Content\images\appOnPhones.png" />
@@ -325,14 +334,30 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\app\main.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\appFiles\BgTaxiClient.apk" />
     <Content Include="Content\appFiles\BgTaxiDriver.apk" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\fontello\fontello.eot" />
+    <Content Include="Content\fontello\fontello.ttf" />
+    <Content Include="Content\fontello\fontello.woff" />
+    <Content Include="Content\fontello\fontello.woff2" />
+    <Content Include="Content\fontAwesome\fontawesome-webfont.eot" />
+    <Content Include="Content\fontAwesome\fontawesome-webfont.ttf" />
+    <Content Include="Content\fontAwesome\fontawesome-webfont.woff" />
+    <Content Include="Content\fontAwesome\fontawesome-webfont.woff2" />
+    <Content Include="Content\fontAwesome\FontAwesome.otf" />
     <None Include="Properties\PublishProfiles\Peter.pubxml" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.js" />
+    <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="Scripts\knockout-2.3.0.debug.js" />
     <Content Include="Scripts\knockout-2.3.0.js" />
     <Content Include="Scripts\knockout.validation.debug.js" />
@@ -397,18 +422,16 @@
     <Content Include="Views\Manage\UserRequests.cshtml" />
     <Content Include="Views\Manage\IndexDispatcher.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.1.1.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Download\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BgTaksi.Models\BgTaxi.Models.csproj">

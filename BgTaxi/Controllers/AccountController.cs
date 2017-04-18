@@ -1,4 +1,6 @@
-﻿namespace BgTaxi.Controllers
+﻿using BgTaxi.PlacesAPI.GoogleRequests;
+
+namespace BgTaxi.Controllers
 {
 using System;
 using System.Linq;
@@ -174,9 +176,9 @@ using BgTaxi.Services.Contracts;
                                 return Json(new { status = "NO PERMISSION", accessToken = newAccessToken });
 
                             case "2":
-                                bool haveCar = driverService.GetAll().Any(x => x.Car != null && x.UserId == findAcync.Result.Id);
-                                bool haveCompany = driverService.GetAll().Any(x => x.Company != null && x.UserId == findAcync.Result.Id);
-                                bool alreadyLoggedIn = deviceService.GetAll().Any(x => x.UserId == findAcync.Result.Id);
+                                bool haveCar = driverService.GetAll().ToList().Any(x => x.Car != null && x.UserId == findAcync.Result.Id);
+                                bool haveCompany = driverService.GetAll().ToList().Any(x => x.Company != null && x.UserId == findAcync.Result.Id);
+                                bool alreadyLoggedIn = deviceService.GetAll().ToList().Any(x => x.UserId == findAcync.Result.Id);
                                 if (haveCar && haveCompany && !alreadyLoggedIn)
                                 {
                                     accessTokenService.AddDeviceUserId(newAccessToken, findAcync.Result.Id);
@@ -347,9 +349,10 @@ using BgTaxi.Services.Contracts;
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterClient(RegisterClientViewModel model)
+        [CaptchaValidator]
+        public async Task<ActionResult> RegisterClient(RegisterClientViewModel model, bool captchaValid)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && captchaValid)
             {
                
                     var user = new Models.ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
@@ -374,9 +377,10 @@ using BgTaxi.Services.Contracts;
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterEmployee(RegisterEmployeeViewModel model)
+        [CaptchaValidator]
+        public async Task<ActionResult> RegisterEmployee(RegisterEmployeeViewModel model, bool captchaValid)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid&&captchaValid)
             {
                 if (companyService.GetAll().Any(x => x.UniqueNumber == model.UniqueNumber))
                 {
@@ -387,7 +391,7 @@ using BgTaxi.Services.Contracts;
                     
                     if (result.Succeeded)
                     {
-                        var company = companyService.GetAll().Where(x => x.UniqueNumber == model.UniqueNumber).First();
+                        var company = companyService.GetAll().First(x => x.UniqueNumber == model.UniqueNumber.ToUpper());
                         if (model.SelectedEmployee == "1")
                         {
                             UserManager.AddToRole(user.Id, "Driver");
@@ -399,19 +403,13 @@ using BgTaxi.Services.Contracts;
                             dispatcherService.AddDispatcher(new BgTaxi.Models.Models.Dispatcher { UserId = user.Id, Company = company });
 
                         }
-
-                       
-                        //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-                        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                        // Send an email with this link
+                        
                         string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                         var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                         await UserManager.SendEmailAsync(user.Id, "Потвърдете вашата регистрация", string.Format("<p><span style='font-family:times new roman,times,serif;'>Здравейте {0},<br/>Вие успешно регистрирахте в сайта bgtaxi.com.</span></p><p>Моля, активирайте вашия акаунт, като натиснете върху линка по-долу:</p><h2><a href='{1}'>Активирай сега</a></h2>", user.FirstName, callbackUrl));
 
                         return View("SuccessfulRegistration");
                     }
-                    AddErrors(result);
                 }
             }
 
@@ -422,16 +420,18 @@ using BgTaxi.Services.Contracts;
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RegisterCompany(RegisterCompanyViewModel model)
+        [CaptchaValidator]
+        public async Task<ActionResult> RegisterCompany(RegisterCompanyViewModel model, bool captchaValid)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid&&captchaValid)
             {
-                const string AllowedChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                const string allowedChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 Random rng = new Random();
-                var uniqueString = RandomString(AllowedChars, 6, rng);
+                var uniqueString = RandomString(allowedChars, 6, rng);
                 while ((companyService.GetAll().Any(x => x.UniqueNumber == uniqueString))){
-                    uniqueString = RandomString(AllowedChars, 6, rng);
-                }                
+                    uniqueString = RandomString(allowedChars, 6, rng);
+                }
+                var cityLocation = GoogleAPIRequest.GetLocation(model.Address);
 
                 var user = new Models.ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber, FirstName = model.FirstName, LastName = model.LastName };
 
@@ -439,7 +439,7 @@ using BgTaxi.Services.Contracts;
               
                 if (result.Succeeded)
                 {
-                    var company = new Company { Name = model.CompanyName, Address = model.Address, DDS = model.DDS, EIK = model.EIK, MOL = model.MOL, UserId = user.Id, UniqueNumber = uniqueString };
+                    var company = new Company { Name = model.CompanyName, City = model.Address, DDS = model.DDS, EIK = model.EIK, MOL = model.MOL, UserId = user.Id, UniqueNumber = uniqueString, CityLocation = cityLocation};
                     companyService.AddCompany(company);
                     UserManager.AddToRole(user.Id, "Company");
 
@@ -448,7 +448,7 @@ using BgTaxi.Services.Contracts;
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     string email = String.Format("<p><span style='font-family:times new roman,times,serif;'>Здравейте {0},<br/>Вие успешно регистрирахте Вашата фирма:<br/>{1}&nbsp;<br/>ЕИК:{2}<br/>ДДС №:{3}<br/>Адрес №:{4}<br/>МОЛ:{5}</span></p><h3><a href='{7}'> Активирайте вашия акаунт!</a></h3><h3><span style='font-family:times new roman,times,serif;'>Уникалният код на Вашата&nbsp;фирмата е:</span></h3><h2 style='text-align: center;'><span style='font-family:times new roman,times,serif;'><span><b>{6}</b></span></span></h2><h3 style='text-align: center;'><span style='font-family:times new roman,times,serif;'><span>Този код е изключетелно важен, защото чрез него вашите служители ще помогат да направят своите регистрации в сайта bgtaxi.net</span></span></h3>",
-                        user.FirstName, company.Name, company.EIK, company.DDS, company.Address, company.MOL, uniqueString, callbackUrl);
+                        user.FirstName, company.Name, company.EIK, company.DDS, company.City, company.MOL, uniqueString, callbackUrl);
                     await UserManager.SendEmailAsync(user.Id, "Регистрация в bgtaxi.net", email);
 
                     return View("SuccessfulRegistration");

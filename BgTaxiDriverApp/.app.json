@@ -1,0 +1,102 @@
+{
+  "type": "kendo-ui-mobile",
+  "views": [
+    {
+      "type": "kendo-ui-mobile:view",
+      "name": "home",
+      "components": [
+        {
+          "type": "kendo-ui-mobile:authentication",
+          "name": "homeModel",
+          "dataProvider": "bgTaxiDriver",
+          "enableRegistration": false,
+          "enableLogout": false,
+          "enableRememberme": false,
+          "emailLabel": "Имейл",
+          "passwordLabel": "Парола",
+          "signinLabel": "Напред",
+          "signinRedirect": "mainView"
+        }
+      ],
+      "title": "Вход",
+      "addToNavigation": true,
+      "icon": "home"
+    },
+    {
+      "type": "kendo-ui-mobile:view",
+      "name": "mainView",
+      "components": [],
+      "title": "Main View",
+      "addToNavigation": true,
+      "icon": "home"
+    },
+    {
+      "type": "kendo-ui-mobile:view",
+      "name": "requestsView",
+      "components": [],
+      "title": "Requests View",
+      "addToNavigation": false
+    },
+    {
+      "type": "kendo-ui-mobile:view",
+      "name": "currentRequestView",
+      "components": [],
+      "title": "CurrentRequest View",
+      "addToNavigation": false
+    },
+    {
+      "type": "kendo-ui-mobile:view",
+      "name": "companyCodeView",
+      "components": [
+        {
+          "type": "kendo-ui-mobile:form",
+          "components": [
+            {
+              "type": "kendo-ui-mobile:editableListForm",
+              "components": [
+                {
+                  "type": "kendo-ui-mobile:editableListFormField",
+                  "name": "companyCode",
+                  "dataBindingRelationChildren": "[]",
+                  "dataBindingMultipleSelectChildren": "[]",
+                  "title": "Уникален код на фирмата",
+                  "inputType": "text",
+                  "titlePosition": "left",
+                  "inputTextType": "text",
+                  "dataBinding": "DisplayName"
+                }
+              ],
+              "name": "editableListForm",
+              "formType": "add"
+            }
+          ],
+          "name": "companyCodeViewModel",
+          "enableDataBinding": true,
+          "dataProvider": "bgTaxiDriver",
+          "collection": "Users",
+          "submitButton": "Запази",
+          "cancelButton": "Откажи"
+        }
+      ],
+      "title": "Фирма",
+      "addToNavigation": false
+    }
+  ],
+  "dataProviders": [
+    {
+      "type": "kendo-ui-mobile:dataProvider",
+      "name": "bgTaxiDriver",
+      "source": "everlive",
+      "everliveKey": "g3zzzntab23m2ln2",
+      "offlineStorage": true,
+      "title": "BgTaxiDriver / BgTaxiDriver"
+    }
+  ],
+  "name": "kendoUiMobileApp",
+  "navigation": "none",
+  "view": "home",
+  "skin": "nova",
+  "skinMainColor": "#333333",
+  "skinTextColor": "#ffffff",
+  "skinAccentColor": "#ff9900"
+}

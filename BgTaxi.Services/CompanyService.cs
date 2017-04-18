@@ -1,48 +1,45 @@
 ﻿using BgTaxi.Models;
 using BgTaxi.Models.Models;
-using BgTaxi.Services;
 using BgTaxi.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BgTaxi.Services
 {
     public class CompanyService: ICompanyService
     {
-        private readonly IDatabase data;
+        private readonly IDatabase _data;
         public CompanyService(IDatabase data)
         {
-            this.data = data;
+            this._data = data;
         }
 
         public void AddCompany(Company company)
         {
-            data.Companies.Add(company);
-            data.SaveChanges();
+            _data.Companies.Add(company);
+            _data.SaveChanges();
         }
 
         public IEnumerable<Company> GetAll()
         {
-            return data.Companies.AsEnumerable();
+            return _data.Companies.AsEnumerable();
         }
 
         public void SaveChanges()
         {
-            data.SaveChanges();
+            _data.SaveChanges();
         }
 
         public Company UpdateCompany(string uniqueNumber, string name, string mol, string eik, string dds, string address)
         {
-            var company = data.Companies.Where(x => x.UniqueNumber == uniqueNumber).First();
+            var company = _data.Companies.Where(x => x.UniqueNumber == uniqueNumber).First();
             company.Name = name;
             company.MOL = mol;
             company.EIK = eik;
             company.DDS = dds;
-            company.Address = address;
-            data.SaveChanges();
+            company.City = address;
+            _data.SaveChanges();
             return company;
         }
     }

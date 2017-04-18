@@ -1,0 +1,52 @@
+{
+  "ProjectName": "BgTaxiDriver",
+  "ProjectGuid": "82ec8ab0-4288-4bd5-8344-d2682a989b61",
+  "projectVersion": 1,
+  "AppIdentifier": "com.telerik.BgTaxiDriver",
+  "DisplayName": "BgTaxiDriver",
+  "Author": "",
+  "Description": "BgTaxiDriver",
+  "BundleVersion": "1.0",
+  "AndroidVersionCode": "1",
+  "iOSDeviceFamily": [
+    "1",
+    "2"
+  ],
+  "iOSBackgroundMode": [],
+  "ProjectTypeGuids": "{070BCB52-5A75-4F8C-A973-144AF0EAFCC9}",
+  "FrameworkVersion": "4.0.0",
+  "AndroidPermissions": [
+    "android.permission.INTERNET"
+  ],
+  "DeviceOrientations": [
+    "Portrait",
+    "Landscape"
+  ],
+  "AndroidHardwareAcceleration": "true",
+  "iOSStatusBarStyle": "Default",
+  "Framework": "Cordova",
+  "WP8TileTitle": "",
+  "WP8Publisher": "",
+  "WP8Capabilities": [
+    "ID_CAP_NETWORKING",
+    "ID_CAP_WEBBROWSERCOMPONENT"
+  ],
+  "WP8Requirements": [],
+  "WP8PublisherID": "{2dfe93db-91e1-435f-8ea1-f2d16640014d}",
+  "WP8ProductID": "{2672ed5d-53c6-4dd2-9145-5a783b7546b7}",
+  "WPSdk": "8.0",
+  "WP8PackageIdentityName": "1234Telerik.BgTaxiDriver",
+  "WP8WindowsPublisherName": "CN=Telerik",
+  "WP8SupportedResolutions": [
+    "ID_RESOLUTION_WVGA",
+    "ID_RESOLUTION_WXGA",
+    "ID_RESOLUTION_HD720P"
+  ],
+  "CordovaPluginVariables": {
+    "com.telerik.plugin.telerikanalytics": {
+      "AUTO_TRACK_EXCEPTIONS": "True",
+      "AUTO_TRACK_KENDO_EVENTS": "True",
+      "PRODUCT_ID": "030f1338c4a94769810ad5243099ddd4"
+    }
+  }
+}

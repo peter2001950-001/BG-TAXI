@@ -1,21 +1,16 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿
+@{
+    ViewBag.Title = "Companies";
 }
+
 
 <div class="jumbotron background-color-yellow">
     <div class="row">
-        <img class="jumbotron-image jumbotron-float-left fadeIn" src="~/Content/images/appOnPhones.png" />
+        <img class="jumbotron-image jumbotron-float-right fadeIn" src="~/Content/images/companyMonitor.png" />
         <div style="text-align: center; ">
-            <h1>Поръчайте вашето такси само с един клик</h1><br />
-            <h4>Вземете приложението:</h4>
-            <ul style="list-style:none">
-                <li>
-                    <a href="http://bgtaxi.net/download/client/apk"><img class="platform-logo" src="~/Content/images/Android-logo-wordmark-2014-1024x768.png" /></a>
-                </li>
-                <li>
-                   <a href="http://bgtaxi.net/download/client/hap"><img class="platform-logo" src="~/Content/images/Windows_Phone_logo.png" /></a>
-                </li>
-            </ul>
+            <h1>Управлявайте своята таксиметрова компания с лекота и сигурност.</h1><br />
+            <h4>Направете своята регистация сега и започнете работа с приложението веднага</h4>
+            @Html.ActionLink("Регистрирай се", "RegisterCompany", "Account", "", new { @class = "btn btn-success", @style="font-size: 30px;" })
         </div>
 
     </div>
@@ -27,42 +22,42 @@
             <div class="col-md-4 box-spacing ">
                 <div class="white-box">
                     <div style="width:40%; margin: 0 auto;">
-                        <img src="~/Content/images/1479075598_88.png" style="width:100%" />
-                                            </div>
-                    <h4 style="text-align: center">Бърз начин<br /> да поръчате такси</h4>
+                        <img src="~/Content/images/1481638181_92.png" style="width:100%" />
+                    </div>
+                    <h4 style="text-align: center">Сигурно място<br /> за управление на таксиметрова компания</h4>
                     <p style="text-align: justify" id="takerLbl">
-                        Изкючетелно лесен и бърз начин да повикате такси само за няколко секунди свързвайки се с най-близката кола в района.
+                        Уеб порталът позволява управлението на всички шофьори, диспечери и служители само с няколко клика.
                     </p>
                 </div>
             </div>
             <div class="col-md-4 box-spacing">
                 <div class="white-box">
                     <div style="width:40%; margin: 0 auto;">
-                        <img src="~/Content/images/1478892620_8-1.png" style="width:100%" />
+                        <img src="~/Content/images/1481638215_85.png" style="width:100%" />
                     </div>
-                    <h4 style="text-align: center">Автоматично определяне на местоположението</h4>
+                    <h4 style="text-align: center">Получавайте справки<br />  за ефективността на компанията</h4>
                     <p style="text-align: justify" id="takerLbl">
-                        Вече не е необходимо да знаете точно къде се намирате, за да поръчате такси. Приложението се грежи за това вместо Вас.
+                        По всяко време можете да получите статистики за работата на своите служители
                     </p>
                 </div>
             </div>
             <div class="col-md-4 box-spacing">
                 <div class="white-box">
                     <div style="width:40%; margin: 0 auto;">
-                        <img src="~/Content/images/1479073708_90.png" style="width:100%" />
+                        <img src="~/Content/images/1481638208_1.png" style="width:100%" />
                     </div>
-                    <h4 style="text-align: center">Без ненужни обаждания </h4>
+                    <h4 style="text-align: center">Бъдете винаги информирани</h4>
                     <p style="text-align: justify" id="takerLbl">
-                        Приложението се свързва автоматично с всички коли отговарящи на вашите предпочитания и не е обаждането на определена таксиметрова компания е излишно.
+                        Получавайте цялата необходима информация дори от своя смартфон или таблет за секунди.
                     </p>
                 </div>
             </div>
-           
+
+        </div>
     </div>
 </div>
-    </div>
 
 
 <script>
-    document.getElementById("nav-clientApp").classList.add("nav-selected");
+    document.getElementById("nav-companyApp").classList.add("nav-selected");
 </script>

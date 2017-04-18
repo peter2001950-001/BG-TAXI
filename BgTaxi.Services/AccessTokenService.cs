@@ -44,16 +44,13 @@ namespace BgTaxi.Services
 
         public bool IsUserLoggedIn(string accessToken)
         {
-            var accTok = data.AccessTokens.Where(x => x.UniqueAccesToken == accessToken).FirstOrDefault();
+            var accTok = data.AccessTokens.Where(x => x.UniqueAccesToken == accessToken).Include(x=>x.Device).FirstOrDefault();
             if (accTok != null)
             {
-                var device = data.Devices.Where(x => x.Id == accTok.Device.Id).FirstOrDefault();
-                if (device != null)
+                var device = data.Devices.FirstOrDefault(x => x.Id == accTok.Device.Id);
+                if (device?.UserId != null)
                 {
-                    if (device.UserId != null)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;

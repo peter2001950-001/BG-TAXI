@@ -21,17 +21,17 @@ namespace BgTaxi.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
-        private readonly ICompanyService companyService;
-        private readonly ICarService carService;
-        private readonly IDriverService driverService;
-        private readonly IDispatcherService dispatcherService;
+        private readonly ICompanyService _companyService;
+        private readonly ICarService _carService;
+        private readonly IDriverService _driverService;
+        private readonly IDispatcherService _dispatcherService;
 
         public ManageController(ICompanyService companyService, ICarService carService, IDriverService driverService, IDispatcherService dispatcherService)
         {
-            this.companyService = companyService;
-            this.carService = carService;
-            this.driverService = driverService;
-            this.dispatcherService = dispatcherService;
+            this._companyService = companyService;
+            this._carService = carService;
+            this._driverService = driverService;
+            this._dispatcherService = dispatcherService;
         }
 
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -91,8 +91,8 @@ namespace BgTaxi.Controllers
 
             if (User.IsInRole("Company")) {
 
-                var company = companyService.GetAll().Where(x => x.UserId == userId).First();
-                var viewModel = new IndexCompanyViewModel { UniqueNumber = company.UniqueNumber, Name = company.Name, MOL = company.MOL, Address = company.Address, DDS = company.DDS, EIK = company.EIK };
+                var company = _companyService.GetAll().First(x => x.UserId == userId);
+                var viewModel = new IndexCompanyViewModel { UniqueNumber = company.UniqueNumber, Name = company.Name, MOL = company.MOL, Address = company.City, DDS = company.DDS, EIK = company.EIK };
 
                 return View("IndexCompany", viewModel);
             }
@@ -104,12 +104,14 @@ namespace BgTaxi.Controllers
             {
                 UserManager<Models.ApplicationUser> userManager = new UserManager<Models.ApplicationUser>(new UserStore<Models.ApplicationUser>(new Models.ApplicationDbContext()));
                 var user = userManager.FindById(User.Identity.GetUserId());
-                var viewModel = new IndexDispatcherViewModel();
-                viewModel.FirstName = user.FirstName;
-                viewModel.LastName = user.LastName;
-                viewModel.Telephone = user.PhoneNumber;
-                var dispatcher = dispatcherService.GetAll().Where(x => x.UserId == user.Id).First();
-                var company = companyService.GetAll().Where(x => x.Id == dispatcher.Company.Id).First();
+                var viewModel = new IndexDispatcherViewModel
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Telephone = user.PhoneNumber
+                };
+                var dispatcher = _dispatcherService.GetAll().First(x => x.UserId == user.Id);
+                var company = _companyService.GetAll().First(x => x.Id == dispatcher.Company.Id);
                 viewModel.CompanyName = company.Name;
 
                 return View("IndexDispatcher", viewModel);
@@ -126,8 +128,8 @@ namespace BgTaxi.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult UpdateCompanyInfo(IndexCompanyViewModel viewModel)
         {
-           var company=  companyService.UpdateCompany(viewModel.UniqueNumber, viewModel.Name, viewModel.MOL, viewModel.EIK,viewModel.DDS, viewModel.Address);
-            var newViewModel = new IndexCompanyViewModel() { Address = company.Address, DDS = company.DDS, EIK = company.EIK, MOL = company.MOL, UniqueNumber = company.UniqueNumber, Name = company.Name };
+           var company=  _companyService.UpdateCompany(viewModel.UniqueNumber, viewModel.Name, viewModel.MOL, viewModel.EIK,viewModel.DDS, viewModel.Address);
+            var newViewModel = new IndexCompanyViewModel() { Address = company.City, DDS = company.DDS, EIK = company.EIK, MOL = company.MOL, UniqueNumber = company.UniqueNumber, Name = company.Name };
 
 
             return RedirectToAction("Index", new { message = ManageMessageId.ProfileInfoUpdateSucess });
@@ -166,11 +168,19 @@ namespace BgTaxi.Controllers
             {
                 
                 var currentUserId = User.Identity.GetUserId();
-                var cars = carService.GetCars().Where(x => x.Company.UserId == currentUserId).ToList();
+                var cars = _carService.GetCars().Where(x => x.Company.UserId == currentUserId).ToList();
                 var drivers = new List<Driver>();
                 foreach (var car in cars)
                 {
-                    drivers.Add(driverService.GetAll().Where(x => x.Car.Id == car.Id).FirstOrDefault());
+                    var driversEnum = _driverService.GetAll().ToList();
+                    foreach (var item in driversEnum)
+                    {
+                        if (item.Car?.Id == car.Id)
+                        {
+                            drivers.Add(item);
+                            break;
+                        }
+                    }
                 }
                 var listUsers = new List<DriverBasicInfo>();
                 foreach (var driver in drivers)
@@ -178,30 +188,36 @@ namespace BgTaxi.Controllers
                     if (driver != null)
                     {
                         var userFound = UserManager.FindById(driver.UserId);
-                        listUsers.Add(new DriverBasicInfo() { UserId = userFound.Id, Name = string.Format("{0} {1}", userFound.FirstName, userFound.LastName) });
+                        listUsers.Add(new DriverBasicInfo() { UserId = userFound.Id, Name = userFound.FirstName + ' '+ userFound.LastName });
                     }else
                     {
                         listUsers.Add(new DriverBasicInfo() { Name = "Няма", UserId = "0"});
                     }
                 }
-                var viewModel = new CarsCompanyViewModel();
-                viewModel.CarsAndDrivers = new Dictionary<Car, DriverBasicInfo>();
-                for (int i = 0; i < cars.Count; i++)
+                var viewModel = new CarsCompanyViewModel {CarsAndDrivers = new Dictionary<Car, DriverBasicInfo>()};
+                for (var i = 0; i < cars.Count; i++)
                 {
-                   
+                    if (listUsers.Count - 1 < i)
+                    {
+                        viewModel.CarsAndDrivers.Add(cars[i], new DriverBasicInfo() { Name =  "Няма", UserId = "0"});
+                    }
+                    else
+                    {
                         viewModel.CarsAndDrivers.Add(cars[i], listUsers[i]);
+                    }
                 }
-                var driversWithoutCars = driverService.GetAll().Where(x => x.Car == null).ToList();
+                var driversWithoutCars = _driverService.GetAll().Where(x => x.Car == null).ToList();
                 var listSelectedItems = new List<SelectListItem>();
                 listSelectedItems.Add(new SelectListItem { Selected = true, Text = string.Format("Няма"), Value = "0" });
                 for (var  i= 0; i < driversWithoutCars.Count; i++)
                 {
                     var user = UserManager.FindById(driversWithoutCars[i].UserId);
-                    listSelectedItems.Add(new SelectListItem { Selected = false, Text = string.Format("{0} {1}", user.FirstName,user.LastName), Value = user.Id.ToString() });
+                    listSelectedItems.Add(new SelectListItem { Selected = false, Text =
+                       user.FirstName + ' ' + user.LastName, Value = user.Id.ToString() });
                 }
                 viewModel.Drivers = new SelectList(listSelectedItems);
 
-                return View("CompanyCars" , viewModel);
+                return View("CompanyCars", viewModel);
 
             }
             else
@@ -216,13 +232,13 @@ namespace BgTaxi.Controllers
          public ActionResult RegisterCar(CarsCompanyViewModel viewModel)
         {
             var userId = User.Identity.GetUserId();
-            var company = companyService.GetAll().Where(x => x.UserId == userId).First();
+            var company = _companyService.GetAll().First(x => x.UserId == userId);
             var newcar = (new Car() { Brand = viewModel.Brand, InternalNumber = viewModel.InternalNumber, Model = viewModel.Model, RegisterNumber = viewModel.RegisterNumber, Year = viewModel.Year, Company = company, Location = new Location() { Latitude = 0, Longitude = 0 }, CarStatus = CarStatus.OffDuty, LastActiveDateTime = new DateTime() });
-            carService.CreateCar(newcar);
+            _carService.CreateCar(newcar);
             if (viewModel.SelectedDriver != "0")
             {
-                var driver = driverService.GetAll().Where(x => x.UserId == viewModel.SelectedDriver).First();
-                carService.ModifyCar(driver.Car.Id, newcar);
+                var driver = _driverService.GetAll().First(x => x.UserId == viewModel.SelectedDriver);
+                _carService.ModifyCar(driver.Car.Id, newcar);
             }
             return RedirectToAction("Cars");
         }
@@ -234,7 +250,7 @@ namespace BgTaxi.Controllers
         public ActionResult ChangeCar(CarsCompanyViewModel viewModel)
         {
             
-            var car = carService.GetCars().Where(x => x.Id == viewModel.CarId).First();
+            var car = _carService.GetCars().First(x => x.Id == viewModel.CarId);
 
             car.Model = viewModel.Model;
             car.RegisterNumber = viewModel.Model;
@@ -242,27 +258,27 @@ namespace BgTaxi.Controllers
             car.Year = viewModel.Year;
             car.Brand = viewModel.Brand;
 
-            carService.ModifyCar(viewModel.CarId, car);
-            var driver = driverService.GetAll().Where(x => x.Car.Id == car.Id).FirstOrDefault();
+            _carService.ModifyCar(viewModel.CarId, car);
+            var driver = _driverService.GetAll().FirstOrDefault(x => x.Car.Id == car.Id);
             if (viewModel.SelectedDriver == "0" && driver != null)
             {
                 driver.Car = null;
-                driverService.DriverModify(car.Id, driver);
+                _driverService.DriverModify(car.Id, driver);
                 
             }
             else if (viewModel.SelectedDriver != "0" && driver == null)
             {
-                var newDriver = driverService.GetAll().Where(x => x.UserId == viewModel.SelectedDriver).First();
+                var newDriver = _driverService.GetAll().First(x => x.UserId == viewModel.SelectedDriver);
                 newDriver.Car = car;
-                driverService.DriverModify(newDriver.Id, newDriver);
+                _driverService.DriverModify(newDriver.Id, newDriver);
             }
             else if (viewModel.SelectedDriver != "0" && driver != null && viewModel.SelectedDriver != driver.UserId)
             {
                 driver.Car = null;
-                driverService.DriverModify(car.Id, driver);
-                var newDriver = driverService.GetAll().Where(x => x.UserId == viewModel.SelectedDriver).First();
+                _driverService.DriverModify(car.Id, driver);
+                var newDriver = _driverService.GetAll().First(x => x.UserId == viewModel.SelectedDriver);
                 newDriver.Car = car;
-                driverService.DriverModify(newDriver.Id, newDriver);
+                _driverService.DriverModify(newDriver.Id, newDriver);
             }
             
 
@@ -275,8 +291,8 @@ namespace BgTaxi.Controllers
         public ActionResult Drivers()
         {
             var userId = User.Identity.GetUserId();
-            var company = companyService.GetAll().Where(x => x.UserId ==  userId).First();
-            var drivers = driverService.GetAll().Where(x => x.Company.Id == company.Id).ToList();
+            var company = _companyService.GetAll().First(x => x.UserId ==  userId);
+            var drivers = _driverService.GetAll().Where(x => x.Company.Id == company.Id).ToList();
             var viewModel = new DriversCompanyViewModel() { Drivers = new List<BgTaxi.Models.Models.Driver>(), Users = new List<Models.ApplicationUser>() };
 
             foreach (var item in drivers)
@@ -284,7 +300,7 @@ namespace BgTaxi.Controllers
                 viewModel.Drivers.Add(item);
                viewModel.Users.Add(UserManager.FindById(item.UserId));
             }
-            return View("CompanyDrivers", viewModel);
+            return View($"CompanyDrivers", viewModel);
         }
         [Authorize(Roles = "Company")]
         public ActionResult Reports()
@@ -310,13 +326,13 @@ namespace BgTaxi.Controllers
         public ActionResult RemoveDriverFromCompany(int id)
         {
             var userid = User.Identity.GetUserId();
-            var company = companyService.GetAll().Where(x => x.UserId == userid).First();
-            var driver = driverService.GetAll().Where(x => x.Id == id).First();
+            var company = _companyService.GetAll().First(x => x.UserId == userid);
+            var driver = _driverService.GetAll().First(x => x.Id == id);
             if(driver.Company.Id == company.Id)
             {
-                driverService.RemoveDriver(driver);
+                _driverService.RemoveDriver(driver);
             }
-            return RedirectToAction("Drivers");
+            return RedirectToAction($"Drivers");
         }
 
         //
@@ -340,7 +356,7 @@ namespace BgTaxi.Controllers
             {
                 message = ManageMessageId.Error;
             }
-            return RedirectToAction("ManageLogins", new { Message = message });
+            return RedirectToAction($"ManageLogins", new { Message = message });
         }
 
         //

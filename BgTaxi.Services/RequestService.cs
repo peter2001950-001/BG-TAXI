@@ -21,7 +21,7 @@ namespace BgTaxi.Services
 
         public IEnumerable<ActiveRequest> GetActiveRequests()
         {
-            return data.ActiveRequests.AsEnumerable();
+            return data.ActiveRequests.Include(x=>x.Request).AsEnumerable();
         }
 
         public IEnumerable<TakenRequest> GetTakenRequests()
@@ -39,19 +39,19 @@ namespace BgTaxi.Services
         }
         public ActiveRequest GetActiveRequest(int id)
         {
-            return data.ActiveRequests.Where(x => x.Id == id).FirstOrDefault();
+            return data.ActiveRequests.FirstOrDefault(x => x.Id == id);
         }
         public TakenRequest GetTakenRequest(int id)
         {
-            return data.TakenRequests.Where(x => x.Id == id).FirstOrDefault();
+            return data.TakenRequests.FirstOrDefault(x => x.Id == id);
         }
         public RequestHistory GetRequestHistory(int id)
         {
-            return data.RequestHistory.Where(x => x.Id == id).FirstOrDefault();
+            return data.RequestHistory.FirstOrDefault(x => x.Id == id);
         }
         public RequestInfo GetRequestInfo(int id)
         {
-            return data.RequestsInfo.Where(x => x.Id == id).FirstOrDefault();
+            return data.RequestsInfo.FirstOrDefault(x => x.Id == id);
         }
         public object AppropriateRequest(Car car)
         {
@@ -71,9 +71,9 @@ namespace BgTaxi.Services
             var driverCarInstance = data.Drivers.Where(x => x.Id == driver.Id).Include(x => x.Car).First();
             if (answer == false)
             {
-                var requestSelected = data.RequestsInfo.Where(x => x.Id == requestId).First();
+                var requestSelected = data.RequestsInfo.First(x => x.Id == requestId);
                 requestSelected.RequestStatus = RequestStatusEnum.NoCarChosen;
-                var request = data.ActiveRequests.Where(x => x.Request.Id == requestId).FirstOrDefault();
+                var request = data.ActiveRequests.FirstOrDefault(x => x.Request.Id == requestId);
                 request.AppropriateCar = null;
                 data.CarsDismissedRequests.Add(new CarDismissedRequest() { Car = driverCarInstance.Car, Request = requestSelected });
                 data.SaveChanges();
@@ -84,7 +84,7 @@ namespace BgTaxi.Services
             {
                 var request = data.ActiveRequests.Where(x => x.Request.Id == requestId).Include(x => x.Request).Include(x => x.AppropriateCar).FirstOrDefault();
 
-                if (request.AppropriateCar == null)
+                if (request != null && request.AppropriateCar == null)
                 {
                     return false;
                 }

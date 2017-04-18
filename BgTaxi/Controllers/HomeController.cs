@@ -40,5 +40,9 @@ namespace BgTaxi.Controllers
         }
 
 
+        public ActionResult Dispatcher()
+        {
+            return View();
+        }
     }
 }

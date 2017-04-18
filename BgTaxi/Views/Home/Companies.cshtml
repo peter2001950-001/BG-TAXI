@@ -4,13 +4,13 @@
 }
 
 
-<div class="jumbotron background-color-orange">
+<div class="jumbotron background-color-yellow">
     <div class="row">
         <img class="jumbotron-image jumbotron-float-right fadeIn" src="~/Content/images/companyMonitor.png" />
         <div style="text-align: center; ">
             <h1>Управлявайте своята таксиметрова компания с лекота и сигурност.</h1><br />
             <h4>Направете своята регистация сега и започнете работа с приложението веднага</h4>
-            
+            @Html.ActionLink("Регистрирай се", "RegisterCompany", "Account", "", new { @class = "btn btn-success", @style = "font-size: 30px;" })
         </div>
 
     </div>
@@ -37,7 +37,7 @@
                     </div>
                     <h4 style="text-align: center">Получавайте справки<br />  за ефективността на компанията</h4>
                     <p style="text-align: justify" id="takerLbl">
-                        По всяко време можете да получите статистики за работата на своите служители 
+                        По всяко време можете да получите статистики за работата на своите служители
                     </p>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                     </div>
                     <h4 style="text-align: center">Бъдете винаги информирани</h4>
                     <p style="text-align: justify" id="takerLbl">
-                       Получавайте цялата необходима информация дори от своя смартфон или таблет за секунди.
+                        Получавайте цялата необходима информация дори от своя смартфон или таблет за секунди.
                     </p>
                 </div>
             </div>

@@ -27,9 +27,9 @@
                 @if (!User.Identity.IsAuthenticated)
             {
                     <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("За клиенти", "Index", "Home", new { area = "" }, new { @id = "nav-clientApp" })</li>
+                        <li>@Html.ActionLink("За фирми", "Index", "Home", new { area = "" }, new { @id = "nav-companyApp" })</li>
                         <li>@Html.ActionLink("За шофьори", "Drivers", "Home", new { area = "" }, new { @id = "nav-driverApp" })</li>
-                        <li>@Html.ActionLink("За фирми", "Companies", "Home", new { area = "" }, new { @id = "nav-companyApp" })</li>
+                        <li>@Html.ActionLink("За диспечери", "Dispatcher", "Home", new { area = "" }, new { @id = "nav-dispatcher" })</li>
                     </ul>
 
                 }
@@ -49,14 +49,14 @@
                     <div class="footer-col col-md-6">
                         <h3>Контакти</h3>
                         <p>
-                            Светослав Бечев
-                            <br>тел. 0898604010 <br /> email: sv_bechev@abv.bg
+                            Петър Бечев
+                            <br>тел. 0896314939 <br /> email: bechev2@gmail.com
                         </p>
                     </div>
 
                     <div class="footer-col col-md-6">
                         <h3>За BG TAXI</h3>
-                        <p>BG TAXI е интернет приложение, което позволява на потребителите изключително лесно и бързо да поръчат своето такси. Проектът включва и приложение за таксиметровите коли, които да приемат поръчките</p>
+                        <p>BG TAXI е интернет приложение, имащо за цел да улесни управлението на таксиметрови компании и да замени използването на радиосатанции с по-ефективен метод. То се състои от уеб порталът bgtaxi.net и от мобилното приложение за таксиметрови шофьори.</p>
                     </div>
                 </div>
             </div>

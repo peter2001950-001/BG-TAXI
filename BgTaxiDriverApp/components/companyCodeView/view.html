@@ -1,0 +1,41 @@
+<div data-role="view" data-title="View" data-layout="main-nonav" data-model="app.companyCodeView" data-show="app.companyCodeView.onShow" data-after-show="app.companyCodeView.afterShow" id="companyCodeViewScreen" class="screen">
+    <div id="companyCodeViewModel" class="form-view screen__content screen__content--form add-item-view">
+        <form>
+            <ul class="form-content" data-role="listview" data-style="inset">
+                <li class="form-content-item">
+
+
+                    <label id="companyCodeField" class="field km-listview-label field--text">
+                        <span class="field__label" data-bind="text: strings.companyCodeView.companyCodeViewModel.editableListForm.companyCode.title"></span>
+
+
+                        <input id="companyCode" data-bind="value: addFormData.companyCode" type="text">
+
+                    </label>
+                </li>
+            </ul>
+
+            <div class="button-group">
+                <a data-role="button" data-bind="events: { click: companyCodeViewModel.cancel }, buttonText: strings.companyCodeView.companyCodeViewModel.cancelButton"></a>
+                <a class="primary" data-role="button" data-bind="events: { click: companyCodeViewModel.submit }, buttonText: strings.companyCodeView.companyCodeViewModel.submitButton"></a>
+            </div>
+        </form>
+        <!-- START_CUSTOM_CODE_companyCodeViewModel -->
+        <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+
+        <!-- END_CUSTOM_CODE_companyCodeViewModel -->
+    </div>
+    <header data-role="header">
+        <div data-role="navbar" class="header-text">
+
+            <span data-bind="text: strings.companyCodeView.title"></span>
+
+        </div>
+    </header>
+
+
+    <!-- START_CUSTOM_CODE_companyCodeView -->
+    <!-- Add custom code here. For more information about custom code, see http://docs.telerik.com/platform/screenbuilder/troubleshooting/how-to-keep-custom-code-changes -->
+
+    <!-- END_CUSTOM_CODE_companyCodeView -->
+</div>

@@ -122,7 +122,7 @@ namespace BgTaxi.Models
         public string DDS { get; set; }
 
         [DataType(DataType.Text)]
-        [Display(Name = "Адрес")]
+        [Display(Name = "Град")]
         public string Address { get; set; }
 
         [Required]

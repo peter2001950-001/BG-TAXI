@@ -9,7 +9,7 @@ namespace BgTaxi.Models.Models
     public class CarDismissedRequest
     {
         public int Id { get; set; }
-        public RequestInfo Request { get; set; }
+        public virtual RequestInfo Request { get; set; }
         public Car Car { get; set; }
     }
 }

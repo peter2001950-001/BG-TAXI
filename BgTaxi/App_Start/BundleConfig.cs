@@ -42,6 +42,8 @@ namespace BgTaxi
             bundles.Add(new StyleBundle("~/Content/css").Include(
                  "~/Content/bootstrap-{version}.css",
                  "~/Content/Site-{version}.css"));
+            bundles.Add(new StyleBundle("~/Content/dashboard").Include(
+                 "~/Content/dashboard-{version}.css"));
         }
     }
 

@@ -12,31 +12,31 @@ namespace BgTaxi.Services
 {
     public class DeviceService: IDeviceService
     {
-        public readonly IDatabase data;
+        public readonly IDatabase Data;
         public DeviceService(IDatabase data)
         {
-            this.data = data;
+            this.Data = data;
         }
         public bool AddDrvice(Device device)
         {
-            data.Devices.Add(device);
-            data.SaveChanges();
+            Data.Devices.Add(device);
+            Data.SaveChanges();
              return true;
         }
 
         public IEnumerable<Device> GetAll()
         {
-            return data.Devices.AsEnumerable();
+            return Data.Devices.AsEnumerable();
         }
         public Device GetDeviceByAccessToken(string accessToken)
         {
-            var accTok = data.AccessTokens.Where(x => x.UniqueAccesToken == accessToken).Include(x => x.Device).First();
+            var accTok = Data.AccessTokens.Where(x => x.UniqueAccesToken == accessToken).Include(x => x.Device).First();
             return accTok.Device;
         }
 
         public void SaveChanges()
         {
-            data.SaveChanges();
+            Data.SaveChanges();
         }
     }
 }

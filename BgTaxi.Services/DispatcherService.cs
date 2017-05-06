@@ -33,6 +33,10 @@ namespace BgTaxi.Services
             return _data.DispatchersDashboard.AsEnumerable();
         }
 
+        public void RemoveDispatcher(Dispatcher disparcher)
+        {
+            _data.Dispatchers.Remove(disparcher);
+        }
         public void SaveChanges()
         {
             _data.SaveChanges();

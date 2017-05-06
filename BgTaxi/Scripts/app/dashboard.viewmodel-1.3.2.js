@@ -1,6 +1,12 @@
 ﻿var cars = [];
 var bangalore = { lat: 42.137392, lng: 24.741973 };
 var zoom = 12;
+var freeIcon = { url: "/Content/images/dashboard/FreeIcon.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
+    var busyIcon = { url: "/Content/images/dashboard/BusyIcon.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
+    var absentIcon = { url: "/Content/images/dashboard/AbsentIcon.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
+    var offdutyIcon = { url: "/Content/images/dashboard/Offduty.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
+    var offlineIcon = { url: "/Content/images/dashboard/OfflineIcon.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
+    
 var map = new google.maps.Map(document.getElementById('map'), {
     zoom: zoom,
     center: bangalore
@@ -22,11 +28,6 @@ ko.bindingHandlers.executeOnEnter = {
 };
 function DashboardViewModel() {
     var self = this;
-    var freeIcon = { url: "/Content/images/dashboard/FreeIcon.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
-    var busyIcon = { url: "/Content/images/dashboard/BusyIcon.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
-    var absentIcon = { url: "/Content/images/dashboard/AbsentIcon.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
-    var offdutyIcon = { url: "/Content/images/dashboard/Offduty.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
-    var offlineIcon = { url: "/Content/images/dashboard/OfflineIcon.png", scaledSize: new google.maps.Size(30, 44), labelOrigin: new google.maps.Point(15, 15) };
     
     var freeChecked = false;
     var busyChecked = false;
@@ -40,6 +41,12 @@ function DashboardViewModel() {
     self.suggectionsData = ko.observable();
     self.foundRequetsData = ko.observable();
     self.requestInfoData = ko.observable();
+
+    self.freeCarSpan = ko.observable();
+    self.busyCarSpan = ko.observable();
+    self.absentCarSpan = ko.observable();
+    self.offlineCarSpan = ko.observable();
+    self.offdutyCarSpan = ko.observable();
     var statusDesign = [
         { "code": "0", "message": "Изпращане на подходяща кола...", "type": "label-warning" },
         { "code": "1", "message": "Заявката приета", "type": "label-success" },
@@ -135,7 +142,7 @@ function DashboardViewModel() {
                     
                     self.requestInfoData(parsedData);
                     $("#requestInfo").css("display", "");
-                    $("#map").css("display", "none");
+                    $("#map-section").css("display", "none");
                     console.log(parsedData);
                 }
             }
@@ -185,44 +192,31 @@ function DashboardViewModel() {
                     }
                 }
                    
-                cars = data.cars;
+               
+                
+               setMarkers(data.cars);
+ self.freeCarSpan(data.freeStatusCount);
+               self.busyCarSpan(data.busyStatusCount);
+               self.absentCarSpan(data.absentStatusCount);
+                self.offlineCarSpan(data.offlineStatusCount);
+               self.offdutyCarSpan(data.offdutyStatusCount);
 
-                function setMapOnAll(map) {
-                    for (var i = 0; i < markers.length; i++) {
-                        markers[i].setMap(map);
-                    }
-                }
-                setMapOnAll(null);
-                for (var i in cars) {
-                    var icon;
-                    switch (cars[i].carStatus) {
-                        case 0:
-                            icon = freeIcon;
-                            console.log(icon);
-                            break;
-                        case 1:
-                            icon = busyIcon;
-                            break;
-                        case 2:
-                            icon = absentIcon;
-                            break;
-                        case 3:
-                            icon = offdutyIcon;
-                            break;
-                        case 4:
-                            icon = offlineIcon;
-                            break;
-                        default:
-
-                    }
-                    var marker = new google.maps.Marker({
-                        position: { lat: cars[i].lat, lng: cars[i].lng },
-                        label: { text: cars[i].id, fontSize: "10px" },
-                        icon: icon,
-                        map: map
-                    });
-                    markers.push(marker);
-                }
+                //function setMapOnAll(map) {
+                //    for (var i = 0; i < markers.length; i++) {
+                //        markers[i].setMap(map);
+                //    }
+                //}
+                //setMapOnAll(null);
+                //for (var i in cars) {
+                    
+                //    var marker = new google.maps.Marker({
+                //        position: { lat: cars[i].lat, lng: cars[i].lng },
+                //        label: { text: cars[i].id, fontSize: "10px" },
+                //        icon: icon,
+                //        map: map
+                //    });
+                //    markers.push(marker);
+                //}
                 self.requestsData(data);
             }
         });
@@ -286,7 +280,94 @@ google.maps.event.addDomListener(window, 'resize', function () {
 
 function requestInfoClose(){
 
-    $("#map").css("display", "");
+    $("#map-section").css("display", "");
     $("#requestInfo").css("display", "none");
     google.maps.event.trigger(map, 'resize');
+}
+
+
+function setMarkers(newCars) {
+    console.log(newCars.length + " " + markers.length);
+    console.log(newCars);
+    console.log(markers);
+    if (newCars.length == markers.length) {
+        
+        for (var i = 0; i < markers.length; i++) {
+            var currentCar = $.grep(newCars, function (e) { return e.id == markers[i].id });
+            if (currentCar != undefined) {
+                if (!(markers[i].carStatus == currentCar.carStatus && markers[i].lng == currentCar.lng && markers[i].lat == currentCar.lat)) {
+                    console.log(currentCar);
+
+                    var icon;
+                    switch (currentCar.carStatus) {
+                        case 0:
+                            icon = freeIcon;
+                            break;
+                        case 1:
+                            icon = busyIcon;
+                            break;
+                        case 2:
+                            icon = absentIcon;
+                            break;
+                        case 3:
+                            icon = offdutyIcon;
+                            break;
+                        case 4:
+                            icon = offlineIcon;
+                            break;
+                        default:
+                    }
+                    markers.splice(1, i, new google.maps.Marker({
+                        position: { lat: currentCar.lat, lng: currentCar.lng },
+                        label: { text: currentCar.id, fontSize: "10px" },
+                        icon: icon,
+                        map: map
+                    }));
+                    markers[i].setMap(map);
+                }
+                }
+               
+            markers[i].setMap(null);
+            markers.splice(0, i);
+            }
+        
+    } else {
+        function setMapOnAll(map) {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(map);
+                }
+            }
+            setMapOnAll(null);
+            for (var i in newCars) {
+
+               
+                var icon;
+                switch (newCars[i].carStatus) {
+                    case 0:
+                        icon = freeIcon;
+                        break;
+                    case 1:
+                        icon = busyIcon;
+                        break;
+                    case 2:
+                        icon = absentIcon;
+                        break;
+                    case 3:
+                        icon = offdutyIcon;
+                        break;
+                    case 4:
+                        icon = offlineIcon;
+                        break;
+                    default:
+                }
+
+                var marker = new google.maps.Marker({
+                    position: { lat: newCars[i].lat, lng: newCars[i].lng },
+                    label: { text: newCars[i].id, fontSize: "10px" },
+                    icon: icon,
+                    map: map
+                });
+                markers.push(marker);
+            }
+    }
 }

@@ -13,6 +13,7 @@ namespace BgTaxi.Services.Contracts
         IEnumerable<Dispatcher> GetAll();
         void AddDispatcher(Dispatcher dispatcher);
         IEnumerable<DispatcherDashboard> GetAllDashboards();
+        void RemoveDispatcher(Dispatcher dispatcher);
 
     }
 }

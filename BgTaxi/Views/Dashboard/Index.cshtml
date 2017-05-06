@@ -11,8 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Най-лесният начин да поръчаш такси без диспечер дирекно от своя смартфон или таблет" />
     <meta name="keywords" content="bg taxi поръчай такси телефон без диспечер викай бързо таксиметров софтуер приложение за таксита заявки близки заявки моментни подходящи апликация app apk ios windows android България bgtaxi" />
-    <style>
-        </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @Scripts.Render("~/bundles/jquery")
      @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/dashboard-1.0.css")
@@ -39,10 +38,11 @@
                     <li>@Html.ActionLink("Обратно към профила", "Index", "Home", new { area = "" }, new { @id = "nav-clientApp" })</li>
                 </ul>
             </div>
-
+            
         </div>
     </div>
-    <div>
+    <div class="status-bar">Няма връзка с интернет</div>
+    <div class="sections">
         <div id="left-section">
 
             <div class="container body-content">
@@ -133,13 +133,20 @@
             </div>
             <footer id="dashboard-footer" class="text-center">
                 <div class="footer-below">
-                    <p>Всички права са запазени BG TAXI &copy; @DateTime.Now.Year </p>
+                    <p>
+                        <span class="marker-span" style="border: 5px solid #64bc70;" ><i class="fa fa-map-marker" style="color:#64bc70; font-size: 25px "></i> <span style="color:#64bc70" data-bind="text: freeCarSpan">0</span></span>
+                        <span class="marker-span" style="border: 5px solid #e96c5a;"><i class="fa fa-map-marker" style="color:#e96c5a; font-size: 25px "></i> <span id="busyCarSpan" style="color:#e96c5a" data-bind="text: busyCarSpan">0</span></span>
+                        <span class="marker-span" style="border: 5px solid #fbcc4f;"><i class="fa fa-map-marker" style="color:#fbcc4f; font-size: 25px "></i> <span id="absentCarSpan" style="color:#fbcc4f" data-bind="text: absentCarSpan">0</span></span>
+                        <span class="marker-span" style="border: 5px solid #9267b6;"><i class="fa fa-map-marker" style="color:#9267b6; font-size: 25px "></i> <span id="offlineCarSpan" style="color:#9267b6" data-bind="text: offlineCarSpan">0</span></span>
+                        <span class="marker-span" style="border: 5px solid #485776;"><i class="fa fa-map-marker" style="color:#485776; font-size: 25px "></i> <span id="offdutyCarSpan" style="color:#485776" data-bind="text: offdutyCarSpan">25</span></span>
+                    
+                    </p>
                 </div>
             </footer>
         </div>
 
         <div id="right-section">
-            <div>
+            <div id="map-section">
                 <div class="choice-div">
                 <ul class="choice-list">
                     <li class="choice-item free" data-toggle="tooltip" data-placement="bottom" title="СВОБОДЕН" data-bind="click: freeItemChecked "></li>

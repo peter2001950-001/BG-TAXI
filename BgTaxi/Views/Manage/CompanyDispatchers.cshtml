@@ -1,0 +1,60 @@
+﻿@model BgTaxi.Models.DispatcherCompanyViewModel
+@{
+    ViewBag.Title = "Профил";
+}
+
+<h2 style="text-align:center">@ViewBag.Title.</h2>
+<div class="container">
+
+
+    <div class="col-md-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li>@Html.ActionLink("Обща информация", "Index")</li>
+            <li >@Html.ActionLink("Шофьори", "Drivers")</li>
+            <li class="active">@Html.ActionLink("Диспетчери", "Dispatchers")</li>
+            <li>@Html.ActionLink("Автомобили", "Cars")</li>
+
+            <li>@Html.ActionLink("Справки", "Reports")</li>
+        </ul>
+    </div>
+
+    <div class="col-md-9">
+
+        <h4>Списък с диспечерите на фирмата</h4>
+        <hr />
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Име</th>
+                    <th>Фамилия</th>
+                    <th>Имейл</th>
+                    <th>Телефон</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.Users.Count; i++)
+                {
+
+                    <tr>
+                        <td>@Model.Users[i].FirstName</td>
+                        <td>@Model.Users[i].LastName</td>
+                        <td>@Model.Users[i].Email</td>
+                        <td>@Model.Users[i].PhoneNumber</td>
+                        <td>
+                            @using (Ajax.BeginForm("RemoveDispatcherFromCompany", new { id = Model.Dispatchers[i].Id }, new AjaxOptions { UpdateTargetId = "formsIndex" }))
+                            {
+                                @Html.AntiForgeryToken();
+                                <input type="submit" class="btn btn-danger" value="Премахни" /> 
+                            }
+                    </td>
+                </tr>
+                }
+
+            </tbody>
+        </table>
+
+      
+
+    </div>
+</div>

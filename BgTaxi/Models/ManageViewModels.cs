@@ -58,9 +58,14 @@ namespace BgTaxi.Models
     }
 
 
-    public class DriversCompanyViewModel
+    public class DriverCompanyViewModel
     {
         public List<Driver> Drivers { get; set; }
+        public List<ApplicationUser> Users { get; set; }
+    }
+    public class DispatcherCompanyViewModel
+    {
+        public List<Dispatcher> Dispatchers { get; set; }
         public List<ApplicationUser> Users { get; set; }
     }
 

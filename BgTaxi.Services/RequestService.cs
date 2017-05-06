@@ -30,7 +30,7 @@ namespace BgTaxi.Services
         }
         public IEnumerable<RequestHistory> GetRequestHistories()
         {
-            return data.RequestHistory.Include(x => x.Request).AsEnumerable();
+            return data.RequestHistory.Include(x => x.Request).Include(x=>x.Car).AsEnumerable();
         }
 
         public IEnumerable<RequestInfo> GetRequestInfos()

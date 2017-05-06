@@ -2,6 +2,37 @@
 @{
     ViewBag.Title = "CompanyReports";
 }
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
+<script src="~/Scripts/app/companyReports.js"></script>
 <h2>CompanyReports</h2>
 
+<div class="container">
+
+
+    <div class="col-md-3">
+        <ul class="nav nav-pills nav-stacked">
+            <li>@Html.ActionLink("Обща информация", "Index")</li>
+            <li>@Html.ActionLink("Шофьори", "Drivers")</li>
+            <li>@Html.ActionLink("Диспетчери", "Dispatchers")</li>
+            <li>@Html.ActionLink("Автомобили", "Cars")</li>
+
+            <li class="active">@Html.ActionLink("Справки", "Reports")</li>
+        </ul>
+    </div>
+
+    <div class="col-md-9">
+
+        <h4>СПРАВКИ</h4>
+        <hr />
+            <div class="form-group">
+                <input type="month" id="month" class="form-control" />
+            </div>
+        <canvas id="requestsbyDays"  width="400" height="150"></canvas>
+        <canvas id="carsbyDays" width="400" height="150"></canvas>
+    </div>
+</div>
+<script type="text/javascript">
+            $(function () {
+                $("#month").on("change",  monthChanged);
+                   });
+</script>

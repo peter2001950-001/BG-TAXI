@@ -16,19 +16,21 @@ function monthChanged() {
             } catch (e) {
             }
             var requestsByDateLabels = [];
-            var requestsByDateValues = [];
-            for (var i in data.requestsByDate) {
-                requestsByDateLabels[i] = data.requestsByDate[i].day;
+            var acceptedRequestsByDateValues = [];
+            for (var i in data.acceptedRequestsByDate) {
+                requestsByDateLabels[i] = data.acceptedRequestsByDate[i].day + " Май";
             }
-            for (var i in data.requestsByDate) {
-                requestsByDateValues[i] = data.requestsByDate[i].value;
+            for (var i in data.acceptedRequestsByDate) {
+                acceptedRequestsByDateValues[i] = data.acceptedRequestsByDate[i].value;
             }
-            var carsByDateLabels = [];
+            var allRequestsByDateValues = [];
+           
+            for (var i in data.acceptedRequestsByDate) {
+                allRequestsByDateValues[i] = data.allRequestsByDate[i].value;
+            }
+            
             var carsByDateValues = [];
-            for (var i in data.requestsByDate) {
-                carsByDateLabels[i] = data.carsByDate[i].day;
-            }
-            for (var i in data.requestsByDate) {
+            for (var i in data.carsByDate) {
                 carsByDateValues[i] = data.carsByDate[i].value;
             }
             requestsByDateChart = new Chart(requestsByDateChartCanvas, {
@@ -38,33 +40,65 @@ function monthChanged() {
                     datasets: [
                         {
                             label: "Брой постъпили заявки",
-                            fill: false,
+                            fill: true,
                             lineTension: 0.2,
-                            backgroundColor: "rgba(75,192,192,0.4)",
-                            borderColor: "rgba(75,192,192,1)",
+                            fillColor: "rgba(220,220,220,0.2)",
+                            backgroundColor: "rgba(220,220,220,0.4)",
+                            borderColor: "rgba(200,200,200,1)",
                             borderCapStyle: 'butt',
                             borderDash: [],
                             borderDashOffset: 0.0,
                             borderJoinStyle: 'miter',
-                            pointBorderColor: "rgba(75,192,192,1)",
+                            pointBorderColor: "rgba(220,220,220,1)",
                             pointBackgroundColor: "#fff",
                             pointBorderWidth: 1,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                            pointHoverBorderColor: "rgba(220,220,220,1)",
+                            pointHoverRadius: 3,
+                            pointHoverBackgroundColor: "rgba(200,200,200,1)",
+                            pointHoverBorderColor: "rgba(180,180,180,1)",
                             pointHoverBorderWidth: 2,
                             pointRadius: 1,
                             pointHitRadius: 10,
-                            data: requestsByDateValues,
+                            data: allRequestsByDateValues,
+                            spanGaps: false,
+                        },
+                        {
+                            label: "Брой приети заявки",
+                            fill: true,
+                            lineTension: 0.2,
+                            fillColor: "rgba(55, 232, 105,0.2)",
+                            backgroundColor: "rgba(55, 232, 105,0.4)",
+                            borderColor: "rgba(54, 201, 96,1)",
+                            borderCapStyle: 'butt',
+                            borderDash: [],
+                            borderDashOffset: 0.0,
+                            borderJoinStyle: 'miter',
+                            pointBorderColor: "rgba(55, 232, 105,1)",
+                            pointBackgroundColor: "#fff",
+                            pointBorderWidth: 1,
+                            pointHoverRadius: 3,
+                            pointHoverBackgroundColor: "rgba(54, 201, 96,1)",
+                            pointHoverBorderColor: "rgba(57, 168, 88,1)",
+                            pointHoverBorderWidth: 2,
+                            pointRadius: 1,
+                            pointHitRadius: 10,
+                            data: acceptedRequestsByDateValues,
                             spanGaps: false,
                         }
                     ]
                 },
-                options: {
+                options: { 
+                           
+                    multiTooltipTemplate: "<%= requestsByDateChart.datasets[0].label %> - <%= value %>",
                     scales: {
                         yAxes: [{
                             ticks: {
-                                beginAtZero: false
+                                beginAtZero: false,
+                                userCallback: function (label, index, labels) {
+                                    if (Math.floor(label) === label) {
+                                        return label;
+                                    }
+
+                                },
                             }
                         }]
                     },
@@ -76,7 +110,7 @@ function monthChanged() {
             carsByDateChart = new Chart(carsByDateChartCanvas, {
                 type: "line",
                 data: {
-                    labels: carsByDateLabels,
+                    labels: requestsByDateLabels,
                     datasets: [
                         {
                             label: "Брой работили автомобили",
@@ -106,7 +140,13 @@ function monthChanged() {
                     scales: {
                         yAxes: [{
                             ticks: {
-                                beginAtZero: false
+                                beginAtZero: false,
+                                userCallback: function (label, index, labels) {
+                                    if (Math.floor(label) === label) {
+                                        return label;
+                                    }
+
+                                },
                             }
                         }]
                     },

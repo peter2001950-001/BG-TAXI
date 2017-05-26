@@ -49,9 +49,19 @@ namespace BgTaxi.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// Controls all requests of the dispacher, takes care of the communication between the drivers and dispatcher
+        /// </summary>
+        /// <param name="free"></param>
+        /// <param name="busy"></param>
+        /// <param name="absent"></param>
+        /// <param name="offline"></param>
+        /// <param name="offduty"></param>
+        /// <returns>Retuens car locations and statuses, all active request and their statuses</returns>
         public JsonResult Pull(bool free = false, bool busy = false, bool absent = false, bool offline = false, bool offduty= false)
         {
             var userId = User.Identity.GetUserId();
+
             _dashboardService.UpdateRequestStatus(userId);
             var requests = _dashboardService.GetRequests(userId);
 
@@ -126,7 +136,12 @@ namespace BgTaxi.Controllers
             return Json(new { requests = requests, cars = carObjs, freeStatusCount = freeStatusCount, busyStatusCount = busyStatusCount, absentStatusCount = absentStatusCount, offlineStatusCount = offlineStatusCount, offdutyStatusCount = offdutyStatusCount });
         }
 
-        public JsonResult RequestLocation(string id)
+        /// <summary>
+        /// Returns requestLocation with the id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+              public JsonResult RequestLocation(string id)
         {
             var userId = User.Identity.GetUserId();
             var dispatcher = _dispatcherService.GetAll().First(x => x.UserId == userId);
@@ -141,6 +156,12 @@ namespace BgTaxi.Controllers
             }
             return Json(new { status = "ERR" });
         }
+
+        /// <summary>
+        /// Returns additional information about the request
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public JsonResult RequestInfo(string id)
         {
             var userId = User.Identity.GetUserId();
@@ -225,6 +246,14 @@ namespace BgTaxi.Controllers
 
             return Json(json);
         }
+
+        /// <summary>
+        /// Search requests by id, period or startingAddress
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="period"></param>
+        /// <param name="startingAddress"></param>
+        /// <returns></returns>
         public JsonResult SearchRequest(string id="0", string period="0", string startingAddress=null)
         {
 
@@ -286,6 +315,11 @@ namespace BgTaxi.Controllers
             }
             return Json(new { status = "OK", requests = requestsFound.ToArray() });
         }
+        /// <summary>
+        /// Returns suggested places or addresses
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public JsonResult AutoComplete(string text)
         {
             var userId = User.Identity.GetUserId();
@@ -310,6 +344,12 @@ namespace BgTaxi.Controllers
             return Json(new {status = "OK", suggestions = result});
 
         }
+        /// <summary>
+        /// Adds a new request
+        /// </summary>
+        /// <param name="startingAddress"></param>
+        /// <param name="finishAddress"></param>
+        /// <returns></returns>
         public JsonResult CreateRequest(string startingAddress, string finishAddress)
         {
             var userId = User.Identity.GetUserId();

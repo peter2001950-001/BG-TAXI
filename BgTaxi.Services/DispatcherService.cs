@@ -18,21 +18,27 @@ namespace BgTaxi.Services
             this._data = database; 
         }
 
+        /// <summary>
+        /// Adds a Dispatcher
+        /// </summary>
+        /// <param name="dispatcher"></param>
         public void AddDispatcher(Dispatcher dispatcher)
         {
             _data.Dispatchers.Add(dispatcher);
             _data.SaveChanges();
         }
-
+        /// <summary>
+        /// Returns all Dispatchers
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Dispatcher> GetAll()
         {
             return _data.Dispatchers.Include(x=>x.Company).AsEnumerable();
         }
-        public IEnumerable<DispatcherDashboard> GetAllDashboards()
-        {
-            return _data.DispatchersDashboard.AsEnumerable();
-        }
-
+        /// <summary>
+        /// Remove a Dispatcher
+        /// </summary>
+        /// <param name="disparcher"></param>
         public void RemoveDispatcher(Dispatcher disparcher)
         {
             _data.Dispatchers.Remove(disparcher);

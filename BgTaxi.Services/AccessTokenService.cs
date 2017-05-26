@@ -19,6 +19,10 @@ namespace BgTaxi.Services
             this.data = data;
         }
 
+        /// <summary>
+        /// Returns the userId of the logged in user or null if nobody has been logged in
+        /// </summary>
+        /// <param name="accessToken"></param>
         public string GetUserId(string accessToken)
         {
             var accessTokObj = this.data.AccessTokens.Where(x => x.UniqueAccesToken == accessToken).Include(x => x.Device).FirstOrDefault();
@@ -29,19 +33,29 @@ namespace BgTaxi.Services
             return accessTokObj.Device.UserId;
 
         }
-        public bool AddAccessToken(AccessToken accessToken)
+        /// <summary>
+        /// Adds a new accessToken 
+        /// </summary>
+        /// <param name="accessToken"></param>
+        public void AddAccessToken(AccessToken accessToken)
         {
             this.data.AccessTokens.Add(accessToken);
             this.data.SaveChanges();
-            return true;
         }
 
-
+        /// <summary>
+        /// Returns All AccessTokens
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<AccessToken> GetAll()
         {
             return data.AccessTokens.AsEnumerable();
         }
-
+        /// <summary>
+        /// Checks if a user has been logged in
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
         public bool IsUserLoggedIn(string accessToken)
         {
             var accTok = data.AccessTokens.Where(x => x.UniqueAccesToken == accessToken).Include(x=>x.Device).FirstOrDefault();
@@ -55,6 +69,11 @@ namespace BgTaxi.Services
             }
             return false;
             }
+        /// <summary>
+        /// Add userId to the device of the accessToken
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <param name="userId"></param>
         public bool AddDeviceUserId(string accessToken, string userId)
         {
             
@@ -68,6 +87,11 @@ namespace BgTaxi.Services
             }
             return false;
         }
+        /// <summary>
+        /// Generates a new accessToken
+        /// </summary>
+        /// <param name="oldAccessToken"></param>
+        /// <returns></returns>
         public string GenerateAccessToken(string oldAccessToken)
         {
             var oldAccTok = data.AccessTokens.Where(x => x.UniqueAccesToken == oldAccessToken).Include(x => x.Device).FirstOrDefault();

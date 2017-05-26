@@ -194,29 +194,49 @@ function DashboardViewModel() {
                    
                
                 
-               setMarkers(data.cars);
+               //setMarkers(data.cars);
  self.freeCarSpan(data.freeStatusCount);
                self.busyCarSpan(data.busyStatusCount);
                self.absentCarSpan(data.absentStatusCount);
                 self.offlineCarSpan(data.offlineStatusCount);
                self.offdutyCarSpan(data.offdutyStatusCount);
 
-                //function setMapOnAll(map) {
-                //    for (var i = 0; i < markers.length; i++) {
-                //        markers[i].setMap(map);
-                //    }
-                //}
-                //setMapOnAll(null);
-                //for (var i in cars) {
+                function setMapOnAll(map) {
+                    for (var i = 0; i < markers.length; i++) {
+                        markers[i].setMap(map);
+                    }
+                }
+                setMapOnAll(null);
+                for (var i in data.cars) {
                     
-                //    var marker = new google.maps.Marker({
-                //        position: { lat: cars[i].lat, lng: cars[i].lng },
-                //        label: { text: cars[i].id, fontSize: "10px" },
-                //        icon: icon,
-                //        map: map
-                //    });
-                //    markers.push(marker);
-                //}
+                    var icon;
+                    switch (data.cars[i].carStatus) {
+                        case 0:
+                            icon = freeIcon;
+                            break;
+                        case 1:
+                            icon = busyIcon;
+                            break;
+                        case 2:
+                            icon = absentIcon;
+                            break;
+                        case 3:
+                            icon = offdutyIcon;
+                            break;
+                        case 4:
+                            icon = offlineIcon;
+                            break;
+                        default:
+                    }
+
+                    var marker = new google.maps.Marker({
+                        position: { lat: data.cars[i].lat, lng: data.cars[i].lng },
+                        label: { text: data.cars[i].id, fontSize: "10px" },
+                        icon: icon,
+                        map: map
+                    });
+                    markers.push(marker);
+                }
                 self.requestsData(data);
             }
         });
@@ -268,6 +288,7 @@ function DashboardViewModel() {
             $(".offduty").addClass("is-checked");
         }
     }
+
     setInterval(self.pull, 1000);
 
   

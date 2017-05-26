@@ -10,35 +10,12 @@ namespace BgTaxi.Controllers
 {
     public class DownloadController : Controller
     {
-        // GET: Download
-        public ActionResult Client(string fileType)
-        {
-            if (fileType == "apk")
-            {
-                byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/appFiles/BgTaxiClient.apk"));
-                string fileName = "BgTaxiClient.apk";
-                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-            }
-            else if (fileType == "xap")
-            {
-                byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/appFiles/BgTaxiClient.xap"));
-                string fileName = "BgTaxiClient.xap";
-                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-            }else if (fileType == "xap"){
-                byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Content/appFiles/BgTaxiClient.xap"));
-                string fileName = "BgTaxiClient.xap";
-                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
-            }else {
-                return Redirect("http://bgtaxi.net");
-            }
-            
-        }
 
-        public ActionResult Sitemap()
-        {
-            return this.Content("~/Content/images/sitemap.xml", "text/xml");
-        }
-
+        /// <summary>
+        /// Download path for downloading the driver application
+        /// </summary>
+        /// <param name="fileType"></param>
+        /// <returns></returns>
         public ActionResult Driver(string fileType)
         {
             if (fileType == "apk")

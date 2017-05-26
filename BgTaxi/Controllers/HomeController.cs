@@ -16,6 +16,7 @@ namespace BgTaxi.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                Console.Write("Test");
                 return RedirectToRoute("Profile");
             }
             return View();

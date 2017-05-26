@@ -16,11 +16,21 @@ namespace BgTaxi.Services
         {
             this._data = data;
         }
+
+        /// <summary>
+        /// Returns all Dispatchers Dashboards
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<DispatcherDashboard> GetAll()
         {
             return _data.DispatchersDashboard.AsEnumerable();
         }
 
+        /// <summary>
+        /// Returns all the user's (dispatcher's) requests as an array of objects ready to be parsed as JSON
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public object[] GetRequests(string userId)
         {
 
@@ -47,6 +57,11 @@ namespace BgTaxi.Services
             return requests;
         }
 
+        /// <summary>
+        /// Remove those requests which are dismissed and have stayed on the dispatcher's dashboard for more than 1 minute and
+        /// changes the statuses of the other requests
+        /// </summary>
+        /// <param name="userId"></param>
         public void UpdateRequestStatus(string userId)
         {
             var dashboard = _data.DispatchersDashboard.Where(x => x.DispatcherUserId == userId).Include(x => x.Request).ToList();
@@ -93,6 +108,12 @@ namespace BgTaxi.Services
             _data.SaveChanges();
         }
 
+        /// <summary>
+        /// Finds an appropriate car for the request location
+        /// </summary>
+        /// <param name="startingLocaion"></param>
+        /// <param name="company"></param>
+        /// <returns></returns>
         public Car AppropriateCar(Models.Models.Location startingLocaion, Company company)
         {
             var nearBycars = _data.Cars.Where(x => x.Company.Id == company.Id).Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0300 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0300).ToList();
@@ -124,6 +145,13 @@ namespace BgTaxi.Services
 
             return appropriateCar;
         }
+        /// <summary>
+        /// Finds an appropriate car for the request location ignoring those who have danied it
+        /// </summary>
+        /// <param name="startingLocaion"></param>
+        /// <param name="request"></param>
+        /// <param name="company"></param>
+        /// <returns></returns>
         private Car AppropriateCar(Models.Models.Location startingLocaion, RequestInfo request, Company company)
         {
             var nearBycars = _data.Cars.Where(x => x.Company.Id == company.Id).Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0150 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0150).ToList();
@@ -154,7 +182,10 @@ namespace BgTaxi.Services
 
             return chosenCar;
         }
-
+        /// <summary>
+        /// If there is no answer from the car it searches for another appropriate car
+        /// </summary>
+        /// <param name="requestId"></param>
         private void NotTakenRequest(int requestId)
         {
             var activeRequest = _data.ActiveRequests.Where(x => x.Request.Id == requestId).Include(x => x.Request).Include(x => x.AppropriateCar).FirstOrDefault();
@@ -187,6 +218,10 @@ namespace BgTaxi.Services
             _data.SaveChanges();
         }
 
+        /// <summary>
+        /// If there is not any appropiate car it marks the request as dismissed
+        /// </summary>
+        /// <param name="requestId"></param>
         private void NoCarChosen(int requestId)
         {
             var actReque = _data.ActiveRequests.Where(x => x.Request.Id == requestId).Include(x => x.Request).FirstOrDefault();
@@ -218,6 +253,10 @@ namespace BgTaxi.Services
             }
         }
 
+        /// <summary>
+        /// Add a new DispatcherDashboard
+        /// </summary>
+        /// <param name="dashboard"></param>
         public void AddDispatcherDashboard(DispatcherDashboard dashboard)
         {
             _data.DispatchersDashboard.Add(dashboard);

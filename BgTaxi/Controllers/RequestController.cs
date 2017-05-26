@@ -14,7 +14,6 @@ namespace BgTaxi.Web.Controllers
         private readonly IAccessTokenService _accessTokenService;
         private readonly ICarService _carService;
         private readonly IDriverService _driverService;
-
         private readonly IRequestService _requestService;
 
         public RequestController(IRequestService requestService, ICarService carService, IDriverService driverService,
@@ -26,6 +25,16 @@ namespace BgTaxi.Web.Controllers
             this._accessTokenService = accessTokenService;
         }
 
+        /// <summary>
+        /// Updates the location of the car and takes care of the status as well as returns appropriate requests
+        /// </summary>
+        /// <param name="lon"></param>
+        /// <param name="lat"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="absent"></param>
+        /// <param name="free"></param>
+        /// <param name="onAddress"></param>
+        /// <returns></returns>
         public JsonResult Pull(double lon, double lat, string accessToken, bool absent = false, bool free = false,
             bool onAddress = false)
         {
@@ -83,6 +92,13 @@ namespace BgTaxi.Web.Controllers
         }
 
 
+        /// <summary>
+        /// Update the request when the driver accept or deny the request
+        /// </summary>
+        /// <param name="requestID"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="answer"></param>
+        /// <returns></returns>
         public JsonResult RequestAnswer(int requestID, string accessToken, bool answer)
         {
             if (HttpContext.Request.RequestType == "POST")

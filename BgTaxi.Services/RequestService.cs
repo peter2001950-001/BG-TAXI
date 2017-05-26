@@ -19,40 +19,80 @@ namespace BgTaxi.Services
             this.data = data;
         }
 
+        /// <summary>
+        /// Return all activeRequests
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<ActiveRequest> GetActiveRequests()
         {
             return data.ActiveRequests.Include(x=>x.Request).AsEnumerable();
         }
 
+        /// <summary>
+        /// Returns all TakenRequests
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<TakenRequest> GetTakenRequests()
         {
             return data.TakenRequests.AsEnumerable();
         }
+        /// <summary>
+        /// Returns all RequestsHistories
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<RequestHistory> GetRequestHistories()
         {
             return data.RequestHistory.Include(x => x.Request).Include(x=>x.Car).AsEnumerable();
         }
-
+        /// <summary>
+        /// Returns all RequestInfos
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<RequestInfo> GetRequestInfos()
         {
             return data.RequestsInfo.AsEnumerable();
         }
+       /// <summary>
+       /// Returns Active Request by its id
+       /// </summary>
+       /// <param name="id"></param>
+       /// <returns></returns>
         public ActiveRequest GetActiveRequest(int id)
         {
             return data.ActiveRequests.FirstOrDefault(x => x.Id == id);
         }
+        /// <summary>
+        /// Returns Taken Request by its id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public TakenRequest GetTakenRequest(int id)
         {
             return data.TakenRequests.FirstOrDefault(x => x.Id == id);
         }
+        /// <summary>
+        /// Returns RequestHistory by its id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public RequestHistory GetRequestHistory(int id)
         {
             return data.RequestHistory.FirstOrDefault(x => x.Id == id);
         }
+        /// <summary>
+        /// Returns RequestInfo by its id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public RequestInfo GetRequestInfo(int id)
         {
             return data.RequestsInfo.FirstOrDefault(x => x.Id == id);
         }
+        /// <summary>
+        /// Return the request which is chosen as appropriate for the car as an object ready to be parsed to JSON  
+        /// </summary>
+        /// <param name="car"></param>
+        /// <returns></returns>
         public object AppropriateRequest(Car car)
         {
             if (data.ActiveRequests.Any(x => x.AppropriateCar.Id == car.Id))
@@ -66,9 +106,16 @@ namespace BgTaxi.Services
             return null;
         }
 
+       /// <summary>
+       /// Takes the answer of the driver and returns true if it is saved successfully otherwise false 
+       /// </summary>
+       /// <param name="answer"></param>
+       /// <param name="requestId"></param>
+       /// <param name="driver"></param>
+       /// <returns></returns>
         public bool UpdateAnswer(bool answer, int requestId, Driver driver)
         {
-            var driverCarInstance = data.Drivers.Where(x => x.Id == driver.Id).Include(x => x.Car).First();
+            var driverCarInstance = data.Drivers.Where(x => x.Id == driver.Id).Include(x => x.Car).Include(x=>x.Company).First();
             if (answer == false)
             {
                 var requestSelected = data.RequestsInfo.First(x => x.Id == requestId);
@@ -117,9 +164,15 @@ namespace BgTaxi.Services
             return true;
         }
 
+        /// <summary>
+        /// Mark the request as finished 
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public bool FinishRequest(int requestId, string userId)
         {
-            var request = data.TakenRequests.Where(x => x.Request.Id == requestId).Include(x => x.Request).Include(x => x.Car).FirstOrDefault();
+            var request = data.TakenRequests.Where(x => x.Request.Id == requestId).Include(x=>x.Company).Include(x => x.Request).Include(x => x.Car).FirstOrDefault();
             if (request != null)
             {
                 if (userId == request.DriverUserId)
@@ -149,12 +202,20 @@ namespace BgTaxi.Services
             data.SaveChanges();
         }
 
+        /// <summary>
+        /// Add a Request Info
+        /// </summary>
+        /// <param name="request"></param>
         public void AddRequestInfo(RequestInfo request)
         {
             data.RequestsInfo.Add(request);
             data.SaveChanges();
         }
 
+        /// <summary>
+        /// Add an Active Request
+        /// </summary>
+        /// <param name="request"></param>
         public void AddActiveRequest(ActiveRequest request)
         {
             data.ActiveRequests.Add(request);

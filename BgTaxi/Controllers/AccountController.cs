@@ -88,7 +88,13 @@ using BgTaxi.Services.Contracts;
             return View();
         }
 
-        //
+        /// <summary>
+        /// Login from bgtaxi.net
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="returnUrl"></param>
+        /// <param name="captchaValid"></param>
+        /// <returns></returns>
         // POST: /Account/Login
         [HttpPost]
         [CaptchaValidator]
@@ -146,6 +152,40 @@ using BgTaxi.Services.Contracts;
 
         [AllowAnonymous]
         [AllowCrossSiteJsonAttribute]
+        public async Task<JsonResult> RegisterClientExternal(string basicAuth, string firstName, string lastName, string telephone, string accessToken)
+        {
+            if (HttpContext.Request.RequestType == "POST")
+            {
+                var newAccessToken = accessTokenService.GenerateAccessToken(accessToken);
+                var usernamePass = ExtractUserNameAndPassword(basicAuth);
+                var user = new Models.ApplicationUser { UserName = usernamePass.Item1, Email = usernamePass.Item1, PhoneNumber = telephone, FirstName = firstName, LastName = lastName };
+                var result = await UserManager.CreateAsync(user, usernamePass.Item2);
+
+                if (result.Succeeded)
+                {
+                    UserManager.AddToRole(user.Id, "Client");
+
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    //await UserManager.SendEmailAsync(user.Id, "Потвърдете вашата регистрация", string.Format("<p><span style='font-family:times new roman,times,serif;'>Здравейте {0},<br/>Вие успешно регистрирахте в сайта bgtaxi.com.</span></p><p>Моля, активирайте вашия акаунт, като натиснете върху линка по-долу:</p><h2><a href='{1}'>Активирай сега</a></h2>", user.FirstName, callbackUrl));
+
+                    return Json(new { status = "OK", accessToken = newAccessToken });
+                }
+
+                return Json(new { status = "ERR", accessToken = newAccessToken, erorrs = result.Errors.ToArray() });
+
+            }
+            return Json(new { });
+        }
+        /// <summary>
+        /// Login in from mobile application
+        /// </summary>
+        /// <param name="basicAuth"></param>
+        /// <param name="requiredRoleId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [AllowCrossSiteJsonAttribute]
         public JsonResult LoginExternal(string basicAuth, string requiredRoleId, string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")
@@ -159,7 +199,10 @@ using BgTaxi.Services.Contracts;
                 }
                     if (accessTokenService.IsUserLoggedIn(newAccessToken))
                 {
-                    return Json(new { status = "USER LOGGED IN", accessToken = newAccessToken });
+                    if (requiredRoleId != "3")
+                    {
+                        return Json(new { status = "USER LOGGED IN", accessToken = newAccessToken });
+                    }
                 }
                     
                  var usernamePass = ExtractUserNameAndPassword(basicAuth);
@@ -168,7 +211,7 @@ using BgTaxi.Services.Contracts;
                 if (findAcync.Result != null)
                 {
                     var roleRequired = findAcync.Result.Roles.Any(x => x.RoleId == requiredRoleId);
-                    if (roleRequired && findAcync.Result.EmailConfirmed)
+                    if (roleRequired)
                     {
                         switch (requiredRoleId)
                         {
@@ -179,7 +222,7 @@ using BgTaxi.Services.Contracts;
                                 bool haveCar = driverService.GetAll().ToList().Any(x => x.Car != null && x.UserId == findAcync.Result.Id);
                                 bool haveCompany = driverService.GetAll().ToList().Any(x => x.Company != null && x.UserId == findAcync.Result.Id);
                                 bool alreadyLoggedIn = deviceService.GetAll().ToList().Any(x => x.UserId == findAcync.Result.Id);
-                                if (haveCar && haveCompany && !alreadyLoggedIn)
+                                if (haveCar && haveCompany && !alreadyLoggedIn && findAcync.Result.EmailConfirmed)
                                 {
                                     accessTokenService.AddDeviceUserId(newAccessToken, findAcync.Result.Id);
                                     driverService.ChangeCarStatus(findAcync.Result.Id, CarStatus.Free);
@@ -200,23 +243,21 @@ using BgTaxi.Services.Contracts;
                                 else if (!haveCar)
                                 {
                                     return Json(new { status = "NO CAR", accessToken = newAccessToken });
+                                }else
+                                {
+                                    return Json(new { status = "NO EMAIL", accessToken = newAccessToken });
                                 }
                                 
-                                break;
                             case "3":
-
-                                return Json(new { status = "OK", accessToken = newAccessToken });
+                                accessTokenService.AddDeviceUserId(newAccessToken, findAcync.Result.Id);
+                                return Json(new { status = "OK", accessToken = newAccessToken, user = new { firstName = findAcync.Result.FirstName, lastName = findAcync.Result.LastName } });
                             default:
                                 return Json(new { status = "ERR", accessToken = newAccessToken });
                         }
 
-                    }else if (!roleRequired)
+                    }else
                     {
                         return Json(new { status = "ROLE NOT MATCH", accessToken = newAccessToken });
-                    }
-                    else
-                    {
-                        return Json(new { status = "NO EMAIL", accessToken = newAccessToken });
                     }
                     
                 }
@@ -229,6 +270,11 @@ using BgTaxi.Services.Contracts;
                 return Json(new { status = "" });
             }
         }
+        /// <summary>
+        /// Logout from mobile device
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [AllowCrossSiteJsonAttribute]
         public JsonResult LogoutExternal(string accessToken)

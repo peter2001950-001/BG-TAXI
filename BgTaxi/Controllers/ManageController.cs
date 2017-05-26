@@ -126,7 +126,11 @@ namespace BgTaxi.Controllers
             }
 
         }
-
+        /// <summary>
+        /// Update company information
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "Company")]
         [ValidateAntiForgeryToken]
@@ -138,6 +142,11 @@ namespace BgTaxi.Controllers
 
             return RedirectToAction("Index", new { message = ManageMessageId.ProfileInfoUpdateSucess });
         }
+        /// <summary>
+        /// Update dispatcher's account information
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "Dispatcher")]
         [ValidateAntiForgeryToken]
@@ -161,7 +170,10 @@ namespace BgTaxi.Controllers
         }
 
 
-
+        /// <summary>
+        /// Cars Page for the manager
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Authorize(Roles = "Company, Driver")]
         public ActionResult Cars()
@@ -270,7 +282,11 @@ namespace BgTaxi.Controllers
             return RedirectToAction("Cars");
         }
 
-
+        /// <summary>
+        /// Change car information 
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "Company")]
         [ValidateAntiForgeryToken]
@@ -329,6 +345,12 @@ namespace BgTaxi.Controllers
             }
             return View($"CompanyDrivers", viewModel);
         }
+
+        /// <summary>
+        /// Returns JSON data needed for the charts to be drawn
+        /// </summary>
+        /// <param name="month"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Company")]
         public JsonResult GetReport(string month)
         {
@@ -340,22 +362,22 @@ namespace BgTaxi.Controllers
             var startingDate = new DateTime(yearInt, monthInt, 1).AddDays(-1);
             var endingDate = new DateTime(yearInt, monthInt, days).AddDays(1);
 
-            int[] requestsByDateResults = new int[days];
+            int[] acceptedRequestsByDateResults = new int[days];
             int[] carsByDateResults = new int[days];
-            var requests = _requestService.GetRequestHistories()
+            var acceptedRequests = _requestService.GetRequestHistories()
                 .Where(x => x.Request.CreatedDateTime > startingDate && x.Request.CreatedDateTime < endingDate)
                 .ToList();
             List<string> carsCountedId = new List<string>();
             int dayCurrent = 1;
-            foreach (var item in requests)
+            foreach (var item in acceptedRequests)
             {
 
                 var currentDay = item.Request.CreatedDateTime.Day;
-                requestsByDateResults[currentDay - 1]++;
+                acceptedRequestsByDateResults[currentDay - 1]++;
 
                 if (currentDay != dayCurrent)
                 {
-                    dayCurrent++;
+                    dayCurrent = currentDay;
                     carsCountedId.Clear();
                 }
                 if (!carsCountedId.Any(x => x == item.Car.Id.ToString()))
@@ -365,10 +387,26 @@ namespace BgTaxi.Controllers
                 }
             }
 
-            object[] requestsByDateObject = new object[days];
-            for (int i = 0; i < requestsByDateResults.Length; i++)
+            var allRequests = _requestService.GetRequestInfos()
+                .Where(x => x.CreatedDateTime > startingDate && x.CreatedDateTime < endingDate)
+                .ToList();
+
+            var allRequestsByDateResults = new int[days];
+            foreach (var item in allRequests)
             {
-                requestsByDateObject[i] = new { day = i + 1, value = requestsByDateResults[i] };
+                var currentDay = item.CreatedDateTime.Day;
+                allRequestsByDateResults[currentDay - 1]++;
+            }
+
+            object[] allRequestsByDateObject = new object[days];
+            for (int i = 0; i < allRequestsByDateResults.Length; i++)
+            {
+                allRequestsByDateObject[i] = new { day = i + 1, value = allRequestsByDateResults[i] };
+            }
+            object[] acceptedRequestsByDateObject = new object[days];
+            for (int i = 0; i < acceptedRequestsByDateResults.Length; i++)
+            {
+                acceptedRequestsByDateObject[i] = new { day = i + 1, value = acceptedRequestsByDateResults[i] };
             }
             object[] carsByDateObject = new object[days];
             for (int i = 0; i < carsByDateResults.Length; i++)
@@ -377,7 +415,7 @@ namespace BgTaxi.Controllers
             }
 
 
-            return Json(new { status = "OK", requestsByDate = requestsByDateObject, carsByDate = carsByDateObject });
+            return Json(new { status = "OK", acceptedRequestsByDate = acceptedRequestsByDateObject, allRequestsByDate = allRequestsByDateObject, carsByDate = carsByDateObject });
         }
 
 
@@ -397,9 +435,12 @@ namespace BgTaxi.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// Remove Driver 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
-
         [Authorize(Roles = "Company")]
         [ValidateAntiForgeryToken]
         public ActionResult RemoveDriverFromCompany(int id)
@@ -413,6 +454,11 @@ namespace BgTaxi.Controllers
             }
             return RedirectToAction($"Drivers");
         }
+        /// <summary>
+        /// Remove Dispatcher
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Company")]
         [ValidateAntiForgeryToken]
         public ActionResult RemoveDispatcherFromCompany(int id)

@@ -18,18 +18,32 @@ namespace BgTaxi.Services
             this._data = data;
         }
 
+        /// <summary>
+        /// Return all Drivers
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Driver> GetAll()
         {
             return _data.Drivers.AsEnumerable();
 
         }
 
+        /// <summary>
+        /// Returns Driver by its user ID
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public Driver GetDriverByUserId(string userId)
         {
            return _data.Drivers.FirstOrDefault(x => x.UserId == userId);
 
         }
-
+        /// <summary>
+        /// Modify Driver's information
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="modification"></param>
+        /// <returns></returns>
         public bool DriverModify(int Id, Driver modification)
         {
             var driver = _data.Drivers.FirstOrDefault(x => x.Id == Id);
@@ -42,6 +56,11 @@ namespace BgTaxi.Services
             return false;
         }
 
+        /// <summary>
+        /// Delete the Driver
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <returns></returns>
         public bool RemoveDriver(Driver driver)
         {
             _data.Drivers.Remove(driver);
@@ -49,12 +68,21 @@ namespace BgTaxi.Services
             return true;
         }
 
+        /// <summary>
+        /// Sets a new car status of the driverID's car
+        /// </summary>
+        /// <param name="driverId"></param>
+        /// <param name="carStatus"></param>
         public void ChangeCarStatus(string driverId, CarStatus carStatus)
         {
             var driver = _data.Drivers.Where(x => x.UserId == driverId).Include(x => x.Car).FirstOrDefault();
             driver.Car.CarStatus = carStatus;
             _data.SaveChanges();
         }
+        /// <summary>
+        /// Adds a Driver
+        /// </summary>
+        /// <param name="driver"></param>
         public void AddDriver(Driver driver)
         {
             _data.Drivers.Add(driver);

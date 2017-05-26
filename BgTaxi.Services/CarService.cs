@@ -20,16 +20,32 @@ namespace BgTaxi.Services
             this.data = data;
         }
 
+        /// <summary>
+        /// Returns All Cars
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Car> GetCars()
         {
             return data.Cars.Include(x=>x.Company).AsEnumerable();
 
         }
+        /// <summary>
+        /// Returns the car of the driver or null if no car is found
+        /// </summary>
+        /// <param name="driver"></param>
         public Car GetCarByDriver(Driver driver)
         {
             Driver foundDriver = data.Drivers.Where(x => x.Id == driver.Id).Include(x => x.Car).FirstOrDefault();
             return foundDriver?.Car;
         }
+
+        /// <summary>
+        /// Updates some basic information about the car
+        /// </summary>
+        /// <param name="car"></param>
+        /// <param name="location"></param>
+        /// <param name="absent"></param>
+        /// <param name="free"></param>
         public void UpdateCarInfo(Car car, Models.Models.Location location, bool absent, bool free)
         {
             car.Location = location; 
@@ -77,6 +93,11 @@ namespace BgTaxi.Services
             }
         }
 
+        /// <summary>
+        /// Check if the car is near the address of the request
+        /// </summary>
+        /// <param name="car"></param>
+        /// <returns></returns>
         public bool CarOnAddressCheck(Car car)
         {
             if (car.CarStatus == CarStatus.Busy)
@@ -107,12 +128,22 @@ namespace BgTaxi.Services
             return false;
         }
 
+        /// <summary>
+        /// Adds a new car
+        /// </summary>
+        /// <param name="car"></param>
         public void CreateCar(Car car)
         {
             data.Cars.Add(car);
             data.SaveChanges();
         }
 
+        /// <summary>
+        /// Changes the car returns null if no car is found with this carId
+        /// </summary>
+        /// <param name="carId"></param>
+        /// <param name="modification"></param>
+        /// <returns></returns>
         public bool ModifyCar(int carId, Car modification)
         {
             var car = data.Cars.FirstOrDefault(x => x.Id == carId);

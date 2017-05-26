@@ -15,12 +15,20 @@ namespace BgTaxi.Services
             this._data = data;
         }
 
+        /// <summary>
+        /// Creates a new company
+        /// </summary>
+        /// <param name="company"></param>
         public void AddCompany(Company company)
         {
             _data.Companies.Add(company);
             _data.SaveChanges();
         }
 
+        /// <summary>
+        /// Returns all companies
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Company> GetAll()
         {
             return _data.Companies.AsEnumerable();
@@ -31,6 +39,16 @@ namespace BgTaxi.Services
             _data.SaveChanges();
         }
 
+        /// <summary>
+        /// Update some basic information about the company 
+        /// </summary>
+        /// <param name="uniqueNumber"></param>
+        /// <param name="name"></param>
+        /// <param name="mol"></param>
+        /// <param name="eik"></param>
+        /// <param name="dds"></param>
+        /// <param name="address"></param>
+        /// <returns></returns>
         public Company UpdateCompany(string uniqueNumber, string name, string mol, string eik, string dds, string address)
         {
             var company = _data.Companies.Where(x => x.UniqueNumber == uniqueNumber).First();

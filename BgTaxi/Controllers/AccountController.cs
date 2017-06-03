@@ -164,8 +164,8 @@ using BgTaxi.Services.Contracts;
                 if (result.Succeeded)
                 {
                     UserManager.AddToRole(user.Id, "Client");
-
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    accessTokenService.AddDeviceUserId(newAccessToken, user.Id);
+                    //string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     //await UserManager.SendEmailAsync(user.Id, "Потвърдете вашата регистрация", string.Format("<p><span style='font-family:times new roman,times,serif;'>Здравейте {0},<br/>Вие успешно регистрирахте в сайта bgtaxi.com.</span></p><p>Моля, активирайте вашия акаунт, като натиснете върху линка по-долу:</p><h2><a href='{1}'>Активирай сега</a></h2>", user.FirstName, callbackUrl));
 
@@ -289,8 +289,10 @@ using BgTaxi.Services.Contracts;
 
                 var device = deviceService.GetDeviceByAccessToken(newAccessToken);
                 if (device.UserId != null)
-                {
-                    driverService.ChangeCarStatus(device.UserId, CarStatus.Offline);
+                { 
+                    if(UserManager.FindById(device.UserId).Roles.Any(x=>x.RoleId == "2")){
+                        driverService.ChangeCarStatus(device.UserId, CarStatus.Offline);
+                    }
                     device.UserId = null;
                     device.LastRequestDateTime = DateTime.Now;
                     deviceService.SaveChanges();

@@ -10,7 +10,7 @@ namespace BgTaxi.PlacesAPI.GoogleRequests
 {
     public static class GoogleAPIRequest
     {
-        public static string GetAddress(double lat, double lon)
+        public static StreetAddress GetAddress(double lat, double lon)
         {
             var request = WebRequest.Create("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat.ToString("0.0000000", System.Globalization.CultureInfo.InvariantCulture) + "," + lon.ToString("0.0000000", System.Globalization.CultureInfo.InvariantCulture) + "&language=bg&key=AIzaSyCqFT1vjwghgVYc9Y_jbuD-ux10qQD9H0s");
             var response = request.GetResponse();
@@ -21,7 +21,7 @@ namespace BgTaxi.PlacesAPI.GoogleRequests
             string responseFromServer = reader.ReadToEnd();
             // Display the content.
             RequestFormat flight = JsonConvert.DeserializeObject<RequestFormat>(responseFromServer);
-            return flight.results[0].formatted_address;
+            return new StreetAddress(){ Street_address = flight.results[0].address_components[0].long_name, Street_number = flight.results[0].address_components[1].long_name, FormattedAddress = flight.results[0].formatted_address };
         }
         public static DurationFormat GetDistance(BgTaxi.Models.Models.Location location1, BgTaxi.Models.Models.Location location2)
         {

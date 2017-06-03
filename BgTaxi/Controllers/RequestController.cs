@@ -130,6 +130,27 @@ namespace BgTaxi.Web.Controllers
         }
 
 
+        public JsonResult GetAddress(string accessToken, string lat, string lng)
+        {
+            if (HttpContext.Request.RequestType == "POST")
+            {
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
+                if(newAccessToken == null)
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+
+                var userId = _accessTokenService.GetUserId(newAccessToken);
+                if (userId == null)
+                    return Json(new { status = "ERR", accessToken = newAccessToken });
+                double latDouble = 0; double lonDouble = 0;
+                if(double.TryParse(lat, out latDouble) && double.TryParse(lng, out lonDouble))
+                {
+                    var address = PlacesAPI.GoogleRequests.GoogleAPIRequest.GetAddress(latDouble, lonDouble);
+                    return Json(new { status = "OK", street_number = address.Street_number, street_address=address.Street_address, formattedAddress=address.FormattedAddress, accessToken = newAccessToken });
+                }
+                return Json(new { status = "ERR", accessToken = newAccessToken });
+            }
+            return Json(new { });
+        }
         public JsonResult FinishRequest(int requestId, string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")

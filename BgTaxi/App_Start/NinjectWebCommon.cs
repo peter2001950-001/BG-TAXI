@@ -103,6 +103,10 @@ namespace BgTaxi.App_Start
              .Bind<IDashboardService>()
              .To<DashboardService>()
              .InRequestScope();
+            kernel
+            .Bind<IClientService>()
+            .To<ClientService>()
+            .InRequestScope();
         }        
     }
 }

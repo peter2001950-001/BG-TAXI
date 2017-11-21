@@ -188,14 +188,14 @@ namespace BgTaxi.Controllers
                 var drivers = new List<Driver>();
                 foreach (var car in cars)
                 {
-                    var driversEnum = _driverService.GetAll().ToList();
-                    foreach (var item in driversEnum)
+                    var driver = _driverService.GetDriverByCar(car);
+                    if (driver != null)
                     {
-                        if (item.Car?.Id == car.Id)
-                        {
-                            drivers.Add(item);
-                            break;
-                        }
+                        drivers.Add(driver);
+                    }
+                    else
+                    {
+                        drivers.Add(null);
                     }
                 }
                 var listUsers = new List<DriverBasicInfo>();
@@ -272,12 +272,12 @@ namespace BgTaxi.Controllers
         {
             var userId = User.Identity.GetUserId();
             var company = _companyService.GetAll().First(x => x.UserId == userId);
-            var newcar = (new Car() { Brand = viewModel.Brand, InternalNumber = viewModel.InternalNumber, Model = viewModel.Model, RegisterNumber = viewModel.RegisterNumber, Year = viewModel.Year, Company = company, Location = new Location() { Latitude = 0, Longitude = 0 }, CarStatus = CarStatus.OffDuty, LastActiveDateTime = new DateTime() });
+            var newcar = (new Car() { Brand = viewModel.Brand, InternalNumber = viewModel.InternalNumber, Model = viewModel.Model, RegisterNumber = viewModel.RegisterNumber, Year = viewModel.Year, Company = company, Location = new Location() { Latitude = 0, Longitude = 0 }, CarStatus = CarStatus.OffDuty, LastActiveDateTime = DateTime.Now });
             _carService.CreateCar(newcar);
             if (viewModel.SelectedDriver != "0")
             {
                 var driver = _driverService.GetAll().First(x => x.UserId == viewModel.SelectedDriver);
-                _carService.ModifyCar(driver.Car.Id, newcar);
+                _driverService.AddCar(driver.Id, newcar);
             }
             return RedirectToAction("Cars");
         }
@@ -302,29 +302,27 @@ namespace BgTaxi.Controllers
             car.Brand = viewModel.Brand;
 
             _carService.ModifyCar(viewModel.CarId, car);
-            var driver = _driverService.GetAll().FirstOrDefault(x => x.Car.Id == car.Id);
+            var driver = _driverService.GetDriverByCar(car);
             if (viewModel.SelectedDriver == "0" && driver != null)
             {
                 driver.Car = null;
-                _driverService.DriverModify(car.Id, driver);
+                _driverService.DriverModify(driver.Id, driver);
 
             }
             else if (viewModel.SelectedDriver != "0" && driver == null)
             {
                 var newDriver = _driverService.GetAll().First(x => x.UserId == viewModel.SelectedDriver);
-                newDriver.Car = car;
-                _driverService.DriverModify(newDriver.Id, newDriver);
+                _driverService.AddCar(newDriver.Id, car);
             }
             else if (viewModel.SelectedDriver != "0" && driver != null && viewModel.SelectedDriver != driver.UserId)
             {
                 driver.Car = null;
-                _driverService.DriverModify(car.Id, driver);
-                var newDriver = _driverService.GetAll().First(x => x.UserId == viewModel.SelectedDriver);
-                newDriver.Car = car;
-                _driverService.DriverModify(newDriver.Id, newDriver);
+                _driverService.DriverModify(driver.Id, driver);
+                var newDriver = _driverService.GetAll().FirstOrDefault(x => x.UserId == viewModel.SelectedDriver);
+                if(newDriver!=null)
+                _driverService.AddCar(newDriver.Id, car);
             }
-
-
+            
             return RedirectToAction("Cars");
         }
 

@@ -24,7 +24,7 @@ namespace BgTaxi.Services
         /// <returns></returns>
         public IEnumerable<Driver> GetAll()
         {
-            return _data.Drivers.AsEnumerable();
+            return _data.Drivers.Include(x=>x.Car).Include(x=>x.Company).ToList();
 
         }
 
@@ -54,6 +54,22 @@ namespace BgTaxi.Services
                 return true;
             }
             return false;
+        }
+
+        public void AddCar(int driverId,Car car)
+        {
+            var driver = _data.Drivers.Where(x => x.Id == driverId).FirstOrDefault();
+            if (driver != null)
+            {
+                driver.Car = car;
+                _data.SaveChanges();
+               
+            }
+            else
+            {
+                throw new NullReferenceException();
+            }
+            
         }
 
         /// <summary>
@@ -92,6 +108,40 @@ namespace BgTaxi.Services
         public void SaveChanges()
         {
             _data.SaveChanges();
+        }
+        public Driver GetDriverByCar(Car car)
+        {
+            var driver = _data.Drivers.Include(x => x.Car).Where(x => x.Car.Id == car.Id).FirstOrDefault();
+            return driver;
+        }
+
+        public IEnumerable<OnlineDriver> GetAllOnlineDrivers()
+        {
+            return _data.OnlineDrivers.Include(x => x.Driver).AsEnumerable();
+        }
+
+        public void AddOnlineDriver(string userId, string connectionId)
+        {
+            var driver = _data.Drivers.Where(x => x.UserId == userId).FirstOrDefault();
+            if (driver != null)
+            {
+                _data.OnlineDrivers.Add(new OnlineDriver()
+                {
+                    ConnectionId = connectionId,
+                    Driver = driver
+                });
+                _data.SaveChanges();
+            }
+        }
+
+        public void RemoveOnlineDriver(string connectionId)
+        {
+            var driver = _data.OnlineDrivers.Where(x => x.ConnectionId == connectionId).FirstOrDefault();
+            if(driver != null)
+            {
+                _data.OnlineDrivers.Remove(driver);
+                _data.SaveChanges();
+            }
         }
     }
 }

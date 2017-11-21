@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using BgTaxi.Models.Models;
 using BgTaxi.Services.Contracts;
 using BgTaxi.Web.ActionFilter;
+using BgTaxi.PlacesAPI.GoogleRequests;
 
 namespace BgTaxi.Web.Controllers
 {
@@ -49,7 +50,7 @@ namespace BgTaxi.Web.Controllers
 
                 var driver = _driverService.GetDriverByUserId(userId);
                 var car = _carService.GetCarByDriver(driver);
-                _carService.UpdateCarInfo(car, new Location {Latitude = lat, Longitude = lon}, absent, free);
+                _carService.UpdateCarInfo(car, new Models.Models.Location { Latitude = lat, Longitude = lon}, absent, free);
 
                 if (onAddress)
                     if (_carService.CarOnAddress(car))
@@ -90,6 +91,54 @@ namespace BgTaxi.Web.Controllers
             }
             return Json(new {});
         }
+
+        public JsonResult CatchUp(string accessToken)
+        {
+            if (HttpContext.Request.RequestType == "POST")
+            {
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
+
+                if (newAccessToken == null)
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+
+                var userId = _accessTokenService.GetUserId(newAccessToken);
+
+                var driver = _driverService.GetDriverByUserId(userId);
+                var car = _carService.GetCarByDriver(driver);
+                return Json(new { request = _requestService.CatchUpRequest(car), status = "OK", accessToken = newAccessToken });
+            }
+            return Json(new { });
+        } 
+        public JsonResult AutoSuggest(string accessToken, string query, string lat, string lng, string types, int radius = 15000)
+        {
+            if (HttpContext.Request.RequestType == "POST")
+            {
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
+                if (newAccessToken == null)
+                    return Json(new { status = "INVALID ACCESSTOKEN" });
+
+                var userId = _accessTokenService.GetUserId(newAccessToken);
+                if (userId == null)
+                    return Json(new { status = "ERR", accessToken = newAccessToken });
+                double latDouble = 0; double lonDouble = 0;
+                lat.Replace('.', ',');
+                lng.Replace('.', ',');
+               if (double.TryParse(lat, out latDouble) && double.TryParse(lng, out lonDouble))
+                {
+                   var places =  GoogleAPIRequest.AutoCompleteList(query, new Models.Models.Location() { Latitude = latDouble, Longitude = lonDouble }, radius, types);
+
+                    return Json( new { status = "OK", places = places, accessToken = newAccessToken });
+                }
+                else
+                {
+                    return Json(new { status = "LatLon Parse Error", accessToken = newAccessToken});
+                }
+            }
+            return Json(new { });
+        }
+
+
+            
 
 
         /// <summary>

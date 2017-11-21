@@ -16,6 +16,8 @@ namespace BgTaxi
     public partial class Startup
     {
         // Enable the application to use OAuthAuthorization. You can then secure your Web APIs
+
+       
         static Startup()
         {
 
@@ -39,6 +41,7 @@ namespace BgTaxi
         public void ConfigureAuth(IAppBuilder app)
         {
 
+            app.MapSignalR();
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(ApplicationDbContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);

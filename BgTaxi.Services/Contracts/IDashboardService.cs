@@ -15,6 +15,7 @@ namespace BgTaxi.Services.Contracts
         object[] GetRequests(string userId);
         void AddDispatcherDashboard(DispatcherDashboard dashboard);
         Car AppropriateCar(Models.Models.Location startingLocaion, Company company);
+
     }
 
 }

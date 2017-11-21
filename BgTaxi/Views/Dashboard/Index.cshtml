@@ -14,10 +14,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @Scripts.Render("~/bundles/jquery")
      @Styles.Render("~/Content/css")
-    @Styles.Render("~/Content/dashboard-1.0.css")
+        @Styles.Render("~/Content/dashboard-1.0.css")
+    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
 
+    <script src="~/signalr/hubs"></script>
     <script>$(document).ready(function () {
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip(); 
 });</script>
 
 </head>

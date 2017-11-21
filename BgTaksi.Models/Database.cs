@@ -12,25 +12,43 @@ namespace BgTaxi.Models.Models
         public Database()
             :base("DefaultConnection")
         {
-
+            this.Configuration.ProxyCreationEnabled = false;
         }
         public override int SaveChanges()
         {
             return base.SaveChanges();
         }
-        public virtual DbSet<ActiveRequest> ActiveRequests { get; set; }
-        public virtual DbSet<Car> Cars { get; set; }
-        public virtual DbSet<TakenRequest> TakenRequests { get; set; }
-        public virtual DbSet<RequestHistory> RequestHistory { get; set; }
-        public virtual DbSet<Company> Companies { get; set; }
-        public virtual DbSet<Driver> Drivers { get; set; }
-        public virtual DbSet<Device> Devices { get; set; }
-        public virtual DbSet<Dispatcher> Dispatchers { get; set; }
-        public virtual DbSet<AccessToken> AccessTokens { get; set; }
-        public virtual DbSet<RequestInfo> RequestsInfo { get; set; }
-        public virtual DbSet<DispatcherDashboard> DispatchersDashboard { get; set; }
-        public virtual DbSet<CarDismissedRequest> CarsDismissedRequests { get; set; }
+        public DbSet<ActiveRequest> ActiveRequests { get; set; }
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<TakenRequest> TakenRequests { get; set; }
+        public DbSet<RequestHistory> RequestHistory { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<Dispatcher> Dispatchers { get; set; }
+        public DbSet<AccessToken> AccessTokens { get; set; }
+        public DbSet<RequestInfo> RequestsInfo { get; set; }
+        public DbSet<DispatcherDashboard> DispatchersDashboard { get; set; }
+        public DbSet<CarDismissedRequest> CarsDismissedRequests { get; set; }
 
+        public DbSet<OnlineDriver> OnlineDrivers
+        {
+            get; set;
+        }
 
+        public DbSet<OnlineDispatcher> OnlineDispatchers
+        {
+            get; set;
+        }
+
+        public DbSet<OnlineClient> OnlineClients
+        {
+            get; set;
+        }
+
+        public DbSet<Client> Clients
+        {
+            get; set;
+        }
     }
 }

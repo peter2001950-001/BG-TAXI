@@ -25,7 +25,12 @@ namespace BgTaxi.Services
         /// <returns></returns>
         public IEnumerable<ActiveRequest> GetActiveRequests()
         {
-            return data.ActiveRequests.Include(x=>x.Request).AsEnumerable();
+            return data.ActiveRequests.Include(x=>x.Request).Include(x => x.AppropriateCar).AsEnumerable();
+        }
+        public void RemoveActiveRequest(ActiveRequest request)
+        {
+            data.ActiveRequests.Remove(request);
+            data.SaveChanges();
         }
 
         /// <summary>
@@ -34,7 +39,7 @@ namespace BgTaxi.Services
         /// <returns></returns>
         public IEnumerable<TakenRequest> GetTakenRequests()
         {
-            return data.TakenRequests.AsEnumerable();
+            return data.TakenRequests.Include(x => x.Request).AsEnumerable();
         }
         /// <summary>
         /// Returns all RequestsHistories
@@ -86,7 +91,7 @@ namespace BgTaxi.Services
         /// <returns></returns>
         public RequestInfo GetRequestInfo(int id)
         {
-            return data.RequestsInfo.FirstOrDefault(x => x.Id == id);
+            return data.RequestsInfo.Include(x => x.Company).FirstOrDefault(x => x.Id == id);
         }
         /// <summary>
         /// Return the request which is chosen as appropriate for the car as an object ready to be parsed to JSON  
@@ -98,10 +103,18 @@ namespace BgTaxi.Services
             if (data.ActiveRequests.Any(x => x.AppropriateCar.Id == car.Id))
             {
                 var request = data.ActiveRequests.Where(x => x.AppropriateCar.Id == car.Id).Include(x => x.Request).First();
-                TimeSpan diff = DateTime.Now - request.DateTimeChosenCar;
-                var distance = Math.Round(DistanceBetweenTwoPoints.GetDistance(request.Request.StartingLocation, new Models.Models.Location() { Latitude = car.Location.Latitude, Longitude = car.Location.Longitude }), 3);
-                object requestObj = new { distance = distance, startAddress = request.Request.StartingAddress, finishAddress = request.Request.FinishAddress, id = request.Request.Id, time = 15 - Math.Round(diff.TotalSeconds, 0) };
-                return requestObj;
+                if (request.Request.RequestStatus == RequestStatusEnum.NotTaken)
+                {
+                    TimeSpan diff = DateTime.Now - request.DateTimeChosenCar;
+                    var distance = Math.Round(DistanceBetweenTwoPoints.GetDistance(request.Request.StartingLocation, new Models.Models.Location() { Latitude = car.Location.Latitude, Longitude = car.Location.Longitude }), 3);
+                    object requestObj = new { distance = distance, startAddress = request.Request.StartingAddress, finishAddress = request.Request.FinishAddress, id = request.Request.Id, time = 15 - Math.Round(diff.TotalSeconds, 0) };
+                    return requestObj;
+                }
+                else
+                {
+                    request.AppropriateCar = null;
+                    data.SaveChanges();
+                }
             }
             return null;
         }
@@ -164,6 +177,21 @@ namespace BgTaxi.Services
             return true;
         }
 
+        public object CatchUpRequest(Car car)
+        {
+           var request =  data.TakenRequests.Where(x => x.Car.Id == car.Id).Include(x=>x.Request).FirstOrDefault();
+           var carFound = data.Cars.Where(x => x.Id == car.Id).FirstOrDefault();
+            if (request != null)
+            {
+
+                carFound.CarStatus = CarStatus.Busy;
+                data.SaveChanges();
+                return new { requestId = request.Request.Id, requestStartingAddress = request.Request.StartingAddress, requestFinishAddress = request.Request.FinishAddress };
+            }
+            carFound.CarStatus = CarStatus.Free;
+            data.SaveChanges();
+            return null;
+        }
         /// <summary>
         /// Mark the request as finished 
         /// </summary>
@@ -220,6 +248,25 @@ namespace BgTaxi.Services
         {
             data.ActiveRequests.Add(request);
             data.SaveChanges();
+        }
+
+        public void ModifyActiveRequest(ActiveRequest newActiveRequest)
+        {
+            var activeRequest = data.ActiveRequests.Where(x => x.Id == newActiveRequest.Id).FirstOrDefault();
+            if (activeRequest != null)
+            {
+                activeRequest = newActiveRequest;
+                data.SaveChanges();
+            }
+        }
+        public void ModifyRequestInfo(RequestInfo newRequestInfo)
+        {
+            var requestInfo = data.RequestsInfo.Where(x => x.Id == newRequestInfo.Id).FirstOrDefault();
+            if (requestInfo != null)
+            {
+                requestInfo = newRequestInfo;
+                data.SaveChanges();
+            }
         }
     }
 }

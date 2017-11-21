@@ -61,7 +61,6 @@ namespace BgTaxi.Controllers
         public JsonResult Pull(bool free = false, bool busy = false, bool absent = false, bool offline = false, bool offduty= false)
         {
             var userId = User.Identity.GetUserId();
-
             _dashboardService.UpdateRequestStatus(userId);
             var requests = _dashboardService.GetRequests(userId);
 
@@ -81,12 +80,12 @@ namespace BgTaxi.Controllers
             {
                 addCar = false;
                 TimeSpan diff = DateTime.Now - cars[i].LastActiveDateTime;
-                if (diff.TotalMinutes >2  && cars[i].CarStatus != CarStatus.OffDuty)
+                if (diff.TotalMinutes > 2 && cars[i].CarStatus != CarStatus.OffDuty)
                 {
                     cars[i].CarStatus = CarStatus.Offline;
                     _carService.SaveChanges();
                 }
-                switch (cars[i].CarStatus)  
+                switch (cars[i].CarStatus)
                 {
                     case CarStatus.Free:
                         if (free)
@@ -135,6 +134,7 @@ namespace BgTaxi.Controllers
             carObjs = carsList.ToArray();
             return Json(new { requests = requests, cars = carObjs, freeStatusCount = freeStatusCount, busyStatusCount = busyStatusCount, absentStatusCount = absentStatusCount, offlineStatusCount = offlineStatusCount, offdutyStatusCount = offdutyStatusCount });
         }
+    
 
         /// <summary>
         /// Returns requestLocation with the id
@@ -327,7 +327,7 @@ namespace BgTaxi.Controllers
             var company = _companyService.GetAll().First(x => x.Id == dispatcher.Company.Id);
 
             var cityLocation = company.CityLocation;
-            var suggestions = GoogleAPIRequest.AutoCompleteList(text, cityLocation, 10000);
+            var suggestions = GoogleAPIRequest.AutoCompleteList(text, cityLocation, 10000, "");
 
             object[] result = new object[suggestions.Count];
             for (int i = 0; i < result.Length; i++)
@@ -372,12 +372,12 @@ namespace BgTaxi.Controllers
             }
             
             
-            var car = _dashboardService.AppropriateCar(startingLocation,  dispatcher.Company);
+           
             var request = new RequestInfo()
             {
                 CreatedBy = CreatedBy.Dispatcher,
                 CreatorUserId = userId,
-                RequestStatus = RequestStatusEnum.NotTaken,
+                RequestStatus = RequestStatusEnum.NoCarChosen,
                 StartingAddress = startingAddress,
                 StartingLocation = startingLocation,
                 FinishAddress = finishAddress,
@@ -391,24 +391,29 @@ namespace BgTaxi.Controllers
             {
                 DispatcherUserId = userId,
                 LastSeen = DateTime.Now,
-                LastSeenStatus = RequestStatusEnum.NotTaken,
+                LastSeenStatus = RequestStatusEnum.NoCarChosen,
                 Request = request
 
             };
 
             _dashboardService.AddDispatcherDashboard(dashboardCell);
-            if (car == null)
-            {
-                request.RequestStatus = RequestStatusEnum.NoCarChosen;
-            }
-
             var activeRequest = new ActiveRequest()
             {
-                AppropriateCar = car,
+                AppropriateCar = null,
                 DateTimeChosenCar = DateTime.Now,
                 Request = request
             };
             _requestService.AddActiveRequest(activeRequest);
+            var car = _carService.AppropriateCar(startingLocation, dispatcher.Company);
+            if (car != null)
+            {
+                request.RequestStatus = RequestStatusEnum.NotTaken;
+                activeRequest.AppropriateCar = car;
+                 _requestService.ModifyActiveRequest(activeRequest);
+            _requestService.ModifyRequestInfo(request);
+            }
+           
+           
 
 
             return Json(new { status = "OK" });

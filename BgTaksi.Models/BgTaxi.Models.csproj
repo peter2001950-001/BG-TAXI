@@ -91,6 +91,7 @@
     <Compile Include="Models\ActiveRequests.cs" />
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\CarDismissedRequest.cs" />
+    <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Models\Device.cs" />
@@ -98,6 +99,9 @@
     <Compile Include="Models\DispatcherDashboard.cs" />
     <Compile Include="Models\Driver.cs" />
     <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\OnlineClient.cs" />
+    <Compile Include="Models\OnlineDispatcher.cs" />
+    <Compile Include="Models\OnlineDriver.cs" />
     <Compile Include="Models\RequestHistory.cs" />
     <Compile Include="Models\RequestInfo.cs" />
     <Compile Include="Models\TakenRequests.cs" />

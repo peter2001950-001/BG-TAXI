@@ -16,5 +16,6 @@ namespace BgTaxi.Services.Contracts
         bool IsUserLoggedIn(string accessToken);
         bool AddDeviceUserId(string accessToken, string userId);
         string GenerateAccessToken(string oldAccessToken);
+        void LogoutUser(string accessToken);
     }
 }

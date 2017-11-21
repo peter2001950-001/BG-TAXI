@@ -69,6 +69,20 @@ namespace BgTaxi.Services
             }
             return false;
             }
+
+        public void LogoutUser(string accessToken)
+        {
+            var accTok = data.AccessTokens.Where(x => x.UniqueAccesToken == accessToken).Include(x => x.Device).FirstOrDefault();
+            if (accTok != null)
+            {
+                var device = data.Devices.FirstOrDefault(x => x.Id == accTok.Device.Id);
+                if (device?.UserId != null)
+                {
+                    device.UserId = null;
+                    data.SaveChanges();
+                }
+            }
+        }
         /// <summary>
         /// Add userId to the device of the accessToken
         /// </summary>

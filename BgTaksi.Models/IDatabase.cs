@@ -58,6 +58,22 @@ namespace BgTaxi.Models
         {
             get;
         }
+        DbSet<OnlineDriver> OnlineDrivers
+        {
+            get;
+        }
+        DbSet<OnlineDispatcher> OnlineDispatchers
+        {
+            get;
+        }
+        DbSet<OnlineClient> OnlineClients
+        {
+            get;
+        }
+        DbSet<Client> Clients
+        {
+            get;
+        }
         int SaveChanges();
     }
 }

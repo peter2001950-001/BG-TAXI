@@ -27,6 +27,21 @@ namespace BgTaxi.Services
             _data.Dispatchers.Add(dispatcher);
             _data.SaveChanges();
         }
+
+        public void AddOnlineDispatcher(string userId, string connectionId)
+        {
+
+            var dispatcher = _data.Dispatchers.Where(x => x.UserId == userId).FirstOrDefault();
+            if (dispatcher != null) {
+                _data.OnlineDispatchers.Add(new OnlineDispatcher()
+                {
+                    ConnectionId = connectionId,
+                    Dispatcher = dispatcher
+                });
+                _data.SaveChanges();
+            }
+        }
+
         /// <summary>
         /// Returns all Dispatchers
         /// </summary>
@@ -35,6 +50,12 @@ namespace BgTaxi.Services
         {
             return _data.Dispatchers.Include(x=>x.Company).AsEnumerable();
         }
+
+        public IEnumerable<OnlineDispatcher> GetAllOnlineDispatchers()
+        {
+            return _data.OnlineDispatchers.Include(x => x.Dispatcher).AsEnumerable();
+        }
+
         /// <summary>
         /// Remove a Dispatcher
         /// </summary>
@@ -43,6 +64,17 @@ namespace BgTaxi.Services
         {
             _data.Dispatchers.Remove(disparcher);
         }
+
+        public void RemoveOnlineDispatcher(string connectionId)
+        {
+           var dispatcher =  _data.OnlineDispatchers.Where(x => x.ConnectionId == connectionId).FirstOrDefault();
+            if(dispatcher != null)
+            {
+                _data.OnlineDispatchers.Remove(dispatcher);
+                _data.SaveChanges();
+            }
+        }
+
         public void SaveChanges()
         {
             _data.SaveChanges();

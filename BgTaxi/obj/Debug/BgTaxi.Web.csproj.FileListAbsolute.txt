@@ -339,3 +339,10 @@ C:\Users\Peter\Desktop\160\BgTaxi\obj\Debug\BgTaxi.pdb
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Chart.Mvc.dll
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Chart.Mvc.pdb
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Chart.Mvc.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.SignalR.Core.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.SignalR.SystemWeb.dll
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.SignalR.Core.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\Microsoft.AspNet.SignalR.SystemWeb.xml
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaksi.Models.dll.config
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\bin\BgTaxi.Services.dll.config
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi\obj\Debug\BgTaxi.Web.csproj.CoreCompileInputs.cache

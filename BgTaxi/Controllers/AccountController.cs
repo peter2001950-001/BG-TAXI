@@ -23,21 +23,23 @@ using BgTaxi.Services.Contracts;
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private IDeviceService deviceService;
-        private IAccessTokenService accessTokenService;
-        private readonly IDriverService driverService;
-        private readonly ICarService carService;
-        private readonly ICompanyService companyService;
-        private readonly IDispatcherService dispatcherService;
+        private readonly IDeviceService _deviceService;
+        private readonly IAccessTokenService _accessTokenService;
+        private readonly IDriverService _driverService;
+        private readonly ICarService _carService;
+        private readonly ICompanyService _companyService;
+        private readonly IDispatcherService _dispatcherService;
+        private readonly IClientService _clientService;
 
-        public AccountController(IDeviceService deviceService, IAccessTokenService accessTokenService, IDriverService driverService, ICarService carService, ICompanyService companyService, IDispatcherService dispatcherService)
+        public AccountController(IDeviceService deviceService, IAccessTokenService accessTokenService, IDriverService driverService, ICarService carService, ICompanyService companyService, IDispatcherService dispatcherService, IClientService clientService)
         {
-            this.deviceService = deviceService;
-            this.accessTokenService = accessTokenService;
-            this.driverService = driverService;
-            this.carService = carService;
-            this.companyService = companyService;
-            this.dispatcherService = dispatcherService;
+            _deviceService = deviceService;
+            _accessTokenService = accessTokenService;
+            _driverService = driverService;
+            _carService = carService;
+            _companyService = companyService;
+            _dispatcherService = dispatcherService;
+            _clientService = clientService;
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -88,7 +90,13 @@ using BgTaxi.Services.Contracts;
             return View();
         }
 
-        //
+        /// <summary>
+        /// Login from bgtaxi.net
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="returnUrl"></param>
+        /// <param name="captchaValid"></param>
+        /// <returns></returns>
         // POST: /Account/Login
         [HttpPost]
         [CaptchaValidator]
@@ -138,28 +146,69 @@ using BgTaxi.Services.Contracts;
             CreatedDateTime = DateTime.Now
             };
 
-            deviceService.AddDrvice(device);
-            accessTokenService.AddAccessToken(accToken);
+            _deviceService.AddDrvice(device);
+            _accessTokenService.AddAccessToken(accToken);
             return Json(new { accessToken = accToken.UniqueAccesToken });
 
         }
 
         [AllowAnonymous]
         [AllowCrossSiteJsonAttribute]
+        public async Task<JsonResult> RegisterClientExternal(string basicAuth, string firstName, string lastName, string telephone, string accessToken)
+        {
+            if (HttpContext.Request.RequestType == "POST")
+            {
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
+                var usernamePass = ExtractUserNameAndPassword(basicAuth);
+                var user = new Models.ApplicationUser { UserName = usernamePass.Item1, Email = usernamePass.Item1, PhoneNumber = telephone, FirstName = firstName, LastName = lastName };
+                var result = await UserManager.CreateAsync(user, usernamePass.Item2);
+
+                if (result.Succeeded)
+                {
+                    UserManager.AddToRole(user.Id, "Client");
+                    _clientService.AddClient(new Client()
+                    {
+                        UserId = user.Id
+                    });
+                    _accessTokenService.AddDeviceUserId(newAccessToken, user.Id);
+                    //string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    //await UserManager.SendEmailAsync(user.Id, "Потвърдете вашата регистрация", string.Format("<p><span style='font-family:times new roman,times,serif;'>Здравейте {0},<br/>Вие успешно регистрирахте в сайта bgtaxi.com.</span></p><p>Моля, активирайте вашия акаунт, като натиснете върху линка по-долу:</p><h2><a href='{1}'>Активирай сега</a></h2>", user.FirstName, callbackUrl));
+
+                    return Json(new { status = "OK", accessToken = newAccessToken });
+                }
+
+                return Json(new { status = "ERR", accessToken = newAccessToken, erorrs = result.Errors.ToArray() });
+
+            }
+            return Json(new { });
+        }
+        /// <summary>
+        /// Login in from mobile application
+        /// </summary>
+        /// <param name="basicAuth"></param>
+        /// <param name="requiredRoleId"></param>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [AllowCrossSiteJsonAttribute]
         public JsonResult LoginExternal(string basicAuth, string requiredRoleId, string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var newAccessToken = accessTokenService.GenerateAccessToken(accessToken);
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
 
-                var accTok = accessTokenService.GetAll().Where(x => x.UniqueAccesToken == newAccessToken).FirstOrDefault();
+                var accTok = _accessTokenService.GetAll().Where(x => x.UniqueAccesToken == newAccessToken).FirstOrDefault();
                 if (accTok == null)
                 {
                     return Json(new { status = "INVALID ACCESSTOKEN" });
                 }
-                    if (accessTokenService.IsUserLoggedIn(newAccessToken))
+                    if (_accessTokenService.IsUserLoggedIn(newAccessToken))
                 {
-                    return Json(new { status = "USER LOGGED IN", accessToken = newAccessToken });
+                    if (requiredRoleId != "3")
+                    {
+                        _accessTokenService.LogoutUser(newAccessToken);
+                    }
                 }
                     
                  var usernamePass = ExtractUserNameAndPassword(basicAuth);
@@ -168,7 +217,7 @@ using BgTaxi.Services.Contracts;
                 if (findAcync.Result != null)
                 {
                     var roleRequired = findAcync.Result.Roles.Any(x => x.RoleId == requiredRoleId);
-                    if (roleRequired && findAcync.Result.EmailConfirmed)
+                    if (roleRequired)
                     {
                         switch (requiredRoleId)
                         {
@@ -176,23 +225,20 @@ using BgTaxi.Services.Contracts;
                                 return Json(new { status = "NO PERMISSION", accessToken = newAccessToken });
 
                             case "2":
-                                bool haveCar = driverService.GetAll().ToList().Any(x => x.Car != null && x.UserId == findAcync.Result.Id);
-                                bool haveCompany = driverService.GetAll().ToList().Any(x => x.Company != null && x.UserId == findAcync.Result.Id);
-                                bool alreadyLoggedIn = deviceService.GetAll().ToList().Any(x => x.UserId == findAcync.Result.Id);
-                                if (haveCar && haveCompany && !alreadyLoggedIn)
+                                bool haveCar = _driverService.GetAll().ToList().Any(x => x.Car != null && x.UserId == findAcync.Result.Id);
+                                bool haveCompany = _driverService.GetAll().ToList().Any(x => x.Company != null && x.UserId == findAcync.Result.Id);
+                                
+                                if (haveCar && haveCompany && findAcync.Result.EmailConfirmed)
                                 {
-                                    accessTokenService.AddDeviceUserId(newAccessToken, findAcync.Result.Id);
-                                    driverService.ChangeCarStatus(findAcync.Result.Id, CarStatus.Free);
+                                    _accessTokenService.AddDeviceUserId(newAccessToken, findAcync.Result.Id);
+                                    _driverService.ChangeCarStatus(findAcync.Result.Id, CarStatus.Free);
 
-                                    var driver = driverService.GetAll().Where(x => x.UserId == findAcync.Result.Id).First();
-                                    var car = carService.GetCarByDriver(driver);
+                                    var driver = _driverService.GetAll().Where(x => x.UserId == findAcync.Result.Id).First();
+                                    var car = _carService.GetCarByDriver(driver);
 
                                         return Json(new { status = "OK", accessToken = newAccessToken, user = new {firstName = findAcync.Result.FirstName, lastName = findAcync.Result.LastName, carIN = car.InternalNumber } });
 
-                                } else if (alreadyLoggedIn)
-                                {
-                                    return Json(new { status = "ALREADY LOGGED IN", accessToken = newAccessToken });
-                                }
+                                } 
                                 else if (!haveCompany)
                                 {
                                     return Json(new { status = "NO COMPANY", accessToken = newAccessToken });
@@ -200,23 +246,21 @@ using BgTaxi.Services.Contracts;
                                 else if (!haveCar)
                                 {
                                     return Json(new { status = "NO CAR", accessToken = newAccessToken });
+                                }else
+                                {
+                                    return Json(new { status = "NO EMAIL", accessToken = newAccessToken });
                                 }
                                 
-                                break;
                             case "3":
-
-                                return Json(new { status = "OK", accessToken = newAccessToken });
+                                _accessTokenService.AddDeviceUserId(newAccessToken, findAcync.Result.Id);
+                                return Json(new { status = "OK", accessToken = newAccessToken, user = new { firstName = findAcync.Result.FirstName, lastName = findAcync.Result.LastName } });
                             default:
                                 return Json(new { status = "ERR", accessToken = newAccessToken });
                         }
 
-                    }else if (!roleRequired)
+                    }else
                     {
                         return Json(new { status = "ROLE NOT MATCH", accessToken = newAccessToken });
-                    }
-                    else
-                    {
-                        return Json(new { status = "NO EMAIL", accessToken = newAccessToken });
                     }
                     
                 }
@@ -229,25 +273,32 @@ using BgTaxi.Services.Contracts;
                 return Json(new { status = "" });
             }
         }
+        /// <summary>
+        /// Logout from mobile device
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [AllowCrossSiteJsonAttribute]
         public JsonResult LogoutExternal(string accessToken)
         {
             if (HttpContext.Request.RequestType == "POST")
             {
-                var newAccessToken = accessTokenService.GenerateAccessToken(accessToken);
+                var newAccessToken = _accessTokenService.GenerateAccessToken(accessToken);
                 if (newAccessToken == null)
                 {
                     return Json(new { status = "INVALID ACCESSTOKEN" });
                 }
 
-                var device = deviceService.GetDeviceByAccessToken(newAccessToken);
+                var device = _deviceService.GetDeviceByAccessToken(newAccessToken);
                 if (device.UserId != null)
-                {
-                    driverService.ChangeCarStatus(device.UserId, CarStatus.Offline);
+                { 
+                    if(UserManager.FindById(device.UserId).Roles.Any(x=>x.RoleId == "2")){
+                        _driverService.ChangeCarStatus(device.UserId, CarStatus.Offline);
+                    }
                     device.UserId = null;
                     device.LastRequestDateTime = DateTime.Now;
-                    deviceService.SaveChanges();
+                    _deviceService.SaveChanges();
                     return Json(new { status = "OK", accessToken = newAccessToken });
                 }
                 else
@@ -339,8 +390,8 @@ using BgTaxi.Services.Contracts;
             var viewModel = new RegisterEmployeeViewModel();
             var listSelectedItems = new List<SelectListItem>();
             listSelectedItems.Add(new SelectListItem { Selected = true, Text = string.Format("Избери"), Value = "0" });
-            listSelectedItems.Add(new SelectListItem { Selected = true, Text = string.Format("Шофьор"), Value = "1" });
-            listSelectedItems.Add(new SelectListItem { Selected = true, Text = string.Format("Диспечер"), Value = "2" });
+            listSelectedItems.Add(new SelectListItem { Selected = false, Text = string.Format("Шофьор"), Value = "1" });
+            listSelectedItems.Add(new SelectListItem { Selected = false, Text = string.Format("Диспечер"), Value = "2" });
             viewModel.Employee = new SelectList(listSelectedItems);
             return View(viewModel);
         }
@@ -382,7 +433,7 @@ using BgTaxi.Services.Contracts;
         {
             if (ModelState.IsValid&&captchaValid)
             {
-                if (companyService.GetAll().Any(x => x.UniqueNumber == model.UniqueNumber))
+                if (_companyService.GetAll().Any(x => x.UniqueNumber == model.UniqueNumber))
                 {
                    
                     
@@ -391,16 +442,16 @@ using BgTaxi.Services.Contracts;
                     
                     if (result.Succeeded)
                     {
-                        var company = companyService.GetAll().First(x => x.UniqueNumber == model.UniqueNumber.ToUpper());
+                        var company = _companyService.GetAll().First(x => x.UniqueNumber == model.UniqueNumber.ToUpper());
                         if (model.SelectedEmployee == "1")
                         {
                             UserManager.AddToRole(user.Id, "Driver");
-                            driverService.AddDriver(new BgTaxi.Models.Models.Driver { UserId = user.Id, Company = company });
+                            _driverService.AddDriver(new BgTaxi.Models.Models.Driver { UserId = user.Id, Company = company });
                         }
                         else if ( model.SelectedEmployee == "2")
                         {
                             UserManager.AddToRole(user.Id, "Dispatcher");
-                            dispatcherService.AddDispatcher(new BgTaxi.Models.Models.Dispatcher { UserId = user.Id, Company = company });
+                            _dispatcherService.AddDispatcher(new BgTaxi.Models.Models.Dispatcher { UserId = user.Id, Company = company });
 
                         }
                         
@@ -428,7 +479,7 @@ using BgTaxi.Services.Contracts;
                 const string allowedChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 Random rng = new Random();
                 var uniqueString = RandomString(allowedChars, 6, rng);
-                while ((companyService.GetAll().Any(x => x.UniqueNumber == uniqueString))){
+                while ((_companyService.GetAll().Any(x => x.UniqueNumber == uniqueString))){
                     uniqueString = RandomString(allowedChars, 6, rng);
                 }
                 var cityLocation = GoogleAPIRequest.GetLocation(model.Address);
@@ -440,7 +491,7 @@ using BgTaxi.Services.Contracts;
                 if (result.Succeeded)
                 {
                     var company = new Company { Name = model.CompanyName, City = model.Address, DDS = model.DDS, EIK = model.EIK, MOL = model.MOL, UserId = user.Id, UniqueNumber = uniqueString, CityLocation = cityLocation};
-                    companyService.AddCompany(company);
+                    _companyService.AddCompany(company);
                     UserManager.AddToRole(user.Id, "Company");
 
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771

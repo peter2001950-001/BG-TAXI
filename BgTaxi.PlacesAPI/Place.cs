@@ -15,6 +15,7 @@ namespace BgTaxi.PlacesAPI
         public string Address { get; set; }
         public Location Location { get; set; }
 
+        public string Type { get; set; }
 
     }
 }

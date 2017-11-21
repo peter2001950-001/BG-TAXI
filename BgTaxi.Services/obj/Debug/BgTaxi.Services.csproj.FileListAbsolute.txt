@@ -30,3 +30,5 @@ C:\Users\Peter\Desktop\160\BgTaxi.Services\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Peter\Desktop\160\BgTaxi.Services\obj\Debug\BgTaxi.Services.csprojResolveAssemblyReference.cache
 C:\Users\Peter\Desktop\160\BgTaxi.Services\obj\Debug\BgTaxi.Services.dll
 C:\Users\Peter\Desktop\160\BgTaxi.Services\obj\Debug\BgTaxi.Services.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.Services\bin\Debug\BgTaksi.Models.dll.config
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.Services\obj\Debug\BgTaxi.Services.csproj.CoreCompileInputs.cache

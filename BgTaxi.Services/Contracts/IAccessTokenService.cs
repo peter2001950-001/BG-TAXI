@@ -10,11 +10,12 @@ namespace BgTaxi.Services.Contracts
     public  interface IAccessTokenService: IService
     {
         string GetUserId(string accessToken);
-        bool AddAccessToken(AccessToken accessToken);
+        void AddAccessToken(AccessToken accessToken);
 
         IEnumerable<AccessToken> GetAll();
         bool IsUserLoggedIn(string accessToken);
         bool AddDeviceUserId(string accessToken, string userId);
         string GenerateAccessToken(string oldAccessToken);
+        void LogoutUser(string accessToken);
     }
 }

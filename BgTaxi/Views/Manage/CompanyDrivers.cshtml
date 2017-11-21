@@ -1,6 +1,6 @@
-﻿@model BgTaxi.Models.DriversCompanyViewModel
+﻿@model BgTaxi.Models.DriverCompanyViewModel
 @{
-    ViewBag.Title = "Профил";
+    ViewBag.Title = "ШОФЬОРИ";
 }
 
 <h2 style="text-align:center">@ViewBag.Title.</h2>
@@ -11,14 +11,16 @@
         <ul class="nav nav-pills nav-stacked">
             <li>@Html.ActionLink("Обща информация", "Index")</li>
             <li class="active">@Html.ActionLink("Шофьори", "Drivers")</li>
-
+            <li>@Html.ActionLink("Диспечери", "Dispatchers")</li>
             <li >@Html.ActionLink("Автомобили", "Cars")</li>
+
+            <li>@Html.ActionLink("Справки", "Reports")</li>
         </ul>
     </div>
 
     <div class="col-md-9">
 
-        <h4>Основна информация за акаунта</h4>
+        <h4>Списък с шофьорите на фирмата</h4>
         <hr />
 
             <table class="table table-hover">

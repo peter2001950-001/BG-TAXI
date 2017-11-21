@@ -49,6 +49,7 @@
     <Compile Include="GoogleRequests\DistanceBetweenTwoPoints.cs" />
     <Compile Include="GoogleRequests\DurationFormat.cs" />
     <Compile Include="GoogleRequests\GoogleAPIRequest.cs" />
+    <Compile Include="GoogleRequests\StreetAddress.cs" />
     <Compile Include="Place.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

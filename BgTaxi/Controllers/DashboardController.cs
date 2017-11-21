@@ -49,6 +49,15 @@ namespace BgTaxi.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// Controls all requests of the dispacher, takes care of the communication between the drivers and dispatcher
+        /// </summary>
+        /// <param name="free"></param>
+        /// <param name="busy"></param>
+        /// <param name="absent"></param>
+        /// <param name="offline"></param>
+        /// <param name="offduty"></param>
+        /// <returns>Retuens car locations and statuses, all active request and their statuses</returns>
         public JsonResult Pull(bool free = false, bool busy = false, bool absent = false, bool offline = false, bool offduty= false)
         {
             var userId = User.Identity.GetUserId();
@@ -71,12 +80,12 @@ namespace BgTaxi.Controllers
             {
                 addCar = false;
                 TimeSpan diff = DateTime.Now - cars[i].LastActiveDateTime;
-                if (diff.TotalMinutes >2  && cars[i].CarStatus != CarStatus.OffDuty)
+                if (diff.TotalMinutes > 2 && cars[i].CarStatus != CarStatus.OffDuty)
                 {
                     cars[i].CarStatus = CarStatus.Offline;
                     _carService.SaveChanges();
                 }
-                switch (cars[i].CarStatus)  
+                switch (cars[i].CarStatus)
                 {
                     case CarStatus.Free:
                         if (free)
@@ -125,8 +134,14 @@ namespace BgTaxi.Controllers
             carObjs = carsList.ToArray();
             return Json(new { requests = requests, cars = carObjs, freeStatusCount = freeStatusCount, busyStatusCount = busyStatusCount, absentStatusCount = absentStatusCount, offlineStatusCount = offlineStatusCount, offdutyStatusCount = offdutyStatusCount });
         }
+    
 
-        public JsonResult RequestLocation(string id)
+        /// <summary>
+        /// Returns requestLocation with the id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+              public JsonResult RequestLocation(string id)
         {
             var userId = User.Identity.GetUserId();
             var dispatcher = _dispatcherService.GetAll().First(x => x.UserId == userId);
@@ -141,6 +156,12 @@ namespace BgTaxi.Controllers
             }
             return Json(new { status = "ERR" });
         }
+
+        /// <summary>
+        /// Returns additional information about the request
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public JsonResult RequestInfo(string id)
         {
             var userId = User.Identity.GetUserId();
@@ -225,6 +246,14 @@ namespace BgTaxi.Controllers
 
             return Json(json);
         }
+
+        /// <summary>
+        /// Search requests by id, period or startingAddress
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="period"></param>
+        /// <param name="startingAddress"></param>
+        /// <returns></returns>
         public JsonResult SearchRequest(string id="0", string period="0", string startingAddress=null)
         {
 
@@ -286,6 +315,11 @@ namespace BgTaxi.Controllers
             }
             return Json(new { status = "OK", requests = requestsFound.ToArray() });
         }
+        /// <summary>
+        /// Returns suggested places or addresses
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public JsonResult AutoComplete(string text)
         {
             var userId = User.Identity.GetUserId();
@@ -293,7 +327,7 @@ namespace BgTaxi.Controllers
             var company = _companyService.GetAll().First(x => x.Id == dispatcher.Company.Id);
 
             var cityLocation = company.CityLocation;
-            var suggestions = GoogleAPIRequest.AutoCompleteList(text, cityLocation, 10000);
+            var suggestions = GoogleAPIRequest.AutoCompleteList(text, cityLocation, 10000, "");
 
             object[] result = new object[suggestions.Count];
             for (int i = 0; i < result.Length; i++)
@@ -310,6 +344,12 @@ namespace BgTaxi.Controllers
             return Json(new {status = "OK", suggestions = result});
 
         }
+        /// <summary>
+        /// Adds a new request
+        /// </summary>
+        /// <param name="startingAddress"></param>
+        /// <param name="finishAddress"></param>
+        /// <returns></returns>
         public JsonResult CreateRequest(string startingAddress, string finishAddress)
         {
             var userId = User.Identity.GetUserId();
@@ -332,12 +372,12 @@ namespace BgTaxi.Controllers
             }
             
             
-            var car = _dashboardService.AppropriateCar(startingLocation,  dispatcher.Company);
+           
             var request = new RequestInfo()
             {
                 CreatedBy = CreatedBy.Dispatcher,
                 CreatorUserId = userId,
-                RequestStatus = RequestStatusEnum.NotTaken,
+                RequestStatus = RequestStatusEnum.NoCarChosen,
                 StartingAddress = startingAddress,
                 StartingLocation = startingLocation,
                 FinishAddress = finishAddress,
@@ -351,24 +391,29 @@ namespace BgTaxi.Controllers
             {
                 DispatcherUserId = userId,
                 LastSeen = DateTime.Now,
-                LastSeenStatus = RequestStatusEnum.NotTaken,
+                LastSeenStatus = RequestStatusEnum.NoCarChosen,
                 Request = request
 
             };
 
             _dashboardService.AddDispatcherDashboard(dashboardCell);
-            if (car == null)
-            {
-                request.RequestStatus = RequestStatusEnum.NoCarChosen;
-            }
-
             var activeRequest = new ActiveRequest()
             {
-                AppropriateCar = car,
+                AppropriateCar = null,
                 DateTimeChosenCar = DateTime.Now,
                 Request = request
             };
             _requestService.AddActiveRequest(activeRequest);
+            var car = _carService.AppropriateCar(startingLocation, dispatcher.Company);
+            if (car != null)
+            {
+                request.RequestStatus = RequestStatusEnum.NotTaken;
+                activeRequest.AppropriateCar = car;
+                 _requestService.ModifyActiveRequest(activeRequest);
+            _requestService.ModifyRequestInfo(request);
+            }
+           
+           
 
 
             return Json(new { status = "OK" });

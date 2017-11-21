@@ -10,7 +10,7 @@ namespace BgTaxi.PlacesAPI.GoogleRequests
 {
     public static class GoogleAPIRequest
     {
-        public static string GetAddress(double lat, double lon)
+        public static StreetAddress GetAddress(double lat, double lon)
         {
             var request = WebRequest.Create("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat.ToString("0.0000000", System.Globalization.CultureInfo.InvariantCulture) + "," + lon.ToString("0.0000000", System.Globalization.CultureInfo.InvariantCulture) + "&language=bg&key=AIzaSyCqFT1vjwghgVYc9Y_jbuD-ux10qQD9H0s");
             var response = request.GetResponse();
@@ -21,7 +21,7 @@ namespace BgTaxi.PlacesAPI.GoogleRequests
             string responseFromServer = reader.ReadToEnd();
             // Display the content.
             RequestFormat flight = JsonConvert.DeserializeObject<RequestFormat>(responseFromServer);
-            return flight.results[0].formatted_address;
+            return new StreetAddress(){ Street_address = flight.results[0].address_components[0].long_name, Street_number = flight.results[0].address_components[1].long_name, FormattedAddress = flight.results[0].formatted_address };
         }
         public static DurationFormat GetDistance(BgTaxi.Models.Models.Location location1, BgTaxi.Models.Models.Location location2)
         {
@@ -60,33 +60,49 @@ namespace BgTaxi.PlacesAPI.GoogleRequests
             return location;
         }
 
-        public static List<Place> AutoCompleteList(string text, Models.Models.Location location, int radius)
+        public static List<Place> AutoCompleteList(string text, Models.Models.Location location, int radius, string types)
         {
-            text = text.Replace(" ", "+");
+            
             WebRequest request =
-                WebRequest.Create("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + text +
-                                  "&location=" + location.Latitude.ToString("0.0000000", System.Globalization.CultureInfo.InvariantCulture) + "," + location.Longitude.ToString("0.0000000", System.Globalization.CultureInfo.InvariantCulture) + "&radius="+radius+"&strictbounds&key=AIzaSyCqFT1vjwghgVYc9Y_jbuD-ux10qQD9H0s&language=bg");
+                WebRequest.Create("https://maps.googleapis.com/maps/api/place/textsearch/xml?query=" + text +
+                                  "&location=" + location.Latitude.ToString("0.0000000", System.Globalization.CultureInfo.InvariantCulture) + "," + location.Longitude.ToString("0.0000000", System.Globalization.CultureInfo.InvariantCulture) + "&radius="+radius+ "&key=AIzaSyAJ1lJPmsUd0xhzn97x8kZXQtJEwh0dgGQ&strictbounds&language=bg&types=" + types);
 
             WebResponse response = request.GetResponse();
             Stream dataStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);
 
             string responseFromServer = reader.ReadToEnd();
-            var flight = Newtonsoft.Json.JsonConvert.DeserializeObject<AutoCompleteClasses>(responseFromServer);
-            var placesList = new  List<Place>();
-            if (flight.predictions.Count > 0)
+
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(new StringReader(responseFromServer));
+            var PlaceList = new List<Place>();
+            foreach (XmlNode item in xmlDoc.ChildNodes[1])
             {
-                foreach (var prediction in flight.predictions)
+                
+                if (item.ChildNodes.Count > 1)
                 {
-                    placesList.Add(new Place()
+
+
+                    double.TryParse(item["geometry"].ChildNodes[0]["lat"].InnerText, out double lat);
+                    double.TryParse(item["geometry"].ChildNodes[0]["lng"].InnerText, out double lng);
+                    
+
+                    PlaceList.Add(new Place()
                     {
-                        MainText = prediction.structured_formatting.main_text,
-                        PlaceId = prediction.place_id,
-                        Address = prediction.structured_formatting.secondary_text
+                        Address = item["formatted_address"].InnerText,
+                        Location = new Models.Models.Location()
+                        {
+                            Latitude = lat,
+                            Longitude = lng,
+                        },
+                        MainText = item["name"].InnerText,
+                        PlaceId = item["place_id"].InnerText,
+                         Type = item["type"].InnerText
+
                     });
                 }
             }
-            return placesList;
+            return PlaceList;
         }
 
         public static  Place PlaceDetail(string placeId)

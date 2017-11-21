@@ -1,6 +1,5 @@
 ﻿html, body {height:100%;
             padding-bottom:60px;
-          
 }
 select{
     max-width:none;
@@ -79,6 +78,17 @@ input{
     overflow-x: hidden;
 
 }
+.status-bar{
+        background-color: #f03d25;
+    color: white;
+    padding: 7px;
+    font-size: 15px;
+    text-align: center;
+    display: none; 
+}
+.sections{
+    margin-top: 16px;
+}
 
 @media (max-width: 1000px){
     #left-section{
@@ -91,13 +101,13 @@ input{
         width:100%;
     }
     body{
-        padding-top: 80px;
+        padding-top: 59px;
     }
 }
 @media (min-width: 1000px){
     
     body{
-        padding-top: 80px;
+        padding-top: 59px;
     }
 }
 @font-face {
@@ -258,4 +268,9 @@ input{
 }
 .clear{
     clear:both;
+}
+.marker-span{
+    border: 4px;
+    padding: 5px;
+    border-radius: 5px;
 }

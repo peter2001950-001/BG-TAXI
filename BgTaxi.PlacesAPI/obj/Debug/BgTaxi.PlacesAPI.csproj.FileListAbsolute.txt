@@ -9,3 +9,5 @@ C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\obj\Debug\BgTaxi.PlacesAPI.csprojResolveAssemblyReference.cache
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\obj\Debug\BgTaxi.PlacesAPI.dll
 C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\obj\Debug\BgTaxi.PlacesAPI.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\bin\Debug\BgTaksi.Models.dll.config
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaxi.PlacesAPI\obj\Debug\BgTaxi.PlacesAPI.csproj.CoreCompileInputs.cache

@@ -16,5 +16,8 @@ namespace BgTaxi.Services.Contracts
         bool CarOnAddressCheck(Car car);
         void CreateCar(Car car);
         bool ModifyCar(int carId, Car modification);
+
+        Car AppropriateCar(Models.Models.Location startingLocaion, RequestInfo request, Company company);
+            Car AppropriateCar(Models.Models.Location startingLocaion, Company company);
     }
 }

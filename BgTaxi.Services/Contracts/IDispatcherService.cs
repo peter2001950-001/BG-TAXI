@@ -11,8 +11,11 @@ namespace BgTaxi.Services.Contracts
     public interface IDispatcherService : IService
     {
         IEnumerable<Dispatcher> GetAll();
+        IEnumerable<OnlineDispatcher> GetAllOnlineDispatchers();
+        void AddOnlineDispatcher(string userId, string connectionId);
+        void RemoveOnlineDispatcher(string connectionId);
         void AddDispatcher(Dispatcher dispatcher);
-        IEnumerable<DispatcherDashboard> GetAllDashboards();
+        void RemoveDispatcher(Dispatcher dispatcher);
 
     }
 }

@@ -79,3 +79,4 @@ C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaksi.Models\bin\Debug\System.Web.W
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaksi.Models\obj\Debug\BgTaxi.Models.csprojResolveAssemblyReference.cache
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaksi.Models\obj\Debug\BgTaksi.Models.dll
 C:\Users\Bechev's PC\Desktop\BgTaxi\BgTaxi\BgTaksi.Models\obj\Debug\BgTaksi.Models.pdb
+C:\Users\Peter\Documents\Visual Studio 2015\Projects\BgTaxi\BgTaksi.Models\obj\Debug\BgTaxi.Models.csproj.CoreCompileInputs.cache

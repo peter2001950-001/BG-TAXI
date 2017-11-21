@@ -59,8 +59,28 @@ namespace BgTaxi.Services
                     {
                         var dispatcherDashboardRequest = dashboard.First(x => x.Id == item.Id);
                         _data.DispatchersDashboard.Remove(dispatcherDashboardRequest);
+                        _data.SaveChanges();
                     }
-                } 
+                }
+
+                if(item.Request.RequestStatus == RequestStatusEnum.NotTaken)
+                {
+                    var activeRequest = _data.ActiveRequests.Where(x => x.Request.Id == item.Request.Id).FirstOrDefault();
+                    if (activeRequest != null)
+                    {
+                        TimeSpan timeSpan = DateTime.Now - activeRequest.DateTimeChosenCar;
+                        if (timeSpan.TotalSeconds > 15)
+                        {
+                            var dismissedCar = activeRequest.AppropriateCar;
+                            _data.CarsDismissedRequests.Add(new CarDismissedRequest() { Car = dismissedCar, Request = item.Request });
+                            _data.SaveChanges();
+                            activeRequest.AppropriateCar = null;
+                            activeRequest.Request.RequestStatus = RequestStatusEnum.NoCarChosen;
+                           
+                            _data.SaveChanges();
+                        }
+                    }
+                }
             }
 
             var requestsList = _data.DispatchersDashboard.Where(x => x.DispatcherUserId == userId).Include(x => x.Request).ToList();
@@ -89,7 +109,7 @@ namespace BgTaxi.Services
                     }
                 }
             }
-            
+
             _data.SaveChanges();
         }
 
@@ -110,8 +130,8 @@ namespace BgTaxi.Services
                 dictionary.Add(distance, item);
             }
 
-            distances.OrderBy(x => x);
-            foreach (var item in distances)
+           var sortedDistances =  distances.OrderBy(x => x);
+            foreach (var item in sortedDistances)
             {
                 var car = dictionary[item];
                 if (!_data.ActiveRequests.Any(x => x.AppropriateCar.Id == car.Id))
@@ -141,8 +161,8 @@ namespace BgTaxi.Services
                 dictionary.Add(distance, item);
             }
 
-            distances.OrderBy(x => x);
-            foreach (var item in distances)
+           var sortedDistances =  distances.OrderBy(x => x);
+            foreach (var item in sortedDistances)
             {
                 var car = dictionary[item];
                 if (!(_data.CarsDismissedRequests.Where(x => x.Request.Id == request.Id).Any(x => x.Car.Id == car.Id)) && !(_data.ActiveRequests.Any(x => x.AppropriateCar.Id == car.Id)))
@@ -190,7 +210,7 @@ namespace BgTaxi.Services
         private void NoCarChosen(int requestId)
         {
             var actReque = _data.ActiveRequests.Where(x => x.Request.Id == requestId).Include(x => x.Request).FirstOrDefault();
-            if (actReque?.Request != null) 
+            if (actReque?.Request != null)
             {
                 var requestInfo = _data.RequestsInfo.Where(x => x.Id == actReque.Request.Id).Include(x => x.Company).FirstOrDefault();
                 if (requestInfo?.Company != null)

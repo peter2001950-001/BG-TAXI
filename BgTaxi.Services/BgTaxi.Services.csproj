@@ -52,9 +52,11 @@
     <Compile Include="AccessTokenService.cs" />
     <Compile Include="BaseService.cs" />
     <Compile Include="CarService.cs" />
+    <Compile Include="ClientService.cs" />
     <Compile Include="CompanyService.cs" />
     <Compile Include="Contracts\IAccessTokenService.cs" />
     <Compile Include="Contracts\ICarService.cs" />
+    <Compile Include="Contracts\IClientService.cs" />
     <Compile Include="Contracts\ICompanyService.cs" />
     <Compile Include="Contracts\IDashboardService.cs" />
     <Compile Include="Contracts\IDeviceService.cs" />

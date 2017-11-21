@@ -17,6 +17,11 @@ namespace BgTaxi.Services
         {
             this.Data = data;
         }
+        /// <summary>
+        /// Adds new Device
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
         public bool AddDrvice(Device device)
         {
             Data.Devices.Add(device);
@@ -24,10 +29,19 @@ namespace BgTaxi.Services
              return true;
         }
 
+        /// <summary>
+        /// Returs all Devices
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Device> GetAll()
         {
             return Data.Devices.AsEnumerable();
         }
+        /// <summary>
+        /// Returns Device by its accessToken
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <returns></returns>
         public Device GetDeviceByAccessToken(string accessToken)
         {
             var accTok = Data.AccessTokens.Where(x => x.UniqueAccesToken == accessToken).Include(x => x.Device).First();

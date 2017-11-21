@@ -16,13 +16,17 @@ namespace BgTaxi.Services.Contracts
 
         IEnumerable<RequestInfo> GetRequestInfos();
         ActiveRequest GetActiveRequest(int id);
+        void RemoveActiveRequest(ActiveRequest request);
         TakenRequest GetTakenRequest(int id);
         RequestHistory GetRequestHistory(int id);
         RequestInfo GetRequestInfo(int id);
+        void ModifyRequestInfo(RequestInfo newRequestInfo);
+        void ModifyActiveRequest(ActiveRequest newActiveRequest);
         void AddRequestInfo(RequestInfo request);
         void AddActiveRequest(ActiveRequest request);
         object AppropriateRequest(Car car);
         bool UpdateAnswer(bool answer, int requestId, Driver driver);
+        object CatchUpRequest(Car car);
         bool FinishRequest(int requestId, string userId);
     }
 }

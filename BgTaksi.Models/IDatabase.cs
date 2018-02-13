@@ -74,6 +74,10 @@ namespace BgTaxi.Models
         {
             get;
         }
+        DbSet<ClientRequest> ClientRequests
+        {
+            get;
+        }
         int SaveChanges();
     }
 }

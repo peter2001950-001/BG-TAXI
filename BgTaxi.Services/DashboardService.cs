@@ -65,7 +65,7 @@ namespace BgTaxi.Services
 
                 if(item.Request.RequestStatus == RequestStatusEnum.NotTaken)
                 {
-                    var activeRequest = _data.ActiveRequests.Where(x => x.Request.Id == item.Request.Id).FirstOrDefault();
+                    var activeRequest = _data.ActiveRequests.Where(x => x.Request.Id == item.Request.Id).Include(x=>x.AppropriateCar).FirstOrDefault();
                     if (activeRequest != null)
                     {
                         TimeSpan timeSpan = DateTime.Now - activeRequest.DateTimeChosenCar;

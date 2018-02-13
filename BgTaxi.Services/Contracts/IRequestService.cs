@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace BgTaxi.Services.Contracts
 {
-   public interface IRequestService: IService
+    public interface IRequestService : IService
     {
         IEnumerable<ActiveRequest> GetActiveRequests();
 
         IEnumerable<TakenRequest> GetTakenRequests();
         IEnumerable<RequestHistory> GetRequestHistories();
-
+        IEnumerable<ClientRequest> GetClientRequest();
         IEnumerable<RequestInfo> GetRequestInfos();
         ActiveRequest GetActiveRequest(int id);
         void RemoveActiveRequest(ActiveRequest request);
+        void RemoveClientRequest(ClientRequest request);
         TakenRequest GetTakenRequest(int id);
         RequestHistory GetRequestHistory(int id);
         RequestInfo GetRequestInfo(int id);
@@ -24,7 +25,8 @@ namespace BgTaxi.Services.Contracts
         void ModifyActiveRequest(ActiveRequest newActiveRequest);
         void AddRequestInfo(RequestInfo request);
         void AddActiveRequest(ActiveRequest request);
-        object AppropriateRequest(Car car);
+        void AddClientRequest(ClientRequest request);
+         object AppropriateRequest(Car car);
         bool UpdateAnswer(bool answer, int requestId, Driver driver);
         object CatchUpRequest(Car car);
         bool FinishRequest(int requestId, string userId);

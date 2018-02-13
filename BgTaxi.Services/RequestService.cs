@@ -27,9 +27,18 @@ namespace BgTaxi.Services
         {
             return data.ActiveRequests.Include(x=>x.Request).Include(x => x.AppropriateCar).AsEnumerable();
         }
+       public IEnumerable<ClientRequest> GetClientRequest()
+        {
+            return data.ClientRequests.Include(x => x.Request).Include(x => x.Client).AsEnumerable();
+        }
         public void RemoveActiveRequest(ActiveRequest request)
         {
             data.ActiveRequests.Remove(request);
+            data.SaveChanges();
+        }
+        public void RemoveClientRequest(ClientRequest request)
+        {
+            data.ClientRequests.Remove(request);
             data.SaveChanges();
         }
 
@@ -39,7 +48,7 @@ namespace BgTaxi.Services
         /// <returns></returns>
         public IEnumerable<TakenRequest> GetTakenRequests()
         {
-            return data.TakenRequests.Include(x => x.Request).AsEnumerable();
+            return data.TakenRequests.Include(x => x.Request).Include(x=>x.Car).AsEnumerable();
         }
         /// <summary>
         /// Returns all RequestsHistories
@@ -64,7 +73,7 @@ namespace BgTaxi.Services
        /// <returns></returns>
         public ActiveRequest GetActiveRequest(int id)
         {
-            return data.ActiveRequests.FirstOrDefault(x => x.Id == id);
+            return data.ActiveRequests.Where(x => x.Id == id).Include(x=>x.Request).FirstOrDefault();
         }
         /// <summary>
         /// Returns Taken Request by its id
@@ -73,7 +82,7 @@ namespace BgTaxi.Services
         /// <returns></returns>
         public TakenRequest GetTakenRequest(int id)
         {
-            return data.TakenRequests.FirstOrDefault(x => x.Id == id);
+            return data.TakenRequests.Include(x=>x.Car).FirstOrDefault(x => x.Id == id);
         }
         /// <summary>
         /// Returns RequestHistory by its id
@@ -217,6 +226,8 @@ namespace BgTaxi.Services
                     });
                     request.Car.CarStatus = CarStatus.Free;
                     request.Request.RequestStatus = RequestStatusEnum.Finishted;
+                    var clientRequest = data.ClientRequests.Where(x => x.Request.Id == request.Request.Id).FirstOrDefault();
+                    if (clientRequest != null) data.ClientRequests.Remove(clientRequest);
                     data.TakenRequests.Remove(request);
                     data.SaveChanges();
                     return true;
@@ -247,6 +258,11 @@ namespace BgTaxi.Services
         public void AddActiveRequest(ActiveRequest request)
         {
             data.ActiveRequests.Add(request);
+            data.SaveChanges();
+        }
+        public void AddClientRequest(ClientRequest request)
+        {
+            data.ClientRequests.Add(request);
             data.SaveChanges();
         }
 

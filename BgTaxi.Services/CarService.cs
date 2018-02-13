@@ -153,9 +153,18 @@ namespace BgTaxi.Services
             return true;
         }
 
-        public Car AppropriateCar(Models.Models.Location startingLocaion, Company company)
+        public Car AppropriateCar(Models.Models.Location startingLocaion, Company company = null)
         {
-            var nearBycars = _data.Cars.Where(x => x.Company.Id == company.Id).Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0300 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0300).ToList();
+            var nearBycars = new List<Car>();
+            if (company== null)
+            {
+                 nearBycars = _data.Cars.Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0300 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0300).ToList();
+            }
+            else
+            {
+                nearBycars = _data.Cars.Where(x => x.Company.Id == company.Id).Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0300 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0300).ToList();
+            }
+          
             var distances = new List<double>();
             var dictionary = new Dictionary<double, Car>();
             Car appropriateCar = null;
@@ -191,9 +200,18 @@ namespace BgTaxi.Services
         /// <param name="request"></param>
         /// <param name="company"></param>
         /// <returns></returns>
-        public Car AppropriateCar(Models.Models.Location startingLocaion, RequestInfo request, Company company)
+        public Car AppropriateCar(Models.Models.Location startingLocaion, RequestInfo request, Company company=null)
         {
-            var nearBycars = _data.Cars.Where(x => x.Company.Id == company.Id).Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0150 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0150).ToList();
+            var nearBycars = new List<Car>();
+            if (company == null)
+            {
+                nearBycars = _data.Cars.Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0150 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0150).ToList();
+            }
+            else
+            {
+                nearBycars = _data.Cars.Where(x => x.Company.Id == company.Id).Where(x => x.CarStatus == CarStatus.Free).Where(x => Math.Abs(x.Location.Latitude - startingLocaion.Latitude) <= 0.0150 && Math.Abs(x.Location.Longitude - startingLocaion.Longitude) <= 0.0150).ToList();
+            }
+           
             var distances = new List<double>();
             var dictionary = new Dictionary<double, Car>();
             Car chosenCar = null;

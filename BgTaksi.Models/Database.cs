@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace BgTaxi.Models.Models
         public DbSet<RequestInfo> RequestsInfo { get; set; }
         public DbSet<DispatcherDashboard> DispatchersDashboard { get; set; }
         public DbSet<CarDismissedRequest> CarsDismissedRequests { get; set; }
+        public DbSet<ClientRequest> ClientRequests { get; set; }
 
         public DbSet<OnlineDriver> OnlineDrivers
         {

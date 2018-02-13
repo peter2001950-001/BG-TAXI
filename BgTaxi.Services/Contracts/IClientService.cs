@@ -15,5 +15,6 @@ namespace BgTaxi.Services.Contracts
         void RemoveClient(Client client);
         void AddOnlineClient(string userId, string connectionId);
         void RemoveOnlineClient(string connectionId);
+        void UpdateRequestStatus(string userId);
     }
 }
